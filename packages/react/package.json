@@ -1,0 +1,39 @@
+{
+    "name": "@contensis/forms",
+    "version": "0.0.1",
+    "description": "",
+    "license": "ISC",
+    "main": "dist/contensis-forms.js",
+    "module": "dist/contensis-forms.mjs",
+    "types": "dist/contensis-forms.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "start": "npm run build",
+        "prebuild": "npm run tsc",
+        "build": "tsup --dts-resolve",
+        "tsc": "tsc --noEmit",
+        "dev": "tsup --dts-resolve --watch"
+    },
+    "dependencies": {
+        "@contensis/canvas-html": "^1.0.0",
+        "liquidjs": "^10.10.1",
+        "markdown-it": "^14.0.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.0.28",
+        "@types/react-dom": "^18.0.11",
+        "@vitejs/plugin-react": "^4.2.1",
+        "vite": "^5.1.4"
+    },
+    "exports": {
+        ".": {
+            "require": "./dist/contensis-forms.js",
+            "import": "./dist/contensis-forms.mjs",
+            "types": "./dist/contensis-forms.d.ts"
+        }
+    }
+}

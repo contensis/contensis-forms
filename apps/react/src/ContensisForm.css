@@ -1,0 +1,268 @@
+.form {
+    --error-color: #d4351c;
+    --focus-color: #fd0;
+    --border-color: #0b0c0c;
+
+    --small-border-width: 2px;
+    --border-width: 3px;
+    --outline-width: 3px;
+
+    --margin: 20px;
+
+    margin: var(--margin);
+    font-family: arial, sans-serif;
+    font-size: 16px;
+}
+
+.form-loading {
+
+}
+
+.form-load-error {
+    color: var(--error-color);
+}
+
+.form-pager {
+    margin-bottom: var(--margin);
+}
+
+.form-current-page {
+    margin: var(--margin);
+}
+
+.form-current-page-title {
+    font-size: 2em;
+    font-weight: bolder;
+    margin-bottom: var(--margin);
+}
+
+.form-current-page-description {
+    font-size: 1.5em;
+    margin-bottom: var(--margin);
+}
+
+.form-current-page-inputs-container {}
+
+.form-field {
+    margin-bottom: var(--margin);
+}
+
+.form-field-has-error {
+    border-left: var(--border-width) solid var(--error-color);
+    padding-left: 10px;
+}
+
+.form-field-label-left {
+    display: flex;
+}
+
+.form-field-label-top {}
+
+.form-fieldset {
+    border: none;
+    padding: 0;
+    margin-bottom: var(--margin);
+}
+
+.form-fieldset legend {
+    font-weight: bolder;
+    padding: 0;
+}
+
+.form-fieldset-has-error {
+    border-left: var(--border-width) solid var(--error-color);
+    padding-left: 10px;
+}
+
+.form-fieldset-label-left {}
+
+.form-fieldset-label-top {}
+
+
+.form-field-label-container {
+    margin-bottom: 5px;
+}
+
+.form-field-label {
+    font-weight: bolder;
+}
+
+.form-field-input-container {}
+
+.form-field-instructions {}
+
+.form-fieldset-input-container {}
+
+.form-validation-summary {
+    border: var(--border-width) solid var(--error-color);
+    padding: var(--margin);
+    margin-bottom: var(--margin);
+}
+
+.form-validation-summary:focus {
+    outline: var(--outline-width) solid var(--focus-color);
+    outline-offset: 0;
+}
+
+.form-validation-summary-title {
+    margin-bottom: 0px;
+}
+
+.form-validation-summary-body {}
+
+.form-validation-summary-list {
+    color: var(--error-color);
+    font-weight: bolder;
+    list-style-type: none;
+    padding-left: 0;
+    line-height: 2em;
+    margin: var(--margin) 0 0 0;
+}
+
+.form-validation-summary-list a {
+    color: var(--error-color);
+}
+
+.form-field-error {
+    color: var(--error-color);
+    font-weight: bolder;
+    margin: 5px 0 5px 0;
+}
+
+.form-previous-button,
+.form-next-button,
+.form-submit-button {
+    margin: 10px;
+    padding: 10px;
+    border: var(--border-width) solid var(--border-color);
+    font-size: 16px;
+}
+
+.visually-hidden {
+    display: none;
+}
+
+.form-text-input,
+.form-email-input,
+.form-tel-input,
+.form-url-input,
+.form-select-input,
+.form-multiline-input,
+.form-integer-input,
+.form-decimal-input,
+.form-date-day-input,
+.form-date-month-input,
+.form-date-year-input,
+.form-date-hour-input,
+.form-date-minute-input {
+    font-size: 14px;
+    padding: 8px;
+    width: 100%;
+    border: var(--small-border-width) solid var(--border-color);
+}
+
+.form-text-input:focus,
+.form-email-input:focus,
+.form-tel-input:focus,
+.form-url-input:focus,
+.form-select-input:focus,
+.form-radio-input:focus,
+.form-checkbox-input:focus,
+.form-multiline-input:focus,
+.form-integer-input:focus,
+.form-decimal-input:focus,
+.form-date-day-input:focus,
+.form-date-month-input:focus,
+.form-date-year-input:focus,
+.form-date-hour-input:focus,
+.form-date-minute-input:focus {
+    outline: var(--outline-width) solid var(--focus-color);
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 2px;
+}
+
+.form-text-input.form-text-input-has-error,
+.form-email-input.form-email-input-has-error,
+.form-tel-input.form-tel-input-has-error,
+.form-url-input.form-url-input-has-error,
+.form-select-input.form-select-input-has-error,
+.form-multiline-input.form-multiline-input-has-error,
+.form-integer-input.form-integer-input-has-error,
+.form-decimal-input.form-decimal-input-has-error,
+.form-date-day-input.form-date-day-input-has-error,
+.form-date-month-input.form-date-month-input-has-error,
+.form-date-year-input.form-date-year-input-has-error,
+.form-date-hour-input.form-date-hour-input-has-error,
+.form-date-minute-input.form-date-minute-input-has-error {
+    font-size: 14px;
+    padding: 8px;
+    width: 100%;
+    border: var(--small-border-width) solid var(--error-color);
+}
+
+.form-multiline-input {
+    height: 100px;
+}
+
+.form-multiline-input.form-multiline-input-auto {}
+
+.form-multiline-input.form-multiline-input-small {
+    height: 50px;
+}
+
+.form-multiline-input.form-multiline-input-medium {
+    height: 100px;
+}
+
+.form-multiline-input.form-multiline-input-large {
+    height: 150px;
+}
+
+.form-radio-list {}
+
+.form-radio {
+    display: flex;
+}
+
+.form-radio-label {
+    margin-left: 10px;
+    align-self: center;
+}
+
+.form-radio-input {
+    width: 30px;
+    height: 30px;
+    border: var(--small-border-width) solid var(--border-color);
+}
+
+.form-checkbox-list {}
+
+.form-checkbox {
+    display: flex;
+}
+
+.form-checkbox-label {
+    margin-left: 10px;
+    align-self: center;
+}
+
+.form-checkbox-input {
+    width: 30px;
+    height: 30px;
+    border: var(--small-border-width) solid var(--border-color);
+}
+
+.form-date-item {
+    display: inline-block;
+    margin-right: var(--margin);
+}
+
+.form-date-day-input,
+.form-date-month-input,
+.form-date-year-input,
+.form-date-hour-input,
+.form-date-minute-input {
+    max-width: 50px;
+}
+
+.form-confirmation-message {}
