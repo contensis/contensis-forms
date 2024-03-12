@@ -66,6 +66,7 @@ export type FormFieldState = {
     errorMessage: Nullable<string>;
     errorMessages: Nullable<string[]>;
 
+    hidden: boolean;
     autoFill: Nullable<string>;
     options: Nullable<FormFieldOption[]>;
     size: Nullable<FieldSize>;

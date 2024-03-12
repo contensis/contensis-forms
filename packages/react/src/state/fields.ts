@@ -33,7 +33,7 @@ export function getFieldEditorType(field: Field) {
     if (!editorType && field.dataFormat) {
         editorType = DEFAULT_DATA_FORMAT_EDITOR_TYPES[field.dataFormat];
     }
-    if (!editorType && field.validations?.allowedValues?.values) {
+    if (!editorType && (field.validations?.allowedValues?.values || field.validations?.allowedValues?.keyValues)) {
         editorType = (field.dataType === 'stringArray')
             ? 'multiselect'
             : 'radio';
@@ -56,12 +56,19 @@ export function getEmptyFieldValue(field: Field) {
 }
 
 export function getOptions(field: Field, language: string, htmlId: string): undefined | FormFieldOption[] {
-    return field?.validations?.allowedValues?.values?.map((localisedValue, index) => {
-        const value = getLocalisedValue(localisedValue, language, '');
+    const pairs = field?.validations?.allowedValues?.keyValues
+        ? field?.validations?.allowedValues?.keyValues?.map(dict => {
+            const key = Object.keys(dict)[0];
+            return { key, value: dict[key] };
+        })
+        : field?.validations?.allowedValues?.values?.map(value => ({ key: '', value }));
+
+    return pairs?.map((pair, index) => {
+        const value = getLocalisedValue(pair.value, language, '');
         return {
             key: `${index}`,
             htmlId: `${htmlId}-option-${index}`,
-            value,
+            value: pair.key || value,
             label: value,
         };
     });
@@ -70,13 +77,21 @@ export function getOptions(field: Field, language: string, htmlId: string): unde
 export function getDefaultValue(field: Field, language: string) {
     const defaultValue = getLocalisedValue(field?.default, language, getEmptyFieldValue(field));
     if ((field.dataType === 'dateTime') && (defaultValue === 'now()')) {
-        const dt = new Date();
-        return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+        return getNowDateTime();
     } else if ((field.dataType === 'string') && (field.dataFormat === 'time') && (defaultValue === 'now()')) {
-        const dt = new Date();
-        return `${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+        return getNowTime();
     }
     return defaultValue;
+}
+
+export function getNowDateTime() {
+    const dt = new Date();
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+}
+
+export function getNowTime() {
+    const dt = new Date();
+    return `${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
 }
 
 function pad(n: number, length: number = 2) {

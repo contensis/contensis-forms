@@ -1,16 +1,31 @@
-import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldValidation, FieldValidationWithValue, Nullable, ValidationError } from '../models';
+import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldValidation, FieldValidationWithValue, FieldValidations, Nullable, ValidationError } from '../models';
+import { getNowDateTime, getNowTime } from './fields';
 import { localisations } from './localisations';
 import { getLocalisedValue } from './shared';
 import { memo } from './store';
 
 type Validator<TError extends Dictionary<any>> = (value: any) => null | TError;
 
+const DATA_TYPE_MESSAGES: Record<FieldDataType, string> = {
+    boolean: localisations.fieldDataTypeBooleanValidationMessage,
+    dateTime: localisations.fieldDataTypeDateTimeValidationMessage,
+    decimal: localisations.fieldDataTypeDecimalValidationMessage,
+    integer: localisations.fieldDataTypeIntegerValidationMessage,
+    string: localisations.fieldDataTypeStringValidationMessage,
+    stringArray: localisations.fieldDataTypeStringArrayValidationMessage
+};
+
+const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {
+    email: localisations.fieldDataFormatEmailValidationMessage,
+    phone: localisations.fieldDataFormatPhoneValidationMessage,
+    time: localisations.fieldDataFormatTimeValidationMessage,
+    url: localisations.fieldDataFormatUrlValidationMessage
+};
+
 const createFieldValidator = memo((field: Field, language: string) => {
     const validators: [string, Validator<Dictionary<any>>, message: string][] = [
-        ['dataType', createDataTypeValidator(field.dataType), localisations.fieldDataTypeValidationMessage],
-        ['dataFormat', createDataFormatValidator(field.dataFormat), localisations.fieldDataFormatValidationMessage],
-        // todo: the min and max validation messages should not show when both are enabled
-        // i think in this case we only use the min
+        ['dataType', createDataTypeValidator(field.dataType), DATA_TYPE_MESSAGES[field.dataType]],
+        ['dataFormat', createDataFormatValidator(field.dataFormat), field.dataFormat ? DATA_FORMAT_MESSAGES[field.dataFormat] : ''],
         ['required', createRequiredValidator(field.validations?.required), getLocalisedValue(field.validations?.required?.message, language, localisations.fieldRequiredValidationMessage)],
         ['min', createMinValidator(field.validations?.min), getLocalisedValue(field.validations?.min?.message, language, localisations.fieldMinValidationMessage)],
         ['max', createMaxValidator(field.validations?.max), getLocalisedValue(field.validations?.max?.message, language, localisations.fieldMaxValidationMessage)],
@@ -19,9 +34,8 @@ const createFieldValidator = memo((field: Field, language: string) => {
         ['minCount', createMinCountValidator(field.validations?.minCount), getLocalisedValue(field.validations?.minCount?.message, language, localisations.fieldMinCountValidationMessage)],
         ['maxCount', createMaxCountValidator(field.validations?.maxCount), getLocalisedValue(field.validations?.maxCount?.message, language, localisations.fieldMaxCountValidationMessage)],
         ['regex', createRegExValidator(field.validations?.regex), getLocalisedValue(field.validations?.regex?.message, language, localisations.fieldRegExValidationMessage)],
-        ['allowedValues', createAllowedValuesValidator(field.validations?.allowedValues, language), getLocalisedValue(field.validations?.allowedValues?.message, language, localisations.fieldAllowedValuesValidationMessage)]
-        // todo: pastDateTime
-        // todo: decimalPlaces this is not supported in the UI is it in the api?
+        ['allowedValues', createAllowedValuesValidator(field.validations?.allowedValues, language), getLocalisedValue(field.validations?.allowedValues?.message, language, localisations.fieldAllowedValuesValidationMessage)],
+        ['pastDateTime', createPastDateTimeValidator(field.dataType, field.validations?.pastDateTime), getLocalisedValue(field.validations?.pastDateTime?.message, language, localisations.fieldPastDateTimeValidationMessage)]
     ];
 
     return function (value: any) {
@@ -112,12 +126,10 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
                     return emailRegex.test(value);
                 }
                 case 'phone': {
-                    // todo: validate data format
                     return true;
                 }
                 case 'time': {
                     const timeRegex = new RegExp("^([01]?[0-9]|2[0-3])([:. ])([0-5]\\d)(\\2[0-5]\\d)?$");
-                    console.log('Testing', JSON.stringify({ value }));
                     return timeRegex.test(value);
                 }
                 case 'url': {
@@ -215,11 +227,17 @@ function createRegExValidator(regex: Nullable<FieldValidation & { pattern: strin
     );
 }
 
-function createAllowedValuesValidator(allowedValues: Nullable<FieldValidation & { values: Dictionary<string>[]; }>, language: string): Validator<{ allowed: string[] }> {
-    if (!allowedValues?.values) {
+function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['allowedValues']>, language: string): Validator<{ allowed: string[] }> {
+    const allowed = allowedValues?.keyValues
+        ? allowedValues.keyValues.map(dict => {
+            const key = Object.keys(dict)[0];
+            return key;
+        })
+        : allowedValues?.values?.map(value => getLocalisedValue(value, language, ''));
+    if (!allowed?.length) {
         return noopValidator;
     }
-    const allowed = allowedValues.values.map(v => getLocalisedValue(v, language, ''));
+
     return fromValid(
         (value: any) => {
             if (isNull(value)) {
@@ -229,6 +247,24 @@ function createAllowedValuesValidator(allowedValues: Nullable<FieldValidation & 
         },
         () => ({ allowed })
     );
+}
+
+function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Nullable<FieldValidation>) {
+    return !!pastDateTime
+        ? fromValid(
+            (value: any) => {
+                if (isNull(value)) {
+                    return true;
+                }
+                if (dataType === 'dateTime') {
+                    const now = getNowDateTime();
+                    return value <= now;
+                }
+                return true;
+            },
+            () => ({})
+        )
+        : noopValidator;
 }
 
 export function validate(value: any, field: Field, language: string) {

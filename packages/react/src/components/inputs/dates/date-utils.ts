@@ -43,8 +43,8 @@ export function toDateTimeParts(possibleDateTime: any): DateTimeParts {
                 year: `${dt.getFullYear()}`,
                 month: `${dt.getMonth() + 1}`,
                 day: `${dt.getDate()}`,
-                hour: `${dt.getHours()}`,
-                minute: `${dt.getMinutes()}`
+                hour: `${pad(dt.getHours())}`,
+                minute: `${pad(dt.getMinutes())}`
             };
         }
     } else {

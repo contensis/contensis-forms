@@ -313,7 +313,6 @@ function addToHistory(pageId: Nullable<string>, action: 'push' | 'replace') {
 }
 
 function saveProgress(state: FormState) {
-    // todo: save progress
     if (state.form?.id) {
         localStorage.setItem(
             `contensis-form-${state.form?.id}-page`,
@@ -327,7 +326,6 @@ function saveProgress(state: FormState) {
 }
 
 function resetProgress(state: FormState) {
-    // todo: reset progress
     if (state.form?.id) {
         localStorage.removeItem(`contensis-form-${state.form?.id}-page`);
         localStorage.removeItem(`contensis-form-${state.form?.id}-value`);

@@ -107,7 +107,7 @@ function getFieldsRecord(formHtmlId: string, form: Nullable<ContentType>, langua
             size: field?.editor?.properties?.size,
             labelPosition: field?.editor?.properties?.labelPosition,
             cssClass: field?.editor?.properties?.cssClass,
-
+            hidden: !!field?.editor?.properties?.hidden,
             options: getOptions(field, language, htmlId),
             field,
             editor: getFieldEditorType(field)

@@ -17,9 +17,11 @@ export function FormFieldContainer({ id }: FormFieldContainerProps) {
     const field = useFormField(id);
     const Field = DEFAULT_CONTAINERS[field.formFieldContainer]; // todo: override
     const Input = DEFAULT_INPUTS[field.editor]; // todo: override
-    return (
-        <Field id={id}>
-            <Input id={id} />
-        </Field>
-    );
+    return field.hidden
+        ? null
+        : (
+            <Field id={id}>
+                <Input id={id} />
+            </Field>
+        );
 }

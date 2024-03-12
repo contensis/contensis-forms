@@ -78,40 +78,12 @@ export type FieldDataType =
     | 'integer'
     | 'string'
     | 'stringArray';
-// | 'booleanArray'
-// | 'dateTimeArray'
-// | 'decimalArray'
-// | 'integerArray'
-// | 'object'
-// | 'objectArray'
 
 export type FieldDataFormat =
     | 'email'
     | 'phone'
     | 'time'
     | 'url';
-// | 'asset'
-// | 'canvas'
-// | 'component'
-// | 'contenttype'
-// | 'daterange'
-// | 'embed'
-// | 'entry'
-// | 'externalLink'
-// | 'field'
-// | 'heading'
-// | 'html'
-// | 'image'
-// | 'location'
-// | 'markdown'
-// | 'quote'
-// | 'taxonomy'
-// | 'user'
-// | 'fullname'
-// | 'address'
-// | 'hidden'
-// | 'upload'
-// | 'headingAndDescription'
 
 export type FieldEditorId =
     | 'datetime'
@@ -122,29 +94,14 @@ export type FieldEditorId =
     | 'list'
     | 'multiline'
     | 'text';
-// | 'asset'
-// | 'boolean'
-// | 'canvas'
-// | 'componentflyout'
-// | 'component'
-// | 'composer'
-// | 'dateDateRange'
-// | 'dateTimeRange'
-// | 'dropdown'
-// | 'entry-tag'
-// | 'entry'
-// | 'heading'
-// | 'html'
-// | 'image'
-// | 'location'
-// | 'markdown'
-// | 'quote'
-// | 'repeatable'
-// | 'searchableDropdown'
-// | 'taxonomytree'
-// | 'userroleselector'
 
-type FieldValidations = {
+type AllowedValues = { 
+    values?: Dictionary<string>[]; 
+    keyValues?: Dictionary<Dictionary<string>>[];
+};
+
+
+export type FieldValidations = {
     required?: FieldValidation;
     min?: FieldValidationWithValue<number>;
     max?: FieldValidationWithValue<number>;
@@ -153,7 +110,7 @@ type FieldValidations = {
     minCount?: FieldValidationWithValue<number>;
     maxCount?: FieldValidationWithValue<number>;
     regex?: FieldValidation & { pattern: string };
-    allowedValues?: FieldValidation & { values: Dictionary<string>[] };
+    allowedValues?: FieldValidation & AllowedValues;
     pastDateTime?: FieldValidation;
     decimalPlaces?: FieldValidationWithValue<number>;
 };
@@ -175,7 +132,7 @@ type FieldEditorProperties = {
     size?: FieldSize;
     labelPosition?: FieldLabelPosition;
     cssClass?: string;
-    // todo: hide property
+    hidden?: boolean;
 };
 
 

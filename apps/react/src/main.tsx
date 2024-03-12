@@ -4,9 +4,7 @@ import ReactDOM from 'react-dom/client';
 import './ContensisForm.css';
 import { createClient } from './client';
 
-try {
-    // todo: can we get this in the cms as a preview???
-    
+try {    
     const url = new URL(import.meta.url);
     const alias = url.searchParams.get('alias');
     const projectId = url.searchParams.get('projectId');
