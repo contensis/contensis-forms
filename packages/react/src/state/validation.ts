@@ -191,7 +191,10 @@ function createMaxLengthValidator(maxLength: Nullable<FieldValidationWithValue<n
 function createMinCountValidator(minCount: Nullable<FieldValidationWithValue<number>>): Validator<{ minCount: number }> {
     return !!minCount
         ? fromValid(
-            (value: any) => hasLength(value) ? (value.length >= minCount.value) : true,
+            (value: any) => {
+                const length = hasLength(value) ? value.length : 0;
+                return (length >= minCount.value);
+            },
             () => ({ minCount: minCount?.value })
         )
         : noopValidator;
@@ -200,7 +203,10 @@ function createMinCountValidator(minCount: Nullable<FieldValidationWithValue<num
 function createMaxCountValidator(maxCount: Nullable<FieldValidationWithValue<number>>): Validator<{ maxCount: number }> {
     return !!maxCount
         ? fromValid(
-            (value: any) => hasLength(value) ? (value.length <= maxCount.value) : true,
+            (value: any) => {
+                const length = hasLength(value) ? value.length : 0;
+                return (value.length <= maxCount.value);
+            },
             () => ({ maxCount: maxCount?.value })
         )
         : noopValidator;

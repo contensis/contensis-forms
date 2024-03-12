@@ -54,7 +54,7 @@ export function inputAttrs(field: FormField, fieldType: string, settings?: Input
         className: !!fieldType ? inputClassname(field, fieldType, settings?.cssSuffix) : undefined,
         id: field.htmlId,
         name: field.htmlId,
-        autoComplete: field.autoFill || settings?.autoComplete,
+        autoComplete: field.autoFill || settings?.autoComplete, // todo: all fields have autoFill property how does this work with dropdowns / date time/ radios etc
         'aria-invalid': invalid,
         'aria-describedby': attr({
             [instructionsId(field)]: !!field.instructions,
