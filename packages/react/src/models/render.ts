@@ -22,7 +22,7 @@ export type FormState = {
     htmlId: string;
     form: Nullable<ContentType>;
     language: string;
-    currentPageId: Nullable<string>;
+    steps: string[];
     value: Dictionary<any>;
     defaultValue: Dictionary<any>;
     emptyValue: Dictionary<any>;

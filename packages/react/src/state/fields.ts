@@ -84,14 +84,28 @@ export function getDefaultValue(field: Field, language: string) {
     return defaultValue;
 }
 
-export function getNowDateTime() {
-    const dt = new Date();
-    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+export function getNowDateTime() {    
+    return toLocalIsoDateTime(new Date());
 }
 
 export function getNowTime() {
-    const dt = new Date();
+    return toLocalIsoTime(new Date());
+}
+
+export function toLocalIsoDateTime(dt: Date) {
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+}
+
+export function toLocalIsoTime(dt: Date) {
     return `${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+}
+
+const AUTO_SAVE_PROGRESS_EXPIRY_DAYS = 30;
+
+export function getProgressExpiry() {
+    const d = new Date();
+    d.setDate(d.getDate() + AUTO_SAVE_PROGRESS_EXPIRY_DAYS);
+    return toLocalIsoDateTime(d);
 }
 
 function pad(n: number, length: number = 2) {

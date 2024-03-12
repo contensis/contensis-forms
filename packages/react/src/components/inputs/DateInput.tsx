@@ -48,6 +48,7 @@ export function DateInput({ id }: FormInputProps) {
                 htmlId={`${field.htmlId}-day`}
                 invalid={dayInvalid}
                 value={day}
+                autoComplete={field.autoFill}
                 hasInstructions={!!field.instructions}
                 instructionsHtmlId={instructionsHtmlId}
                 errorsHtmlId={errorsHtmlId}
@@ -62,6 +63,7 @@ export function DateInput({ id }: FormInputProps) {
                 htmlId={`${field.htmlId}-month`}
                 invalid={monthInvalid}
                 value={month}
+                autoComplete={field.autoFill}
                 hasInstructions={!!field.instructions}
                 instructionsHtmlId={instructionsHtmlId}
                 errorsHtmlId={errorsHtmlId}
@@ -76,6 +78,7 @@ export function DateInput({ id }: FormInputProps) {
                 htmlId={`${field.htmlId}-year`}
                 invalid={yearInvalid}
                 value={year}
+                autoComplete={field.autoFill}
                 hasInstructions={!!field.instructions}
                 instructionsHtmlId={instructionsHtmlId}
                 errorsHtmlId={errorsHtmlId}

@@ -4,7 +4,6 @@ import { localisations } from '../state';
 import { FormButtons } from './FormButtons';
 import { FormContents } from './FormContents';
 import { useFormSelector } from './FormContext';
-import { FormPager } from './FormPager';
 
 type FormLoaderProps = FormProps & { onSubmit: FormEventHandler<HTMLFormElement> };
 
@@ -27,7 +26,7 @@ export function FormLoader(props: FormLoaderProps) {
 
     return (
         <form noValidate={true} onSubmit={props.onSubmit}>
-            <FormPager />
+            {/* <FormPager /> */}
             <FormContents />
             <FormButtons />
         </form>

@@ -1,7 +1,7 @@
 import { ContentType, Dictionary, FormFieldState, FormPage, FormState, Nullable, ValidationError } from '../models';
 import { getFieldEditorType, getOptions } from './fields';
-import { localisations } from './localisations';
-import { DEFAULT_LANGUAGE, getIsFirstPage, getIsLastPage, getLocalisedValue, getPageCount, reduceFields, reduceGroups } from './shared';
+import { format, localisations } from './localisations';
+import { DEFAULT_LANGUAGE, getCurrentPageId, getIsFirstPage, getIsLastPage, getLocalisedValue, getPageCount, reduceFields, reduceGroups } from './shared';
 import { CreateStoreArgs } from './store';
 
 export function createSelectors({ select, selectById }: CreateStoreArgs<FormState>) {
@@ -9,7 +9,6 @@ export function createSelectors({ select, selectById }: CreateStoreArgs<FormStat
     const selectHtmlId = select(s => s.htmlId);
     const selectForm = select(s => s.form);
     const selectLanguage = select(s => s.language || DEFAULT_LANGUAGE);
-    const selectCurrentPageId = select(s => s.currentPageId);
     const selectPageCount = select(selectForm, getPageCount);
     const selectValue = select(s => s.value);
     const selectDefaultValue = select(s => s.defaultValue);
@@ -21,7 +20,9 @@ export function createSelectors({ select, selectById }: CreateStoreArgs<FormStat
     const selectLoadError = select(s => s.loadError);
     const selectShowErrors = select(s => s.showErrors);
     const selectDefaultPageTitle = select(s => s.defaultPageTitle);
+    const selectSteps = select(s => s.steps);
 
+    const selectCurrentPageId = select(selectSteps, getCurrentPageId);
     const selectLocalizations = select(selectForm, selectLanguage, getLocalizations);
     const selectIsFirstPage = select(selectForm, selectCurrentPageId, getIsFirstPage);
     const selectIsLastPage = select(selectForm, selectCurrentPageId, getIsLastPage);
@@ -33,6 +34,7 @@ export function createSelectors({ select, selectById }: CreateStoreArgs<FormStat
         selectShowErrors,
         selectErrors,
         selectDefaultPageTitle,
+        selectPageCount,
         getPage
     );
     const selectCurrentPage = select(
@@ -120,10 +122,11 @@ function getFocussedFieldsRecord(form: Nullable<ContentType>, focussed: Nullable
 }
 
 function getPage(
-    page: ReturnType<typeof getPagesRecord>[string], 
-    showErrors: boolean, 
+    page: ReturnType<typeof getPagesRecord>[string],
+    showErrors: boolean,
     errors: Dictionary<Nullable<Dictionary<ValidationError>>>,
-    defaultPageTitle: string
+    defaultPageTitle: string,
+    pageCount: number
 ): FormPage {
     const pageErrors = page?.fields.map(id => ({ id, errors: errors[id] })).filter(({ errors }) => isNotNullable(errors));
     const invalid = !!pageErrors?.length;
@@ -139,9 +142,12 @@ function getPage(
             .flat();
     }
 
-    const pageTitle = (showErrors && invalid)
-        ? `${localisations.errorPageTitle}: ${defaultPageTitle} - ${page.title}`
-        : `${defaultPageTitle} - ${page.title}`
+    const pageProgress = format(localisations.pagingMessage, page.pageNo, pageCount);
+    let pageTitle = `${defaultPageTitle} - ${pageProgress} - ${page.title}`;
+    if (showErrors && invalid) {
+        pageTitle = `${localisations.errorPageTitle}: ${pageTitle}`;
+    }
+
     return {
         ...page,
         pageTitle,

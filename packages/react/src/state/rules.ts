@@ -14,7 +14,6 @@ export function findRule<TReturn>(rules: Nullable<FormRule<TReturn>[]>, formValu
     });
 }
 
-// export type ConfirmationRuleReturn = ConfirmationRuleReturnMessage | ConfirmationRuleReturnContent;
 export function isConfirmationRuleReturnUri(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnUri {
     return !!(r as any)?.sys?.uri;
 }

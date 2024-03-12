@@ -1,6 +1,7 @@
 import { MutableRefObject } from 'react';
 import { attr, textValue } from '../../utils';
-import { DateTimePartKey } from './date-utils';
+import { DatePartKey, DateTimePartKey } from './date-utils';
+import { Nullable } from '../../../models';
 
 type DateItemProps = {
     type: DateTimePartKey;
@@ -10,11 +11,20 @@ type DateItemProps = {
     invalid: boolean;
     hasInstructions: boolean;
     value: string;
+    autoComplete?: Nullable<string>;
     instructionsHtmlId: string;
     errorsHtmlId: string
     onChange(type: DateTimePartKey, value: string): void;
     onFocus(type: DateTimePartKey): void;
     onBlur(type: DateTimePartKey): void;
+};
+
+const DatePartKeys: Record<DateTimePartKey, boolean> = {
+    year: true,
+    month: true,
+    day: true,
+    hour: false,
+    minute: false
 };
 
 export function DateItem({
@@ -25,12 +35,16 @@ export function DateItem({
     invalid,
     hasInstructions,
     value,
+    autoComplete,
     instructionsHtmlId,
     errorsHtmlId,
     onChange,
     onFocus,
     onBlur
 }: DateItemProps) {
+    const inputAutoComplete = ((autoComplete === 'bday') && DatePartKeys[type])
+        ? `${autoComplete}-${type}`
+        : undefined;
     return (
         <div className="form-date-item">
             <div className="form-field-label-container">
@@ -44,6 +58,7 @@ export function DateItem({
                 name={htmlId}
                 value={textValue(value)}
                 spellCheck="false"
+                autoComplete={inputAutoComplete}
                 inputMode="numeric"
                 pattern="[0-9]*"
                 aria-invalid={invalid}

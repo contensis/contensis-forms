@@ -1,6 +1,6 @@
 import { ContentType, Dictionary, FormState, Nullable } from '../models';
-import { getDefaultValue, getEmptyFieldValue } from './fields';
-import { getIsLastPage, getNextPage, getPageIdAt, getPageIndex, getPreviousPage, reduceFields } from './shared';
+import { getDefaultValue, getEmptyFieldValue, getNowDateTime, getProgressExpiry } from './fields';
+import { moveToNextPage, moveToPreviousPage, moveToPage, reduceFields, getFirstPage, getCurrentPageId } from './shared';
 import { CreateStoreArgs } from './store';
 import { validate } from './validation';
 
@@ -22,7 +22,7 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         set((state) => {
             const nextState = updates(state);
             if (!Object.is(nextState, state)) {
-                saveProgress(nextState);
+                autoSaveProgress(nextState);
             }
             return nextState;
         });
@@ -100,24 +100,19 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
 }
 
 function currentPageHasErrors(state: FormState) {
-    const currentPageFieldIds = (state.form?.fields || []).filter(f => f.groupId === state.currentPageId).map(f => f.id);
+    const currentPageId = getCurrentPageId(state.steps);
+    const currentPageFieldIds = (state.form?.fields || []).filter(f => f.groupId === currentPageId).map(f => f.id);
     return !!currentPageFieldIds.some(id => !!state.errors[id]);
 }
 
 function onSetForm(state: FormState, form: ContentType): FormState {
-    const firstPageId = getPageIdAt(form, 0);
-    let currentPageId = firstPageId;
-
+    const firstPageId = getFirstPage(form);
     const defaultValue = getDefaultFormValue(form, state.language);
     const emptyValue = getEmptyFormValue(form);
     let value = defaultValue;
 
-    const progress = loadProgress(form);
+    const progress = loadSavedProgress(form);
     if (progress) {
-        const hasSavedPage = !!form.groups?.find(g => g.id === progress.page);
-        if (hasSavedPage) {
-            currentPageId = progress.page;
-        }
         value = Object.keys(value).reduce((prev, key) => {
             if ((typeof progress?.value?.[key] !== 'undefined') && (typeof value?.[key] !== 'undefined')) {
                 // check both are defined, progress so we know we can set the value and value to check that the form field still exists
@@ -135,14 +130,11 @@ function onSetForm(state: FormState, form: ContentType): FormState {
         [f.id]: validate(value[f.id], f, state.language)
     }), {} as Dictionary<any>);
 
-    const hasErrors = Object.keys(errors).some(key => !!errors[key]);
-    currentPageId = hasErrors ? firstPageId : currentPageId;
-
     return {
         htmlId: state.htmlId,
         form,
         language: state.language,
-        currentPageId,
+        steps: [firstPageId || ''],
         value,
         defaultValue,
         emptyValue,
@@ -216,16 +208,15 @@ function onSetFocussed(state: FormState, fieldId: string, focussed: boolean): Fo
 function onSubmit(state: FormState): { canSave: boolean, state: FormState } {
     const isValid = !currentPageHasErrors(state);
     if (isValid) {
-        const isLastPage = getIsLastPage(state.form, state.currentPageId);
-        const nextPage = getNextPage(state.form, state.currentPageId);
-        if (nextPage) {
-            addToHistory(nextPage, 'push');
+        const { isLastPage, newPage, steps } = moveToNextPage(state.form, state.steps);
+        if (newPage) {
+            addToHistory(newPage, 'push');
             return {
                 canSave: false,
                 state: {
                     ...state,
                     showErrors: false,
-                    currentPageId: nextPage
+                    steps
                 }
             };
         } else if (isLastPage) {
@@ -248,36 +239,29 @@ function onSubmit(state: FormState): { canSave: boolean, state: FormState } {
 }
 
 function onPreviousPage(state: FormState): FormState {
-    const previousPage = getPreviousPage(state.form, state.currentPageId);
-    if (previousPage) {
-        addToHistory(previousPage, 'replace');
+    const { newPage, steps } = moveToPreviousPage(state.form, state.steps);
+    if (newPage) {
+        addToHistory(newPage, 'replace');
         return {
             ...state,
             showErrors: false,
-            currentPageId: previousPage
+            steps
         };
     }
     return state;
 }
 
 function onGotoPage(state: FormState, pageId: string, trigger: 'popstate'): FormState {
-    const currentPageIndex = getPageIndex(state.form, state.currentPageId);
-    const newPageIndex = !!pageId ? getPageIndex(state.form, pageId) : 0;
-    if (newPageIndex >= 0) {
-        if (currentPageIndex < newPageIndex) {
+    const { newPage, steps, direction } = moveToPage(state.form, state.steps, pageId);
+    if (newPage) {
+        if (direction === 'forward') {
             const isValid = !currentPageHasErrors(state);
             if (isValid) {
-                const nextPage = getNextPage(state.form, state.currentPageId);
-                if (nextPage && (nextPage === pageId)) {
-                    if (trigger !== 'popstate') {
-                        addToHistory(pageId, 'push');
-                    }
-                    return {
-                        ...state,
-                        showErrors: false,
-                        currentPageId: pageId
-                    }
-                }
+                return {
+                    ...state,
+                    showErrors: false,
+                    steps
+                };
             } else {
                 if (trigger === 'popstate') {
                     history.back();
@@ -287,15 +271,11 @@ function onGotoPage(state: FormState, pageId: string, trigger: 'popstate'): Form
                     showErrors: true
                 };
             }
-        } else if (currentPageIndex > newPageIndex) {
-            // going back
-            if (trigger !== 'popstate') {
-                addToHistory(pageId, 'push');
-            }
+        } else if (direction === 'backward') {
             return {
                 ...state,
                 showErrors: false,
-                currentPageId: pageId || getPageIdAt(state.form, newPageIndex)
+                steps
             };
         }
     }
@@ -305,18 +285,19 @@ function onGotoPage(state: FormState, pageId: string, trigger: 'popstate'): Form
 function addToHistory(pageId: Nullable<string>, action: 'push' | 'replace') {
     if (typeof pageId === 'string') {
         if (action === 'push') {
-            history.pushState(pageId, '', ''); //`#${pageId}`);
+            history.pushState(pageId, '', '');
         } else {
-            history.replaceState(pageId, '', ''); // `#${pageId}`);
+            history.replaceState(pageId, '', '');
         }
     }
 }
 
-function saveProgress(state: FormState) {
-    if (state.form?.id) {
+
+function autoSaveProgress(state: FormState) {
+    if (state.form?.id && state.form?.properties?.autoSaveProgress) {
         localStorage.setItem(
-            `contensis-form-${state.form?.id}-page`,
-            state.currentPageId || ''
+            `contensis-form-${state.form?.id}-expiry`,
+            getProgressExpiry()
         );
         localStorage.setItem(
             `contensis-form-${state.form?.id}-value`,
@@ -327,20 +308,20 @@ function saveProgress(state: FormState) {
 
 function resetProgress(state: FormState) {
     if (state.form?.id) {
-        localStorage.removeItem(`contensis-form-${state.form?.id}-page`);
+        localStorage.removeItem(`contensis-form-${state.form?.id}-expiry`);
         localStorage.removeItem(`contensis-form-${state.form?.id}-value`);
     }
 }
 
-function loadProgress(form: ContentType) {
+function loadSavedProgress(form: ContentType) {
     if (!!form) {
-        const page = localStorage.getItem(`contensis-form-${form.id}-page`);
+        const expiry = localStorage.getItem(`contensis-form-${form.id}-expiry`);
         const jsonValue = localStorage.getItem(`contensis-form-${form.id}-value`);
-        if (page && jsonValue) {
+        const d = getNowDateTime();
+        if (expiry && jsonValue && (d < expiry)) {
             try {
                 const value = JSON.parse(jsonValue);
                 return {
-                    page,
                     value
                 };
             } catch {

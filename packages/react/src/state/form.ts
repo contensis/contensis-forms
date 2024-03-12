@@ -13,7 +13,7 @@ export function createForm({ formId, form, language, client }: FormProps, htmlId
             htmlId: htmlId || '',
             form: null,
             language: language || DEFAULT_LANGUAGE,
-            currentPageId: null,
+            steps: [],
             value: {},
             defaultValue: {},
             emptyValue: {},

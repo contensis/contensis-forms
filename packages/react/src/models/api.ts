@@ -69,6 +69,7 @@ export type FormProperties = {
         errorSummaryTitle: Dictionary<string>;
     };
     confirmationRules: FormRule<ConfirmationRuleReturn>[];
+    autoSaveProgress: boolean;
 };
 
 export type FieldDataType =

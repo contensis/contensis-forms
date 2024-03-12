@@ -94,7 +94,7 @@ function createDataTypeValidator(dataType: FieldDataType): Validator<{}> {
                         return false;
                     }
                     const d = new Date(value);
-                    return !Number.isNaN(d.getTime()); // typeof value === 'string';
+                    return !Number.isNaN(d.getTime());
                 }
                 case 'decimal': {
                     return typeof value === 'number';

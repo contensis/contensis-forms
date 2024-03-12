@@ -7,8 +7,7 @@ export function TextInput({ id }: FormInputProps) {
     const field = useFormField(id);
     const onChange = ($event: ChangeEvent<HTMLInputElement>) => {
         field.onChange($event.target.value);
-    };
-    // todo: spellcheck should sometimes be true
+    };    
     return (
         <input
             type="text"
