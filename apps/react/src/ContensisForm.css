@@ -150,6 +150,9 @@
 .form-multiline-input,
 .form-integer-input,
 .form-decimal-input,
+.form-date-input,
+.form-date-time-input,
+.form-time-input,
 .form-date-day-input,
 .form-date-month-input,
 .form-date-year-input,
@@ -171,6 +174,9 @@
 .form-multiline-input:focus,
 .form-integer-input:focus,
 .form-decimal-input:focus,
+.form-date-input:focus,
+.form-date-time-input:focus,
+.form-time-input:focus,
 .form-date-day-input:focus,
 .form-date-month-input:focus,
 .form-date-year-input:focus,
@@ -189,6 +195,9 @@
 .form-multiline-input.form-multiline-input-has-error,
 .form-integer-input.form-integer-input-has-error,
 .form-decimal-input.form-decimal-input-has-error,
+.form-date-input.form-date-input-has-error,
+.form-date-time-input.form-date-time-input-has-error,
+.form-time-input.form-time-input-has-error,
 .form-date-day-input.form-date-day-input-has-error,
 .form-date-month-input.form-date-month-input-has-error,
 .form-date-year-input.form-date-year-input-has-error,
@@ -263,6 +272,18 @@
 .form-date-hour-input,
 .form-date-minute-input {
     max-width: 50px;
+}
+
+.form-date-input {
+    max-width: 250px;
+}
+
+.form-date-time-input {
+    max-width: 350px;
+}
+
+.form-time-input {
+    max-width: 100px;
 }
 
 .form-confirmation-message {}

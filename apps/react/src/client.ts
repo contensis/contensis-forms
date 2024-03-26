@@ -1,4 +1,4 @@
-import { FormResponse, createFormsClient } from '@contensis/forms';
+import { createFormsClient } from '@contensis/forms';
 import { Client as ManagementClient } from 'contensis-management-api';
 
 type CreateClientOptions = {

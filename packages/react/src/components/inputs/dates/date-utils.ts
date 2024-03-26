@@ -103,7 +103,7 @@ export function toTimeParts(possibleTime: any): TimeParts {
     };
 }
 
-function pad(n: number, length: number = 2) {
+export function pad(n: number, length: number = 2) {
     const padding = Array.from({ length }).map(() => '0').join('');
     return `${padding}${n}`.slice(-1 * length)
 }
@@ -141,7 +141,8 @@ function isWithinRange(n: null | number, min: number, max: number): n is number 
     return false;
 }
 
-const INVALID_DATE = 'Invalid date';
+export const INVALID_DATE = 'Invalid date';
+export const INVALID_TIME = 'Invalid time';
 
 export function validateDateTimeParts(parts: DateTimeParts): DateTimeValidation {
     if (!parts?.year && !parts?.month && !parts?.day && !parts?.hour && !parts?.minute) {

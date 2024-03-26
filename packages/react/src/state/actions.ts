@@ -127,7 +127,7 @@ function onSetForm(state: FormState, form: ContentType): FormState {
 
     const errors = form?.fields.reduce((prev, f) => ({
         ...prev,
-        [f.id]: validate(value[f.id], f, state.language)
+        [f.id]: validate(value[f.id], f, f.id === form.entryTitleField, state.language)
     }), {} as Dictionary<any>);
 
     return {
@@ -152,7 +152,7 @@ function onSetValue(state: FormState, fieldId: string, fieldValue: any): FormSta
     const { form, errors, value, language } = state;
     const field = form?.fields.find(f => f.id === fieldId);
     if (field) {
-        const fieldErrors = validate(fieldValue, field, language);
+        const fieldErrors = validate(fieldValue, field, field.id === form?.entryTitleField, language);
         state = {
             ...state,
             value: {

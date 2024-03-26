@@ -4,6 +4,7 @@ import { localisations } from '../state';
 import { FormButtons } from './FormButtons';
 import { FormContents } from './FormContents';
 import { useFormSelector } from './FormContext';
+import { FormOutput } from './FormOutput';
 
 type FormLoaderProps = FormProps & { onSubmit: FormEventHandler<HTMLFormElement> };
 

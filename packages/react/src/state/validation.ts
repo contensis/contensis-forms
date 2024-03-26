@@ -22,11 +22,11 @@ const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {
     url: localisations.fieldDataFormatUrlValidationMessage
 };
 
-const createFieldValidator = memo((field: Field, language: string) => {
+const createFieldValidator = memo((field: Field, isEntryTitle: boolean, language: string) => {
     const validators: [string, Validator<Dictionary<any>>, message: string][] = [
         ['dataType', createDataTypeValidator(field.dataType), DATA_TYPE_MESSAGES[field.dataType]],
         ['dataFormat', createDataFormatValidator(field.dataFormat), field.dataFormat ? DATA_FORMAT_MESSAGES[field.dataFormat] : ''],
-        ['required', createRequiredValidator(field.validations?.required), getLocalisedValue(field.validations?.required?.message, language, localisations.fieldRequiredValidationMessage)],
+        ['required', createRequiredValidator(field.validations?.required, isEntryTitle), getLocalisedValue(field.validations?.required?.message, language, localisations.fieldRequiredValidationMessage)],
         ['min', createMinValidator(field.validations?.min), getLocalisedValue(field.validations?.min?.message, language, localisations.fieldMinValidationMessage)],
         ['max', createMaxValidator(field.validations?.max), getLocalisedValue(field.validations?.max?.message, language, localisations.fieldMaxValidationMessage)],
         ['minLength', createMinLengthValidator(field.validations?.minLength), getLocalisedValue(field.validations?.minLength?.message, language, localisations.fieldMinLengthValidationMessage)],
@@ -143,8 +143,9 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
 
 }
 
-function createRequiredValidator(required: Nullable<FieldValidation>): Validator<{}> {
-    return !!required
+function createRequiredValidator(required: Nullable<FieldValidation>, isEntryTitle: boolean): Validator<{}> {
+    // todo: entry title field is automatically required in the API but should it be?????
+    return !!(isEntryTitle || required)
         ? fromValid(
             (value: any) => !isEmpty(value),
             () => ({})
@@ -273,7 +274,7 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
         : noopValidator;
 }
 
-export function validate(value: any, field: Field, language: string) {
-    const validator = createFieldValidator(field, language);
+export function validate(value: any, field: Field, isEntryTitle: boolean, language: string) {
+    const validator = createFieldValidator(field, isEntryTitle, language);
     return validator(value);
 }

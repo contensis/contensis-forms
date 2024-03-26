@@ -18,6 +18,7 @@ export function Form(props: FormProps) {
             const client = props.client;
             const formResponse = form.getFormResponse();
             const confirmationRules = form.getConfirmationRules();
+            // todo: what do we do with captcha????
             client.forms.save(formResponse).then(
                 (result) => {
                     const rule = findRule(confirmationRules, result);
