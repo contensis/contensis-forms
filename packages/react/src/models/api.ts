@@ -148,17 +148,19 @@ export type FormRuleWhen = {
 };
 
 export type ConfirmationRuleReturnUri = {
-    sys: {
-        uri: string;
+    link: {
+        uri: string | Dictionary<string>;
     };
 };
 
 export type ConfirmationRuleReturnMessage = {
-    message: string;
+    message: string | Dictionary<string>;
 };
 
+type Block = import('@contensis/canvas-html').Block;
+
 export type ConfirmationRuleReturnContent = {
-    content: import('@contensis/canvas-html').Block[]
+    content: Block[] | Dictionary<Block[]>;
 };
 
 export type ConfirmationRuleReturn = ConfirmationRuleReturnUri | ConfirmationRuleReturnMessage | ConfirmationRuleReturnContent;

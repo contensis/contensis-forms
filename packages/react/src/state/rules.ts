@@ -15,13 +15,13 @@ export function findRule<TReturn>(rules: Nullable<FormRule<TReturn>[]>, formValu
 }
 
 export function isConfirmationRuleReturnUri(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnUri {
-    return !!(r as any)?.sys?.uri;
+    return !!(r as ConfirmationRuleReturnUri)?.link?.uri;
 }
 
 export function isConfirmationRuleReturnMessage(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnMessage {
-    return !!(r as any)?.message
+    return !!(r as ConfirmationRuleReturnMessage)?.message
 }
 
 export function isConfirmationRuleReturnContent(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnContent {
-    return !!(r as any)?.content;
+    return !!(r as ConfirmationRuleReturnContent)?.content;
 }

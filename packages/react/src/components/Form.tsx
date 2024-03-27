@@ -52,7 +52,7 @@ export function Form(props: FormProps) {
         <div className="form">
             <FormContextProvider form={form}>
                 {!confirmationRule ? (<FormLoader {...props} onSubmit={onSubmit} />) : null}
-                {!!confirmationRule ? (<FormConfirmation rule={confirmationRule} formResponse={formResponse} />) : null}
+                {!!confirmationRule ? (<FormConfirmation rule={confirmationRule} formResponse={formResponse} language={props.language} />) : null}
             </FormContextProvider>
         </div>
     );

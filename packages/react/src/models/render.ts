@@ -14,6 +14,7 @@ export type FormProps = {
 };
 
 export type FormConfirmationProps = {
+    language: string;
     rule: FormRule<ConfirmationRuleReturn>;
     formResponse: Nullable<Record<string, any>>;
 };

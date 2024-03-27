@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FormConfirmationProps } from '../models';
-import { isConfirmationRuleReturnContent, isConfirmationRuleReturnMessage, localisations } from '../state';
+import { getLocalisedValue, isConfirmationRuleReturnContent, isConfirmationRuleReturnMessage, localisations } from '../state';
 import { createConfirmationRenderer, createLiquidRenderer, createMarkdownRenderer } from './html';
 
 export function FormConfirmation(props: FormConfirmationProps) {
@@ -32,22 +32,28 @@ export function FormConfirmation(props: FormConfirmationProps) {
         )
 }
 
-async function getConfirmationHtml({ rule, formResponse }: FormConfirmationProps) {
+async function getConfirmationHtml({ rule, formResponse, language }: FormConfirmationProps) {
     if (isConfirmationRuleReturnContent(rule?.return) || isConfirmationRuleReturnMessage(rule?.return)) {
         try {
             const liquidRenderer = await createLiquidRenderer();
             if (isConfirmationRuleReturnContent(rule?.return)) {
                 // render canvas to html then execute liquid
                 const htmlRenderer = await createConfirmationRenderer();
-                const htmlTemplate = htmlRenderer({ data: rule.return.content });
+                const content = Array.isArray(rule.return.content)
+                    ? rule.return.content
+                    : getLocalisedValue(rule.return.content, language, []);
+                const htmlTemplate = htmlRenderer({ data: content });
                 const html: string = await liquidRenderer.parseAndRender(htmlTemplate, formResponse || {});
                 return html;
             } else {
                 // execute liquid then render markdown 
-                const markdown = await liquidRenderer.parseAndRender(rule.return.message, formResponse || {});
+                const message = (typeof rule.return.message === 'string')
+                    ? rule.return.message
+                    : getLocalisedValue(rule.return.message, language, '');
+                const markdown = await liquidRenderer.parseAndRender(message, formResponse || {});
                 const markdownRenderer = await createMarkdownRenderer();
                 return markdownRenderer.render(markdown);
-            }            
+            }
         } catch {
             return null;
         }
