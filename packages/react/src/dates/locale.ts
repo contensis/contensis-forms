@@ -1,9 +1,11 @@
-import { DatePartKey, DateParts, DateTimeParts, DateValidation, validateDateParts, validateDateTimeParts } from './date-utils';
+import { DatePartKey, DateParts, DateTimeParts, validateDateParts, validateDateTimeParts } from './date-utils';
 import { parseTime } from './time-parsing';
 
 const DEFAULT_LOCALE = 'default';
 
 type LocaleInfo = {
+    toShortDateString(input: number | string | Date): string;
+    toShortDateTimeString(input: number | string | Date): string;
     shortDateMatchToParts(match: [string, string, string]): DateParts;
     shortDateTimeMatchToParts(match: [string, string, string, string, string]): DateTimeParts;
     formatters: DateFormatter[];
@@ -13,11 +15,20 @@ function isDatePartKey(key: string): key is DatePartKey {
     return (key === 'day') || (key === 'month') || (key === 'year');
 }
 
+function isDate(d: any): d is Date {
+    return Object.prototype.toString.call(d) === '[object Date]';
+}
+
+function isValidDate(dt: Date) {
+    return !Number.isNaN(Number(dt));
+}
+
 export const localeInfo = (function () {
     let info: undefined | LocaleInfo = undefined;
 
     const createLocaleInfo = function (): LocaleInfo {
         const shortDateFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, { dateStyle: 'short' });
+        const shortTimeFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, { timeStyle: 'short' });
         const shortDatePartsOrder = shortDateFormatter.formatToParts().map(p => p.type).filter(isDatePartKey);
 
         const formatters = [
@@ -44,6 +55,16 @@ export const localeInfo = (function () {
                     hour: match[3],
                     minute: match[4]
                 };
+            },
+            toShortDateString(input: number | string | Date) {
+                const dt = isDate(input) ? input : new Date(input);
+                return isValidDate(dt) ? shortDateFormatter.format(dt) : '';
+            },
+            toShortDateTimeString(input: number | string | Date) {
+                const dt = isDate(input) ? input : new Date(input);
+                return isValidDate(dt)
+                    ? `${shortDateFormatter.format(dt)} ${shortTimeFormatter.format(dt)}`
+                    : '';
             }
         };
     };

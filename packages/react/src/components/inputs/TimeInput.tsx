@@ -1,8 +1,8 @@
 import { ChangeEvent } from 'react';
+import { parseTime } from '../../dates';
 import { useFormField } from '../FormContext';
 import { inputAttrs, textValue } from '../utils';
 import { FormInputProps } from './models';
-import { parseTime } from './dates/time-parsing';
 
 export function TimeInput({ id }: FormInputProps) {
     const field = useFormField(id);

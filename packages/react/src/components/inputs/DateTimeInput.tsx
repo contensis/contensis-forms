@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react';
+import { parseDateTime } from '../../dates';
 import { useFormField } from '../FormContext';
 import { inputAttrs, textValue } from '../utils';
-import { parseDateTime } from './dates/date-time-parsing';
 import { FormInputProps } from './models';
 
 export function DateTimeInput({ id }: FormInputProps) {

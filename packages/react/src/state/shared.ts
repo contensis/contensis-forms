@@ -30,6 +30,8 @@ function getPageIndex(form: Nullable<ContentType>, groupId: Nullable<string>) {
         : -1;
 }
 
+// todo: can we do something with forms so that they can have one field per page
+// this would mean mocking the pages rather than relying on contentType.groups
 export function getPageCount(form: Nullable<ContentType>) {
     return form?.groups?.length || 0;
 }

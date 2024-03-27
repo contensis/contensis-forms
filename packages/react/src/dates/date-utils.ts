@@ -1,4 +1,4 @@
-import { Nullable } from '../../../models';
+import { Nullable } from '../models';
 
 export type DateParts = {
     year?: string;
@@ -18,13 +18,6 @@ export type TimeParts = {
     minute?: string;
 };
 
-export type TimePartKey = keyof TimeParts;
-
-export type TimeValidation = {
-    time: Nullable<string>;
-    invalid?: TimePartKey[];
-};
-
 export type DateTimeParts = DateParts & TimeParts;
 
 export type DateTimePartKey = keyof DateTimeParts;
@@ -33,75 +26,6 @@ export type DateTimeValidation = {
     datetime: Nullable<string>;
     invalid?: DateTimePartKey[];
 };
-
-export function toDateTimeParts(possibleDateTime: any): DateTimeParts {
-    let dateTimeParts: DateTimeParts = {};
-    if (typeof possibleDateTime === 'string') {
-        const dt = new Date(possibleDateTime);
-        if (!Number.isNaN(dt.getTime())) {
-            dateTimeParts = {
-                year: `${dt.getFullYear()}`,
-                month: `${dt.getMonth() + 1}`,
-                day: `${dt.getDate()}`,
-                hour: `${pad(dt.getHours())}`,
-                minute: `${pad(dt.getMinutes())}`
-            };
-        }
-    } else {
-        dateTimeParts = possibleDateTime;
-    }
-    return {
-        day: dateTimeParts?.day || '',
-        month: dateTimeParts?.month || '',
-        year: dateTimeParts?.year || '',
-        hour: dateTimeParts?.hour || '',
-        minute: dateTimeParts?.minute || ''
-    };
-}
-
-export function toDateParts(possibleDate: any): DateParts {
-    let dateParts: DateParts = {};
-    if (typeof possibleDate === 'string') {
-        const dt = new Date(possibleDate);
-        if (!Number.isNaN(dt.getTime())) {
-            dateParts = {
-                year: `${dt.getFullYear()}`,
-                month: `${dt.getMonth() + 1}`,
-                day: `${dt.getDate()}`
-            };
-        }
-    } else {
-        dateParts = possibleDate;
-    }
-    return {
-        day: dateParts?.day || '',
-        month: dateParts?.month || '',
-        year: dateParts?.year || ''
-    };
-}
-
-export function toTimeParts(possibleTime: any): TimeParts {
-    let timeParts: TimeParts = {};
-    if (typeof possibleTime === 'string') {
-        const parts = possibleTime.split(':');
-        if (parts.length === 2) {
-            let hour = toNumber(parts[0]);
-            let minute = toNumber(parts[1]);
-            if (isWithinRange(hour, 0, 23) && isWithinRange(minute, 0, 59)) {
-                timeParts = {
-                    hour: pad(hour),
-                    minute: pad(minute)
-                };
-            }
-        }
-    } else {
-        timeParts = possibleTime;
-    }
-    return {
-        hour: timeParts?.hour || '',
-        minute: timeParts?.minute || ''
-    };
-}
 
 export function pad(n: number, length: number = 2) {
     const padding = Array.from({ length }).map(() => '0').join('');
@@ -223,34 +147,6 @@ export function validateDateParts(parts: DateParts): DateValidation {
     }
     return {
         date: `${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T00:00`
-    };
-}
-
-
-export function validateTimeParts(parts: TimeParts): TimeValidation {
-    if (!parts?.hour && !parts?.minute) {
-        return { time: null };
-    }
-    const hour = toNumber(parts.hour);
-    const minute = toNumber(parts.minute);
-
-    const invalid: TimePartKey[] = [];
-
-    if (!isWithinRange(hour, 0, 23)) {
-        invalid.push('hour');
-    }
-    if (!isWithinRange(minute, 0, 59)) {
-        invalid.push('minute');
-    }
-
-    if (invalid.length) {
-        return {
-            time: INVALID_DATE,
-            invalid
-        };
-    }
-    return {
-        time: `${pad(hour as number)}:${pad(minute as number)}`
     };
 }
 

@@ -1,11 +1,15 @@
 import { ContentType, Dictionary, FormState, Nullable } from '../models';
-import { getDefaultValue, getEmptyFieldValue, getNowDateTime, getProgressExpiry } from './fields';
+import { getDefaultValue, getEmptyFieldValue, getInputValue, getNowDateTime, getProgressExpiry } from './fields';
 import { moveToNextPage, moveToPreviousPage, moveToPage, reduceFields, getFirstPage, getCurrentPageId } from './shared';
 import { CreateStoreArgs } from './store';
 import { validate } from './validation';
 
 function getDefaultFormValue(form: ContentType, language: string) {
     return reduceFields(form, field => getDefaultValue(field, language));
+}
+
+function getFormInputValue(form: ContentType, value: Dictionary<any>) {
+    return reduceFields(form, field => getInputValue(field, value?.[field.id]));
 }
 
 function getEmptyFormValue(form: ContentType) {
@@ -125,6 +129,8 @@ function onSetForm(state: FormState, form: ContentType): FormState {
         }, value);
     }
 
+    const inputValue = getFormInputValue(form, value);
+
     const errors = form?.fields.reduce((prev, f) => ({
         ...prev,
         [f.id]: validate(value[f.id], f, f.id === form.entryTitleField, state.language)
@@ -138,7 +144,7 @@ function onSetForm(state: FormState, form: ContentType): FormState {
         value,
         defaultValue,
         emptyValue,
-        inputValue: value,
+        inputValue,
         errors,
         showErrors: false,
         focussed: null,

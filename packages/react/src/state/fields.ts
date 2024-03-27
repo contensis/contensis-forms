@@ -1,3 +1,4 @@
+import { localeInfo } from '../dates';
 import { Field, FieldDataFormat, FieldDataType, FieldEditorId, FieldEditorType, FormFieldOption, Nullable } from '../models';
 import { getLocalisedValue } from './shared';
 
@@ -84,7 +85,19 @@ export function getDefaultValue(field: Field, language: string) {
     return defaultValue;
 }
 
-export function getNowDateTime() {    
+export function getInputValue(field: Field, value: any) {
+    if (field.dataType === 'dateTime') {
+        const editor = getFieldEditorType(field);
+        if (editor === 'datetime') {
+            return localeInfo().toShortDateTimeString(value);
+        } else {
+            return localeInfo().toShortDateString(value);
+        }
+    }
+    return value;
+}
+
+export function getNowDateTime() {
     return toLocalIsoDateTime(new Date());
 }
 
