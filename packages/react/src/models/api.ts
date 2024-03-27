@@ -70,6 +70,7 @@ export type FormProperties = {
     };
     confirmationRules: FormRule<ConfirmationRuleReturn>[];
     autoSaveProgress: boolean;
+    mode?: 'survey';
 };
 
 export type FieldDataType =

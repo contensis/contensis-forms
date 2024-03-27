@@ -1,7 +1,6 @@
 import { MutableRefObject, ReactNode, createContext, useContext, useMemo } from 'react';
 import { Dictionary, FieldEditorType, FormField, FormFieldContainer, FormState } from '../models';
-import { Form, useStoreSelector } from '../state';
-import { reduceFields } from '../state/shared';
+import { Form, useStoreSelector, reduceFields } from '../state';
 
 const FormContext = createContext<Form>(null as any as Form);
 

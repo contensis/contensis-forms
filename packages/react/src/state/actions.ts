@@ -1,6 +1,6 @@
 import { ContentType, Dictionary, FormState, Nullable } from '../models';
 import { getDefaultValue, getEmptyFieldValue, getInputValue, getNowDateTime, getProgressExpiry } from './fields';
-import { moveToNextPage, moveToPreviousPage, moveToPage, reduceFields, getFirstPage, getCurrentPageId } from './shared';
+import { moveToNextPage, moveToPreviousPage, moveToPage, reduceFields, getFirstPage, getCurrentPageId, getPageFields } from './shared';
 import { CreateStoreArgs } from './store';
 import { validate } from './validation';
 
@@ -104,8 +104,8 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
 }
 
 function currentPageHasErrors(state: FormState) {
-    const currentPageId = getCurrentPageId(state.steps);
-    const currentPageFieldIds = (state.form?.fields || []).filter(f => f.groupId === currentPageId).map(f => f.id);
+    const currentPageId = getCurrentPageId(state.steps);    
+    const currentPageFieldIds = getPageFields(state.form, currentPageId);
     return !!currentPageFieldIds.some(id => !!state.errors[id]);
 }
 

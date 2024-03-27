@@ -1,4 +1,4 @@
-import { ContentType, Dictionary, Field, Group, Nullable } from '../models';
+import { ContentType, Dictionary, Field, FormPage, Nullable } from '../models';
 
 export const DEFAULT_LANGUAGE = 'en-GB';
 
@@ -12,43 +12,94 @@ export function getLocalisedValue<T>(localisedValue: Nullable<Dictionary<T>>, la
     return defaultValue;
 }
 
-export function reduceGroups<T>(form: Nullable<ContentType>, fn: (group: Group, index: number) => T): Dictionary<T> {
-    return form?.groups
-        ? form.groups.reduce((prev, group, index) => ({ ...prev, [group.id]: fn(group, index) }), {} as Dictionary<T>)
-        : {}
-}
-
 export function reduceFields<T>(form: Nullable<ContentType>, fn: (field: Field, index: number) => T): Dictionary<T> {
     return form?.fields
         ? form.fields.reduce((prev, field, index) => ({ ...prev, [field.id]: fn(field, index) }), {} as Dictionary<T>)
         : {}
 }
 
-function getPageIndex(form: Nullable<ContentType>, groupId: Nullable<string>) {
-    return form?.groups
-        ? form.groups.findIndex(group => group.id === groupId)
-        : -1;
+export type PageDefinition = Pick<FormPage, 'pageNo' | 'id' | 'title' | 'description' | 'group' | 'fields'>;
+
+export function getPages(form: Nullable<ContentType>, language: string): PageDefinition[] {
+    if (!form) {
+        return [];
+    }
+    if (form.properties?.mode === 'survey') {
+        return form.fields?.map((field, index) => {
+            const { id, name, description } = field;
+            return {
+                pageNo: index + 1,
+                id,
+                title: getLocalisedValue(name, language, id),
+                description: getLocalisedValue(description, language, ''),
+                group: {
+                    id,
+                    name,
+                    description,
+                },
+                fields: [id]
+            }
+        }) || [];
+    } else {
+        return form.groups?.map((group, index) => {
+            const { id, name, description } = group;
+            return {
+                pageNo: index + 1,
+                id,
+                title: getLocalisedValue(name, language, id),
+                description: getLocalisedValue(description, language, ''),
+                group,
+                fields: (form?.fields || []).filter(field => field.groupId === id).map(field => field.id)
+            }
+        }) || [];
+    }
 }
 
-// todo: can we do something with forms so that they can have one field per page
-// this would mean mocking the pages rather than relying on contentType.groups
+function getPageIndex(form: Nullable<ContentType>, pageId: Nullable<string>) {
+    if (form?.properties?.mode === 'survey') {
+        return form?.fields
+            ? form.fields.findIndex(field => field.id === pageId)
+            : -1;
+    } else {
+        return form?.groups
+            ? form.groups.findIndex(group => group.id === pageId)
+            : -1;
+    }
+}
+
+export function getPageFields(form: Nullable<ContentType>, pageId: Nullable<string>) {
+    if (form?.properties?.mode === 'survey') {
+        return form?.fields
+            ? form.fields.filter(field => field.id === pageId).map(field => field.id)
+            : [];
+    } else {
+        return form?.fields
+            ? form.fields.filter(field => field.groupId === pageId).map(field => field.id)
+            : [];
+    }
+}
+
 export function getPageCount(form: Nullable<ContentType>) {
-    return form?.groups?.length || 0;
+    return (form?.properties?.mode === 'survey')
+        ? form?.fields?.length
+        : form?.groups?.length || 0;
 }
 
-export function getIsFirstPage(form: Nullable<ContentType>, groupId: Nullable<string>) {
-    const pageIndex = getPageIndex(form, groupId);
+export function getIsFirstPage(form: Nullable<ContentType>, pageId: Nullable<string>) {
+    const pageIndex = getPageIndex(form, pageId);
     return (pageIndex === 0);
 }
 
-export function getIsLastPage(form: Nullable<ContentType>, groupId: Nullable<string>) {
-    const pageIndex = getPageIndex(form, groupId);
+export function getIsLastPage(form: Nullable<ContentType>, pageId: Nullable<string>) {
+    const pageIndex = getPageIndex(form, pageId);
     const pageCount = getPageCount(form);
     return !!pageCount && (pageIndex === (pageCount - 1));
 }
 
 function getPageIdAt(form: Nullable<ContentType>, index: number) {
-    return form?.groups?.[index]?.id || null;
+    return (form?.properties?.mode === 'survey')
+        ? form?.fields?.[index]?.id || null
+        : form?.groups?.[index]?.id || null;
 }
 
 export function getCurrentPageId(steps: string[]) {
@@ -86,7 +137,7 @@ export function moveToNextPage(form: Nullable<ContentType>, currentSteps: string
         };
     }
     const currentIndex = getPageIndex(form, currentPageId);
-    // todo: this should be based on page rules    
+    // todo: this should be based on page rules
     const nextPage = getPageIdAt(form, currentIndex + 1);
     return {
         isLastPage: false,

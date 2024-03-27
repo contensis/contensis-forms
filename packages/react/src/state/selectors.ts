@@ -1,7 +1,7 @@
 import { ContentType, Dictionary, FormFieldState, FormPage, FormState, Nullable, ValidationError } from '../models';
 import { getFieldEditorType, getOptions } from './fields';
 import { format, localisations } from './localisations';
-import { DEFAULT_LANGUAGE, getCurrentPageId, getIsFirstPage, getIsLastPage, getLocalisedValue, getPageCount, reduceFields, reduceGroups } from './shared';
+import { DEFAULT_LANGUAGE, getCurrentPageId, getIsFirstPage, getIsLastPage, getLocalisedValue, getPageCount, reduceFields, getPages, PageDefinition } from './shared';
 import { CreateStoreArgs } from './store';
 
 export function createSelectors({ select, selectById }: CreateStoreArgs<FormState>) {
@@ -83,17 +83,7 @@ function getErrorMessages(errors: Nullable<Dictionary<ValidationError>>) {
 }
 
 function getPagesRecord(form: Nullable<ContentType>, language: string) {
-    return reduceGroups(form, (group, index) => {
-        const { id, name, description } = group;
-        return {
-            pageNo: index + 1,
-            id,
-            title: getLocalisedValue(name, language, id),
-            description: getLocalisedValue(description, language, ''),
-            group,
-            fields: (form?.fields || []).filter(field => field.groupId === id).map(field => field.id)
-        }
-    });
+    return getPages(form, language).reduce((prev, page) => ({ ...prev, [page.id]: page }), {} as Dictionary<PageDefinition>);
 }
 
 function getFieldsRecord(formHtmlId: string, form: Nullable<ContentType>, language: string) {
