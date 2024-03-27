@@ -174,7 +174,7 @@ export function moveToPage(form: Nullable<ContentType>, currentSteps: string[], 
         return {
             isLastPage: false,
             newPage: pageId,
-            steps: currentSteps.slice(0, stepIndex - 1),
+            steps: currentSteps.slice(0, stepIndex + 1),
             direction: 'backward'
         };
     }

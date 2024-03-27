@@ -104,7 +104,7 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
 }
 
 function currentPageHasErrors(state: FormState) {
-    const currentPageId = getCurrentPageId(state.steps);    
+    const currentPageId = getCurrentPageId(state.steps);
     const currentPageFieldIds = getPageFields(state.form, currentPageId);
     return !!currentPageFieldIds.some(id => !!state.errors[id]);
 }
@@ -135,6 +135,8 @@ function onSetForm(state: FormState, form: ContentType): FormState {
         ...prev,
         [f.id]: validate(value[f.id], f, f.id === form.entryTitleField, state.language)
     }), {} as Dictionary<any>);
+
+    addToHistory(firstPageId, 'push');
 
     return {
         htmlId: state.htmlId,
