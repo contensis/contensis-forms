@@ -5,7 +5,7 @@ import { Nullable } from '../../models';
 
 export function MultiSelectInput({ id }: FormInputProps) {
     const field = useFormField(id);
-    const value: Nullable<any[]> = field.value;
+    const value = field.value as Nullable<string[]>;
 
     const onChange = ($event: ChangeEvent<HTMLInputElement>) => {
         let newValue = value || [];

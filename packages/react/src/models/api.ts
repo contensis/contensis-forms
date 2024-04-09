@@ -1,4 +1,4 @@
-import { Nullable } from './shared';
+import { Dictionary, Nullable } from './shared';
 
 // todo: add time zone information to dat and date-time fields
 
@@ -10,9 +10,11 @@ import { Nullable } from './shared';
 
 export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
 
+export type FormResponse = Dictionary<unknown>;
+
 export type ContentType = {
     entryTitleField?: string;
-    enabled: boolean; // todo: is this needed?
+    enabled: boolean; // todo: is this needed? or does the api return an error
     id: string;
     fields: Field[];
     groups?: Group[];
@@ -25,7 +27,7 @@ export type Field = {
     dataType: FieldDataType;
     dataFormat?: FieldDataFormat;
     description?: Nullable<string>;
-    default?: any;
+    default?: unknown;
     groupId: string;
     validations?: Nullable<FieldValidations>;
     editor?: Nullable<FieldEditor>;
@@ -139,7 +141,7 @@ export type FormRule<TReturn> = {
 
 export type FormRuleWhen = {
     field: string;
-    equalTo: any;
+    equalTo: unknown;
 };
 
 export type ConfirmationRuleReturnUri = {

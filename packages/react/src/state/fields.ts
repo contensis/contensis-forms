@@ -80,13 +80,13 @@ export function getDefaultValue(field: Field) {
     return defaultValue;
 }
 
-export function getInputValue(field: Field, value: any) {
+export function getInputValue(field: Field, value: unknown) {
     if (field.dataType === 'dateTime') {
         const editor = getFieldEditorType(field);
         if (editor === 'datetime') {
-            return localeInfo().toShortDateTimeString(value);
+            return localeInfo().toShortDateTimeString(value as string | Date);
         } else {
-            return localeInfo().toShortDateString(value);
+            return localeInfo().toShortDateString(value as string | Date);
         }
     }
     return value;

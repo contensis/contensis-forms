@@ -8,7 +8,7 @@ try {
     // todo: should these be specified on the element?
     const alias = url.searchParams.get('alias');
     const projectId = url.searchParams.get('projectId');
-    const versionStatus = url.searchParams.get('versionStatus');
+    const versionStatus = url.searchParams.get('versionStatus') === 'latest' ? 'latest' : null;
     if (alias && projectId) {
         const elements = [...document.querySelectorAll('[data-contensis-form-id]')];
         elements.forEach(element => {
@@ -21,7 +21,7 @@ try {
                         projectId={projectId}
                         formId={formId || ''}
                         language={language || ''}
-                        versionStatus={versionStatus as any}
+                        versionStatus={versionStatus}
                     />
                 </React.StrictMode>
             );

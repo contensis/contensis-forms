@@ -23,10 +23,10 @@ export type FormState = {
     htmlId: string;
     form: Nullable<ContentType>;
     steps: string[];
-    value: Dictionary<any>;
-    defaultValue: Dictionary<any>;
-    emptyValue: Dictionary<any>;
-    inputValue: Dictionary<any>;
+    value: Dictionary<unknown>;
+    defaultValue: Dictionary<unknown>;
+    emptyValue: Dictionary<unknown>;
+    inputValue: Dictionary<unknown>;
     errors: Dictionary<Nullable<Dictionary<ValidationError>>>;
     showErrors: boolean;
     focussed: Nullable<string>;
@@ -58,11 +58,11 @@ export type FormFieldState = {
     editor: FieldEditorType;
     showErrors: boolean;
     focussed: boolean;
-    defaultValue: any;
-    emptyValue: any;
-    value: any;
-    inputValue: any;
-    errors: Nullable<Dictionary<any>>;
+    defaultValue: unknown;
+    emptyValue: unknown;
+    value: unknown;
+    inputValue: unknown;
+    errors: Nullable<Dictionary<ValidationError>>;
     errorMessage: Nullable<string>;
     errorMessages: Nullable<string[]>;
 
@@ -81,7 +81,7 @@ export type FormFieldContainer = 'control' | 'fieldset';
 export type FormField = FormFieldState & {
     inputRef: MutableRefObject<any>;
     formFieldContainer: FormFieldContainer;
-    onChange(inputValue: any, value?: any): void;
+    onChange(inputValue: unknown, value?: unknown): void;
     onFocus(): void;
     onBlur(): void;
 };

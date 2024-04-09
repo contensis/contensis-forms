@@ -3,7 +3,7 @@ import { getNowDateTime } from './fields';
 import { localisations } from './localisations';
 import { memo } from './store';
 
-type Validator<TError extends Dictionary<any>> = (value: any) => null | TError;
+type Validator<TError extends Dictionary<any>> = (value: unknown) => null | TError;
 
 const DATA_TYPE_MESSAGES: Record<FieldDataType, string> = {
     boolean: localisations.fieldDataTypeBooleanValidationMessage,
@@ -37,7 +37,7 @@ const createFieldValidator = memo((field: Field, isEntryTitle: boolean) => {
         ['pastDateTime', createPastDateTimeValidator(field.dataType, field.validations?.pastDateTime), field.validations?.pastDateTime?.message || localisations.fieldPastDateTimeValidationMessage]
     ];
 
-    return function (value: any) {
+    return function (value: unknown) {
         return validators.reduce((prev, [key, validator, message]) => {
             const error = validator(value);
             if (error) {
@@ -59,20 +59,20 @@ function noopValidator() {
     return null;
 }
 
-function isNull(value: any): boolean {
+function isNull(value: unknown): boolean {
     return value == null;
 }
 
-function isEmpty(value: any): boolean {
-    return isNull(value) || value.length === 0;
+function isEmpty(value: unknown): boolean {
+    return isNull(value) || (value as any).length === 0;
 }
 
-function hasLength(value: any): value is string | any[] {
+function hasLength(value: unknown): value is string | any[] {
     return (typeof value === 'string') || Array.isArray(value);
 }
 
-function fromValid<TError extends Dictionary<any>>(fn: (value: any) => boolean, getResult: () => TError): Validator<TError> {
-    return (value: any) => {
+function fromValid<TError extends Dictionary<any>>(fn: (value: unknown) => boolean, getResult: () => TError): Validator<TError> {
+    return (value: unknown) => {
         const isValid = fn(value);
         return isValid ? null : getResult();
     };
@@ -80,7 +80,7 @@ function fromValid<TError extends Dictionary<any>>(fn: (value: any) => boolean, 
 
 function createDataTypeValidator(dataType: FieldDataType): Validator<{}> {
     return fromValid(
-        (value: any) => {
+        (value: unknown) => {
             if (isNull(value)) {
                 return true;
             }
@@ -115,25 +115,25 @@ function createDataTypeValidator(dataType: FieldDataType): Validator<{}> {
 
 function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Validator<{}> {
     return fromValid(
-        (value: any) => {
+        (value: unknown) => {
             if (isEmpty(value) || !dataFormat) {
                 return true;
             }
             switch (dataFormat) {
                 case 'email': {
                     const emailRegex = new RegExp("^(([^<>()\\[\\]\\.,;:\\s@\\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$", 'i')
-                    return emailRegex.test(value);
+                    return typeof value === 'string' && emailRegex.test(value);
                 }
                 case 'phone': {
                     return true;
                 }
                 case 'time': {
                     const timeRegex = new RegExp("^([01]?[0-9]|2[0-3])([:. ])([0-5]\\d)(\\2[0-5]\\d)?$");
-                    return timeRegex.test(value);
+                    return typeof value === 'string' && timeRegex.test(value);
                 }
                 case 'url': {
                     const urlRegex = new RegExp("^(?:(?:(?:https?|ftp):)?\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z0-9\\u00a1-\\uffff][a-z0-9\\u00a1-\\uffff-]{0,62})?[a-z0-9\\u00a1-\\uffff]\\.)+(?:[a-z\\u00a1-\\uffff]{2,}\\.?))(?::\\d{2,5})?(?:[/?#]\\S*)?$");
-                    return urlRegex.test(value);
+                    return typeof value === 'string' && urlRegex.test(value);
                 }
             }
         },
@@ -146,7 +146,7 @@ function createRequiredValidator(required: Nullable<FieldValidation>, isEntryTit
     // todo: entry title field is automatically required in the API but should it be?????    
     return !!(isEntryTitle || required)
         ? fromValid(
-            (value: any) => !isEmpty(value),
+            (value: unknown) => !isEmpty(value),
             () => ({})
         )
         : noopValidator
@@ -155,7 +155,7 @@ function createRequiredValidator(required: Nullable<FieldValidation>, isEntryTit
 function createMinValidator(min: Nullable<FieldValidationWithValue<number>>): Validator<{ min: number }> {
     return !!min
         ? fromValid(
-            (value: any) => (typeof value === 'number') ? (value >= min.value) : true,
+            (value: unknown) => (typeof value === 'number') ? (value >= min.value) : true,
             () => ({ min: min?.value })
         )
         : noopValidator;
@@ -164,7 +164,7 @@ function createMinValidator(min: Nullable<FieldValidationWithValue<number>>): Va
 function createMaxValidator(max: Nullable<FieldValidationWithValue<number>>): Validator<{ max: number }> {
     return !!max
         ? fromValid(
-            (value: any) => (typeof value === 'number') ? (value <= max.value) : true,
+            (value: unknown) => (typeof value === 'number') ? (value <= max.value) : true,
             () => ({ max: max?.value })
         )
         : noopValidator;
@@ -173,7 +173,7 @@ function createMaxValidator(max: Nullable<FieldValidationWithValue<number>>): Va
 function createMinLengthValidator(minLength: Nullable<FieldValidationWithValue<number>>): Validator<{ minLength: number }> {
     return !!minLength
         ? fromValid(
-            (value: any) => hasLength(value) ? (value.length >= minLength.value) : true,
+            (value: unknown) => hasLength(value) ? (value.length >= minLength.value) : true,
             () => ({ minLength: minLength?.value })
         )
         : noopValidator;
@@ -182,7 +182,7 @@ function createMinLengthValidator(minLength: Nullable<FieldValidationWithValue<n
 function createMaxLengthValidator(maxLength: Nullable<FieldValidationWithValue<number>>): Validator<{ maxLength: number }> {
     return !!maxLength
         ? fromValid(
-            (value: any) => hasLength(value) ? (value.length <= maxLength.value) : true,
+            (value: unknown) => hasLength(value) ? (value.length <= maxLength.value) : true,
             () => ({ maxLength: maxLength?.value })
         )
         : noopValidator;
@@ -191,7 +191,7 @@ function createMaxLengthValidator(maxLength: Nullable<FieldValidationWithValue<n
 function createMinCountValidator(minCount: Nullable<FieldValidationWithValue<number>>): Validator<{ minCount: number }> {
     return !!minCount
         ? fromValid(
-            (value: any) => {
+            (value: unknown) => {
                 const length = hasLength(value) ? value.length : 0;
                 return (length >= minCount.value);
             },
@@ -203,7 +203,7 @@ function createMinCountValidator(minCount: Nullable<FieldValidationWithValue<num
 function createMaxCountValidator(maxCount: Nullable<FieldValidationWithValue<number>>): Validator<{ maxCount: number }> {
     return !!maxCount
         ? fromValid(
-            (value: any) => {
+            (value: unknown) => {
                 const length = hasLength(value) ? value.length : 0;
                 return (length <= maxCount.value);
             },
@@ -222,12 +222,12 @@ function createRegExValidator(regex: Nullable<FieldValidation & { pattern: strin
     const patternWithoutFlags = isValidPattern ? pattern.substring(1, flagsIndex) : pattern;
     const flags = !isValidPattern || flagsIndex === pattern.length - 1 || flagsIndex < 0 ? '' : pattern.substring(flagsIndex + 1);
     return fromValid(
-        (value: any) => {
+        (value: unknown) => {
             if (isEmpty(value)) {
                 return true;
             }
             const regex = new RegExp(patternWithoutFlags, flags);
-            return regex.test(value);
+            return typeof value === 'string' && regex.test(value);
         },
         () => ({ pattern })
     );
@@ -242,11 +242,11 @@ function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['
     }
 
     return fromValid(
-        (value: any) => {
+        (value: unknown) => {
             if (isNull(value)) {
                 return true;
             }
-            return Array.isArray(value) ? value.every(v => allowed.includes(v)) : allowed.includes(value);
+            return Array.isArray(value) ? value.every(v => allowed.includes(v)) : allowed.includes(value as any);
         },
         () => ({ allowed })
     );
@@ -255,13 +255,13 @@ function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['
 function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Nullable<FieldValidation>) {
     return !!pastDateTime
         ? fromValid(
-            (value: any) => {
+            (value: unknown) => {
                 if (isNull(value)) {
                     return true;
                 }
                 if (dataType === 'dateTime') {
                     const now = getNowDateTime();
-                    return value <= now;
+                    return `${value}` <= now;
                 }
                 return true;
             },
@@ -270,7 +270,7 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
         : noopValidator;
 }
 
-export function validate(value: any, field: Field, isEntryTitle: boolean) {
+export function validate(value: unknown, field: Field, isEntryTitle: boolean) {
     const validator = createFieldValidator(field, isEntryTitle);
     return validator(value);
 }

@@ -63,7 +63,7 @@ export function inputAttrs(field: FormField, fieldType: string, settings?: Input
     };
 }
 
-export function textValue(value: any): string {
+export function textValue(value: unknown): string {
     if (typeof value === 'string') {
         return value;
     }

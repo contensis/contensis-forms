@@ -18,7 +18,7 @@ export function FormLoader(props: FormLoaderProps) {
     }
 
     if (loadError) {
-        return props.error ? props.error(loadError) : (<FormLoadError />);
+        return props.error ? props.error(loadError) : (<FormLoadError error={loadError} />);
     }
 
     if (!formDefinition?.enabled) {
@@ -40,9 +40,9 @@ function FormLoading() {
     )
 }
 
-function FormLoadError() {
+function FormLoadError(props: { error: any }) {
     return (
-        <div className="form-load-error">{localisations.formLoadError}</div>
+        <div className="form-load-error">{props?.error?.message || localisations.formLoadError}</div>
     )
 }
 

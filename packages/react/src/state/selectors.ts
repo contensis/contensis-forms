@@ -152,10 +152,10 @@ function getCurrentPage(currentPageId: Nullable<string>, state: FormState, selec
 
 function getField(
     field: ReturnType<typeof getFieldsRecord>[string],
-    value: any,
-    defaultValue: any,
-    emptyValue: any,
-    inputValue: any,
+    value: unknown,
+    defaultValue: unknown,
+    emptyValue: unknown,
+    inputValue: unknown,
     focussed: boolean,
     showErrors: boolean,
     errors: Nullable<Dictionary<ValidationError>>

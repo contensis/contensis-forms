@@ -34,8 +34,7 @@ export function createForm({ alias, projectId, formId, language, versionStatus }
         );
 
         if (alias && projectId && formId) {
-            // todo: remove as any and hanlde null values
-            store.setForm(getForm(alias, projectId, formId, language || '', versionStatus || 'published') as any);
+            store.setForm(getForm(alias, projectId, formId, language || '', versionStatus || 'published'));
         }
 
         return store;

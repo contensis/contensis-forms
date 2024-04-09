@@ -1,6 +1,6 @@
 import { Dictionary, Nullable } from '../models';
 
-// todo: remove this when forms api is done
+// todo: remove this file when forms api is done
 
 export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
 
@@ -32,7 +32,7 @@ export type Field = {
     dataType: FieldDataType;
     dataFormat?: FieldDataFormat;
     description: Dictionary<string>;
-    default?: Dictionary<any>;
+    default?: Dictionary<unknown>;
     groupId: string;
     validations?: FieldValidations;
     editor?: FieldEditor;
@@ -146,7 +146,7 @@ export type FormRule<TReturn> = {
 
 export type FormRuleWhen = {
     field: string;
-    equalTo: any;
+    equalTo: unknown;
 };
 
 export type ConfirmationRuleReturnUri = {

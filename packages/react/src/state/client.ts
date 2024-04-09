@@ -11,7 +11,8 @@ import {
     FieldEditor,
     AllowedValues,
     FormRule,
-    ConfirmationRuleReturn
+    ConfirmationRuleReturn,
+    FormResponse
 } from '../models';
 import {
     ContentType as ManagementContentType,
@@ -49,55 +50,86 @@ async function authenticate(alias: string) {
 
 }
 
-export async function getForm(alias: string, projectId: string, formId: string, language: string, versionStatus: 'latest' | 'published'): Promise<null | ContentType> {
+type RequestOptions = {
+    url: string;
+    alias: string;
+    method: 'GET' | 'POST';
+    body?: any;
+};
+
+async function request<T>(options: RequestOptions) {
     try {
-        const auth = await authenticate(alias);
-        const response = await fetch(`https://cms-${alias}.cloud.contensis.com/api/management/projects/${projectId}/contenttypes/${formId}?versionStatus=${versionStatus}`, {
+
+        const baseUrl = `https://cms-${options.alias}.cloud.contensis.com`;
+
+        const authResponse = await fetch(`${baseUrl}/authenticate/connect/token`, {
+            "headers": {
+                "content-type": "application/x-www-form-urlencoded;charset=UTF-8"
+            },
+            "body": "scope=Security_Administrator%20ContentType_Read%20ContentType_Write%20ContentType_Delete%20Entry_Read%20Entry_Write%20Entry_Delete%20Project_Read%20Project_Write%20Project_Delete%20Workflow_Administrator&grant_type=client_credentials&client_id=dbff74a6-d327-4c1a-992b-a7315fb1ca19&client_secret=0b5f524afdb842738fd3379b603e41f7-287dd32557454776a2a6627d9458b202-e876b6bc20a541d6b0a30fbf57786f88",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "omit"
+        });
+
+        const auth: { access_token: string } = await authResponse.json();
+
+        const response = await fetch(`${baseUrl}${options.url}`, {
             "headers": {
                 "authorization": `Bearer ${auth?.access_token}`,
                 "content-type": "application/json"
             },
-            "body": null,
-            "method": "GET",
+            "body": (options.method === 'POST') ? JSON.stringify(options.body) : null,
+            "method": options.method,
             "mode": "cors"
         });
-        const managementContentType: ManagementContentType = await response.json();
-        const contentType = toContentType(managementContentType, language);
-        console.log(JSON.stringify(managementContentType, null, '\t'));
-        console.log(JSON.stringify(contentType, null, '\t'));
-        return contentType;
-    } catch {
-        return null;
-    }
 
+        if (response.ok) {
+            const result: T = await response.json();
+            return result;
+        } else {
+            const error = await response.json();
+            return Promise.reject({
+                status: response.status,
+                statusText: response.statusText,
+                message: error?.message,
+                error
+            });
+        }
+
+    } catch (e) {
+        throw e;
+    }
 }
 
-export async function saveForm(alias: string, projectId: string, formId: string, language: string, formResponse: any) {
-    try {
-        // todo: you can't save if the version status is latest
-        const auth = await authenticate(alias);
-        formResponse = {
-            ...formResponse,
-            sys: {
-                contentTypeId: formId,
-                dataFormat: 'form' as const,
-                language
-            }
-        };
-        const response = await fetch(`https://cms-${alias}.cloud.contensis.com/api/management/projects/${projectId}/entries`, {
-            "headers": {
-                "authorization": `Bearer ${auth?.access_token}`,
-                "content-type": "application/json"
-            },
-            "body": JSON.stringify(formResponse),
-            "method": "POST",
-            "mode": "cors"
-        });
-        const result = await response.json();
-        return result;
-    } catch {
+export async function getForm(alias: string, projectId: string, formId: string, language: string, versionStatus: 'latest' | 'published'): Promise<ContentType> {
+    const managementContentType = await request<ManagementContentType>({
+        url: `/api/management/projects/${projectId}/contenttypes/${formId}?versionStatus=${versionStatus}`,
+        alias,
+        method: 'GET'
+    });
+    const contentType = toContentType(managementContentType, language);
+    return contentType;
+}
 
-    }
+
+export async function saveForm(alias: string, projectId: string, formId: string, language: string, formResponse: FormResponse) {
+    // todo: you can't save if the version status is latest
+    formResponse = {
+        ...formResponse,
+        sys: {
+            contentTypeId: formId,
+            dataFormat: 'form' as const,
+            language
+        }
+    };
+
+    return await request({
+        url: `/api/management/projects/${projectId}/entries`,
+        alias,
+        method: 'POST',
+        body: formResponse
+    });
 }
 
 // todo: remove this mapping
@@ -278,8 +310,8 @@ function toFieldEditor(managementFieldEditor: Nullable<ManagementFieldEditor>, l
 function toFormRule(managementRule: ManagementFormRule<ManagementConfirmationRuleReturn>, language: string): FormRule<ConfirmationRuleReturn> {
     const { when } = managementRule;
     const r = managementRule['return'] as any;
-    return { 
-        when, 
+    return {
+        when,
         return: {
             link: r?.link?.uri ? {
                 uri: getLocalisedValue(r?.link?.uri, language, undefined)

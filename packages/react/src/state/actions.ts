@@ -1,4 +1,4 @@
-import { ContentType, Dictionary, FormState, Nullable } from '../models';
+import { ContentType, Dictionary, FormState, Nullable, ValidationError } from '../models';
 import { getDefaultValue, getEmptyFieldValue, getInputValue, getNowDateTime, getProgressExpiry } from './fields';
 import { getCurrentPageId, getFirstPage, getPageFields, moveToNextPage, moveToPage, moveToPreviousPage, reduceFields } from './shared';
 import { CreateStoreArgs } from './store';
@@ -8,7 +8,7 @@ function getDefaultFormValue(form: ContentType) {
     return reduceFields(form, field => getDefaultValue(field));
 }
 
-function getFormInputValue(form: ContentType, value: Dictionary<any>) {
+function getFormInputValue(form: ContentType, value: Dictionary<unknown>) {
     return reduceFields(form, field => getInputValue(field, value?.[field.id]));
 }
 
@@ -16,8 +16,8 @@ function getEmptyFormValue(form: ContentType) {
     return reduceFields(form, field => getEmptyFieldValue(field));
 }
 
-function isPromise(o: any): o is Promise<any> {
-    return typeof o?.then === 'function';
+function isPromise(o: unknown): o is Promise<unknown> {
+    return typeof (o as any)?.then === 'function';
 }
 
 export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
@@ -42,6 +42,7 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
                     loadingPromise = null;
                 },
                 (loadError) => {
+                    console.log(loadError);
                     set((state) => (p === loadingPromise) ? ({ ...state, loadError, loading: false }) : state);
                     loadingPromise = null;
                 }
@@ -53,8 +54,8 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         }
     };
 
-    const setValue = (fieldId: string, fieldValue: any) => setWithProgress((state) => onSetValue(state, fieldId, fieldValue));
-    const setInputValue = (fieldId: string, fieldInputValue: any) => set((state) => onSetInputValue(state, fieldId, fieldInputValue));
+    const setValue = (fieldId: string, fieldValue: unknown) => setWithProgress((state) => onSetValue(state, fieldId, fieldValue));
+    const setInputValue = (fieldId: string, fieldInputValue: unknown) => set((state) => onSetInputValue(state, fieldId, fieldInputValue));
     const setFocussed = (fieldId: string, focussed: boolean) => set(state => onSetFocussed(state, fieldId, focussed));
     const submit = () => {
         let canSave = false;
@@ -127,7 +128,7 @@ function onSetForm(state: FormState, form: ContentType): FormState {
     const errors = form?.fields.reduce((prev, f) => ({
         ...prev,
         [f.id]: validate(value[f.id], f, f.id === form.entryTitleField)
-    }), {} as Dictionary<any>);
+    }), {} as Dictionary<Nullable<Dictionary<ValidationError>>>);
 
     addToHistory(firstPageId, 'push');
 
@@ -148,7 +149,7 @@ function onSetForm(state: FormState, form: ContentType): FormState {
     };
 }
 
-function onSetValue(state: FormState, fieldId: string, fieldValue: any): FormState {
+function onSetValue(state: FormState, fieldId: string, fieldValue: unknown): FormState {
     const { form, errors, value } = state;
     const field = form?.fields.find(f => f.id === fieldId);
     if (field) {
@@ -174,7 +175,7 @@ function onSetValue(state: FormState, fieldId: string, fieldValue: any): FormSta
     }
 }
 
-function onSetInputValue(state: FormState, fieldId: string, fieldInputValue: any): FormState {
+function onSetInputValue(state: FormState, fieldId: string, fieldInputValue: unknown): FormState {
     const { form, inputValue } = state;
     const field = form?.fields.find(f => f.id === fieldId);
     if (field) {

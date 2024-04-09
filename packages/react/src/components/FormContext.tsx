@@ -2,7 +2,7 @@ import { MutableRefObject, ReactNode, createContext, useContext, useMemo } from 
 import { Dictionary, FieldEditorType, FormField, FormFieldContainer, FormState } from '../models';
 import { Form, useStoreSelector, reduceFields } from '../state';
 
-const FormContext = createContext<Form>(null as any as Form);
+const FormContext = createContext<null | Form>(null);
 
 type FormContextProviderProps = {
     form: Form;
@@ -20,7 +20,11 @@ export function FormContextProvider(props: FormContextProviderProps) {
 }
 
 export function useForm() {
-    return useContext(FormContext);
+    const form = useContext(FormContext);
+    if (!form) {
+        throw new Error('Form has not been initialised');
+    }
+    return form;
 }
 
 const FormFieldRefContext = createContext<Dictionary<MutableRefObject<HTMLElement | undefined>>>({});
@@ -67,7 +71,7 @@ export function useFormField(id: string): FormField {
     const field = useStoreSelector(form, form.selectField(id));
     const refs = useFieldRefs();
     return useMemo(() => {
-        const onChange = (inputValue: any, value?: any) => {
+        const onChange = (inputValue: unknown, value?: unknown) => {
             value = (typeof value === 'undefined') ? inputValue : value;
             form.setInputValue(field.id, inputValue);
             form.setValue(field.id, value);
