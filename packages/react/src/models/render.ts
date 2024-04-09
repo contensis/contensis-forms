@@ -1,5 +1,5 @@
 import { MutableRefObject, ReactNode } from 'react';
-import { ConfirmationRuleReturn, ContentType, Field, FieldLabelPosition, FieldSize, FormRule, Group, StringOrCanvas } from './api';
+import { ConfirmationRuleReturn, ContentType, Field, FieldLabelPosition, FieldSize, FormResponse, FormRule, Group, StringOrCanvas } from './api';
 import { Dictionary, Nullable } from './shared';
 
 export type FormProps = {
@@ -16,7 +16,7 @@ export type FormProps = {
 export type FormConfirmationProps = {
     language: string;
     rule: FormRule<ConfirmationRuleReturn>;
-    formResponse: Nullable<Record<string, any>>;
+    formResponse: FormResponse;
 };
 
 export type FormState = {

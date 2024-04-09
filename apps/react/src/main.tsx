@@ -5,15 +5,15 @@ import './ContensisForm.css';
 
 try {
     const url = new URL(import.meta.url);
-    // todo: should these be specified on the element?
+    // todo: can these be "got" from somewhere
     const alias = url.searchParams.get('alias');
     const projectId = url.searchParams.get('projectId');
-    const versionStatus = url.searchParams.get('versionStatus') === 'latest' ? 'latest' : null;
     if (alias && projectId) {
         const elements = [...document.querySelectorAll('[data-contensis-form-id]')];
         elements.forEach(element => {
             const formId = element.getAttribute('data-contensis-form-id');
             const language = element.getAttribute('data-contensis-form-language');
+            const version = element.getAttribute('data-contensis-form-version');
             ReactDOM.createRoot(element).render(
                 <React.StrictMode>
                     <Form
@@ -21,7 +21,7 @@ try {
                         projectId={projectId}
                         formId={formId || ''}
                         language={language || ''}
-                        versionStatus={versionStatus}
+                        versionStatus={version === 'latest' ? 'latest' : null}
                     />
                 </React.StrictMode>
             );

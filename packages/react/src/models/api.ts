@@ -4,8 +4,6 @@ import { Dictionary, Nullable } from './shared';
 
 // todo: investigate captcha v3
 
-// todo: don;t allow saving when using the latest version of a form
-
 // todo: i think there is an issue with dates that have no default value they should be empty in the UI but they are 1/1/1970
 
 export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];

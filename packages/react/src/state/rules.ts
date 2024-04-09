@@ -1,6 +1,6 @@
-import { ConfirmationRuleReturn, ConfirmationRuleReturnContent, ConfirmationRuleReturnMessage, ConfirmationRuleReturnUri, FormRule, Nullable } from '../models';
+import { ConfirmationRuleReturn, ConfirmationRuleReturnContent, ConfirmationRuleReturnMessage, ConfirmationRuleReturnUri, FormResponse, FormRule, Nullable } from '../models';
 
-export function findRule<TReturn>(rules: Nullable<FormRule<TReturn>[]>, formValues: Record<string, any>) {
+export function findRule<TReturn>(rules: Nullable<FormRule<TReturn>[]>, formValues: FormResponse) {
     return rules?.find(rule => {
         if (!rule.when) {
             return true;

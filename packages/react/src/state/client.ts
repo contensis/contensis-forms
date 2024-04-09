@@ -30,26 +30,6 @@ import {
 
 // todo: update these methods when forms delivery api is done
 
-async function authenticate(alias: string) {
-    try {
-        const response = await fetch(`https://cms-${alias}.cloud.contensis.com/authenticate/connect/token`, {
-            "headers": {
-                "content-type": "application/x-www-form-urlencoded;charset=UTF-8"
-            },
-            "body": "scope=Security_Administrator%20ContentType_Read%20ContentType_Write%20ContentType_Delete%20Entry_Read%20Entry_Write%20Entry_Delete%20Project_Read%20Project_Write%20Project_Delete%20Workflow_Administrator&grant_type=client_credentials&client_id=dbff74a6-d327-4c1a-992b-a7315fb1ca19&client_secret=0b5f524afdb842738fd3379b603e41f7-287dd32557454776a2a6627d9458b202-e876b6bc20a541d6b0a30fbf57786f88",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "omit"
-        });
-
-        const result: { access_token: string } = await response.json();
-        return result;
-    } catch {
-
-    }
-
-}
-
 type RequestOptions = {
     url: string;
     alias: string;
@@ -102,7 +82,7 @@ async function request<T>(options: RequestOptions) {
     }
 }
 
-export async function getForm(alias: string, projectId: string, formId: string, language: string, versionStatus: 'latest' | 'published'): Promise<ContentType> {
+export async function getForm(alias: string, projectId: string, formId: string, language: string, versionStatus: 'latest' | 'published') {
     const managementContentType = await request<ManagementContentType>({
         url: `/api/management/projects/${projectId}/contenttypes/${formId}?versionStatus=${versionStatus}`,
         alias,
@@ -113,8 +93,11 @@ export async function getForm(alias: string, projectId: string, formId: string, 
 }
 
 
-export async function saveForm(alias: string, projectId: string, formId: string, language: string, formResponse: FormResponse) {
-    // todo: you can't save if the version status is latest
+export async function saveForm(alias: string, projectId: string, formId: string, language: string, versionStatus: Nullable<'latest' | 'published'>, formResponse: FormResponse) {
+    if (versionStatus === 'latest') {
+        return formResponse;
+    }
+
     formResponse = {
         ...formResponse,
         sys: {
@@ -124,7 +107,7 @@ export async function saveForm(alias: string, projectId: string, formId: string,
         }
     };
 
-    return await request({
+    return await request<FormResponse>({
         url: `/api/management/projects/${projectId}/entries`,
         alias,
         method: 'POST',
