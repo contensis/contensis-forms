@@ -1,13 +1,13 @@
 import { MutableRefObject, ReactNode } from 'react';
 import { ConfirmationRuleReturn, ContentType, Field, FieldLabelPosition, FieldSize, FormRule, Group, StringOrCanvas } from './api';
-import { FormsClient } from './client';
 import { Dictionary, Nullable } from './shared';
 
 export type FormProps = {
-    client: FormsClient;
-    formId?: string;
-    form?: ContentType;
+    alias: string;
+    projectId: string;
+    formId: string;
     language: string;
+    versionStatus?: Nullable<'latest' | 'published'>;
     loading?: ReactNode;
     disabled?: ReactNode;
     error?: (error: unknown) => ReactNode;
@@ -22,7 +22,6 @@ export type FormConfirmationProps = {
 export type FormState = {
     htmlId: string;
     form: Nullable<ContentType>;
-    language: string;
     steps: string[];
     value: Dictionary<any>;
     defaultValue: Dictionary<any>;
@@ -40,7 +39,7 @@ export type FormPage = {
     pageNo: number;
     id: string;
     title: string;
-    description: StringOrCanvas;
+    description: Nullable<StringOrCanvas>;
     pageTitle: string;
     showErrors: boolean;
     invalid: boolean;

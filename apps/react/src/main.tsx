@@ -2,17 +2,14 @@ import { Form } from '@contensis/forms';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './ContensisForm.css';
-import { createClient } from './client';
 
-try {    
+try {
     const url = new URL(import.meta.url);
+    // todo: should these be specified on the element?
     const alias = url.searchParams.get('alias');
     const projectId = url.searchParams.get('projectId');
-    const clientId = url.searchParams.get('clientId');
-    const clientSecret = url.searchParams.get('clientSecret');
     const versionStatus = url.searchParams.get('versionStatus');
-    if (alias && projectId && clientId && clientSecret) {
-        const client = createClient({ alias, projectId, clientId, clientSecret, versionStatus });
+    if (alias && projectId) {
         const elements = [...document.querySelectorAll('[data-contensis-form-id]')];
         elements.forEach(element => {
             const formId = element.getAttribute('data-contensis-form-id');
@@ -20,9 +17,11 @@ try {
             ReactDOM.createRoot(element).render(
                 <React.StrictMode>
                     <Form
+                        alias={alias}
+                        projectId={projectId}
                         formId={formId || ''}
                         language={language || ''}
-                        client={client}
+                        versionStatus={versionStatus as any}
                     />
                 </React.StrictMode>
             );

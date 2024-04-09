@@ -1,14 +1,13 @@
 import { ContentType, Dictionary, FormFieldState, FormPage, FormState, Nullable, ValidationError } from '../models';
 import { getFieldEditorType, getOptions } from './fields';
 import { format, localisations } from './localisations';
-import { DEFAULT_LANGUAGE, getCurrentPageId, getIsFirstPage, getIsLastPage, getLocalisedValue, getPageCount, reduceFields, getPages, PageDefinition } from './shared';
+import { PageDefinition, getCurrentPageId, getIsFirstPage, getIsLastPage, getPageCount, getPages, reduceFields } from './shared';
 import { CreateStoreArgs } from './store';
 
 export function createSelectors({ select, selectById }: CreateStoreArgs<FormState>) {
     const selectState = select(s => s);
     const selectHtmlId = select(s => s.htmlId);
     const selectForm = select(s => s.form);
-    const selectLanguage = select(s => s.language || DEFAULT_LANGUAGE);
     const selectPageCount = select(selectForm, getPageCount);
     const selectValue = select(s => s.value);
     const selectDefaultValue = select(s => s.defaultValue);
@@ -23,11 +22,11 @@ export function createSelectors({ select, selectById }: CreateStoreArgs<FormStat
     const selectSteps = select(s => s.steps);
 
     const selectCurrentPageId = select(selectSteps, getCurrentPageId);
-    const selectLocalizations = select(selectForm, selectLanguage, getLocalizations);
+    const selectLocalizations = select(selectForm, getLocalizations);
     const selectIsFirstPage = select(selectForm, selectCurrentPageId, getIsFirstPage);
     const selectIsLastPage = select(selectForm, selectCurrentPageId, getIsLastPage);
-    const selectPagesRecord = select(selectForm, selectLanguage, getPagesRecord);
-    const selectFieldsRecord = select(selectHtmlId, selectForm, selectLanguage, getFieldsRecord);
+    const selectPagesRecord = select(selectForm, getPagesRecord);
+    const selectFieldsRecord = select(selectHtmlId, selectForm, getFieldsRecord);
     const selectFocussedFieldsRecord = select(selectForm, selectFocussed, getFocussedFieldsRecord);
     const selectPage = (id: string) => select(
         selectById(selectPagesRecord, id),
@@ -82,25 +81,25 @@ function getErrorMessages(errors: Nullable<Dictionary<ValidationError>>) {
     return !!errors ? Object.values(errors).map((e) => e.message) : null;
 }
 
-function getPagesRecord(form: Nullable<ContentType>, language: string) {
-    return getPages(form, language).reduce((prev, page) => ({ ...prev, [page.id]: page }), {} as Dictionary<PageDefinition>);
+function getPagesRecord(form: Nullable<ContentType>) {
+    return getPages(form).reduce((prev, page) => ({ ...prev, [page.id]: page }), {} as Dictionary<PageDefinition>);
 }
 
-function getFieldsRecord(formHtmlId: string, form: Nullable<ContentType>, language: string) {
+function getFieldsRecord(formHtmlId: string, form: Nullable<ContentType>) {
     return reduceFields(form, (field) => {
         const { id, name, editor } = field;
         const htmlId = `${formHtmlId}-${id}`;
         return {
             htmlId,
             id,
-            label: getLocalisedValue(name, language, id),
-            instructions: getLocalisedValue(editor?.instructions, language, null),
+            label: name,
+            instructions: editor?.instructions,
             autoFill: field?.editor?.properties?.autoFill,
             size: field?.editor?.properties?.size,
             labelPosition: field?.editor?.properties?.labelPosition,
             cssClass: field?.editor?.properties?.cssClass,
             hidden: !!field?.editor?.properties?.hidden,
-            options: getOptions(field, language, htmlId),
+            options: getOptions(field, htmlId),
             field,
             editor: getFieldEditorType(field)
         }
@@ -178,12 +177,12 @@ function getField(
 }
 
 
-function getLocalizations(form: Nullable<ContentType>, language: string) {
+function getLocalizations(form: Nullable<ContentType>) {
     const l = form?.properties?.localizations;
     return {
-        next: getLocalisedValue(l?.next, language, localisations.nextButtonText),
-        previous: getLocalisedValue(l?.previous, language, localisations.previousButtonText),
-        submit: getLocalisedValue(l?.submit, language, localisations.submitButtonText),
-        errorSummaryTitle: getLocalisedValue(l?.errorSummaryTitle, language, localisations.errorSummaryTitle),
+        next: l?.next || localisations.nextButtonText,
+        previous: l?.previous || localisations.previousButtonText,
+        submit: l?.submit || localisations.submitButtonText,
+        errorSummaryTitle: l?.errorSummaryTitle || localisations.errorSummaryTitle,
     };
 }

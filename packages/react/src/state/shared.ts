@@ -1,17 +1,5 @@
 import { ContentType, Dictionary, Field, FormPage, Nullable } from '../models';
 
-export const DEFAULT_LANGUAGE = 'en-GB';
-
-export function getLocalisedValue<T>(localisedValue: Nullable<Dictionary<T>>, language: string, defaultValue: T) {
-    if (typeof localisedValue?.[language] !== 'undefined') {
-        return localisedValue[language];
-    }
-    if (typeof localisedValue?.[DEFAULT_LANGUAGE] !== 'undefined') {
-        return localisedValue[DEFAULT_LANGUAGE];
-    }
-    return defaultValue;
-}
-
 export function reduceFields<T>(form: Nullable<ContentType>, fn: (field: Field, index: number) => T): Dictionary<T> {
     return form?.fields
         ? form.fields.reduce((prev, field, index) => ({ ...prev, [field.id]: fn(field, index) }), {} as Dictionary<T>)
@@ -20,7 +8,7 @@ export function reduceFields<T>(form: Nullable<ContentType>, fn: (field: Field, 
 
 export type PageDefinition = Pick<FormPage, 'pageNo' | 'id' | 'title' | 'description' | 'group' | 'fields'>;
 
-export function getPages(form: Nullable<ContentType>, language: string): PageDefinition[] {
+export function getPages(form: Nullable<ContentType>): PageDefinition[] {
     if (!form) {
         return [];
     }
@@ -30,8 +18,8 @@ export function getPages(form: Nullable<ContentType>, language: string): PageDef
             return {
                 pageNo: index + 1,
                 id,
-                title: getLocalisedValue(name, language, id),
-                description: getLocalisedValue(description, language, ''),
+                title: name,
+                description,
                 group: {
                     id,
                     name,
@@ -46,8 +34,8 @@ export function getPages(form: Nullable<ContentType>, language: string): PageDef
             return {
                 pageNo: index + 1,
                 id,
-                title: getLocalisedValue(name, language, id),
-                description: getLocalisedValue(description, language, ''),
+                title: name,
+                description,
                 group,
                 fields: (form?.fields || []).filter(field => field.groupId === id).map(field => field.id)
             }
@@ -147,7 +135,7 @@ export function moveToNextPage(form: Nullable<ContentType>, currentSteps: string
     };
 }
 
-export function moveToPreviousPage(form: Nullable<ContentType>, currentSteps: string[]): MoveToPage {
+export function moveToPreviousPage(_form: Nullable<ContentType>, currentSteps: string[]): MoveToPage {
     const steps = (currentSteps.length > 1)
         ? currentSteps.slice(0, -1)
         : currentSteps;

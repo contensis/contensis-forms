@@ -1,73 +1,67 @@
-import { Dictionary, Nullable } from './shared';
+import { Nullable } from './shared';
 
+// todo: add time zone information to dat and date-time fields
+
+// todo: investigate captcha v3
+
+// todo: don;t allow saving when using the latest version of a form
+
+// todo: i think there is an issue with dates that have no default value they should be empty in the UI but they are 1/1/1970
 
 export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
 
 export type ContentType = {
-    defaultLanguage: string;
-    description: Dictionary<string>;
     entryTitleField?: string;
-    entryThumbnailField?: string;
-    entryDescriptionField?: string;
-    enabled: boolean;
+    enabled: boolean; // todo: is this needed?
     id: string;
-    includeInDelivery?: boolean;
-    name: Dictionary<string>;
-    projectId: string;
-    supportedLanguages?: string[];
-    version?: VersionInfo;
-    workflowId?: string;
-    previewUrl?: string;
-    dataFormat: FormDataFormat;
-    uuid?: string;
     fields: Field[];
     groups?: Group[];
-    properties?: FormProperties;
+    properties?: Nullable<FormProperties>;
 };
 
 export type Field = {
     id: string;
-    name: Dictionary<string>;
+    name: string;
     dataType: FieldDataType;
     dataFormat?: FieldDataFormat;
-    description: Dictionary<string>;
-    default?: Dictionary<any>;
+    description?: Nullable<string>;
+    default?: any;
     groupId: string;
-    validations?: FieldValidations;
-    editor?: FieldEditor;
+    validations?: Nullable<FieldValidations>;
+    editor?: Nullable<FieldEditor>;
 };
 
 export type Group = {
     id: string;
-    name: Dictionary<string>;
-    description?: Dictionary<StringOrCanvas>;
+    name: string;
+    description?: Nullable<StringOrCanvas>;
 };
 
 export type VersionInfo = {
-    createdBy?: Nullable<string>;
-    created?: Nullable<string>;
-    modifiedBy?: Nullable<string>;
-    modified?: Nullable<string>;
-    publishedBy?: Nullable<string>;
-    published?: Nullable<string>;
-    versionNo?: Nullable<string>;
-    workflowStatus?: Nullable<string>;
-    deletedBy?: Nullable<string>;
-    deleted?: Nullable<string>;
-    archivedBy?: Nullable<string>;
-    archived?: Nullable<string>;
+    // createdBy?: Nullable<string>;
+    // created?: Nullable<string>;
+    // modifiedBy?: Nullable<string>;
+    // modified?: Nullable<string>;
+    // publishedBy?: Nullable<string>;
+    // published?: Nullable<string>;
+    // versionNo?: Nullable<string>;
+    // workflowStatus?: Nullable<string>;
+    // deletedBy?: Nullable<string>;
+    // deleted?: Nullable<string>;
+    // archivedBy?: Nullable<string>;
+    // archived?: Nullable<string>;
 };
 
 export type FormDataFormat = 'form';
 
 export type FormProperties = {
     captcha: boolean;
-    localizations: {
-        submit: Dictionary<string>;
-        next: Dictionary<string>;
-        previous: Dictionary<string>;
-        errorSummaryTitle: Dictionary<string>;
-    };
+    localizations: Nullable<{
+        submit?: Nullable<string>;
+        next?: Nullable<string>;
+        previous?: Nullable<string>;
+        errorSummaryTitle?: Nullable<string>;
+    }>;
     confirmationRules: FormRule<ConfirmationRuleReturn>[];
     autoSaveProgress: boolean;
     mode?: 'survey';
@@ -97,32 +91,32 @@ export type FieldEditorId =
     | 'multiline'
     | 'text';
 
-type AllowedValues = { 
-    values?: Dictionary<string>[]; 
-    keyValues?: Dictionary<Dictionary<string>>[];
+export type AllowedValues = {
+    values?: Nullable<string[]>;
+    keyValues?: Nullable<{ key: string, value: string }[]>; // todo: this defintion needs checking when the api is ready
 };
 
 
 export type FieldValidations = {
-    required?: FieldValidation;
-    min?: FieldValidationWithValue<number>;
-    max?: FieldValidationWithValue<number>;
-    minLength?: FieldValidationWithValue<number>;
-    maxLength?: FieldValidationWithValue<number>;
-    minCount?: FieldValidationWithValue<number>;
-    maxCount?: FieldValidationWithValue<number>;
-    regex?: FieldValidation & { pattern: string };
-    allowedValues?: FieldValidation & AllowedValues;
-    pastDateTime?: FieldValidation;
-    decimalPlaces?: FieldValidationWithValue<number>;
+    required?: Nullable<FieldValidation>;
+    min?: Nullable<FieldValidationWithValue<number>>;
+    max?: Nullable<FieldValidationWithValue<number>>;
+    minLength?: Nullable<FieldValidationWithValue<number>>;
+    maxLength?: Nullable<FieldValidationWithValue<number>>;
+    minCount?: Nullable<FieldValidationWithValue<number>>;
+    maxCount?: Nullable<FieldValidationWithValue<number>>;
+    regex?: Nullable<FieldValidation & { pattern: string }>;
+    allowedValues?: Nullable<FieldValidation & AllowedValues>;
+    pastDateTime?: Nullable<FieldValidation>;
+    decimalPlaces?: Nullable<FieldValidationWithValue<number>>;
 };
 
-export type FieldValidation = { message?: Dictionary<string> };
+export type FieldValidation = { message?: Nullable<string> };
 export type FieldValidationWithValue<T> = FieldValidation & { value: T };
 
-type FieldEditor = {
+export type FieldEditor = {
     id?: FieldEditorId;
-    instructions?: Dictionary<string>;
+    instructions?: Nullable<string>;
     properties?: FieldEditorProperties;
 };
 
@@ -150,18 +144,25 @@ export type FormRuleWhen = {
 
 export type ConfirmationRuleReturnUri = {
     link: {
-        uri: string | Dictionary<string>;
+        uri: string;
     };
 };
 
 export type ConfirmationRuleReturnMessage = {
-    message: string | Dictionary<string>;
+    message: string;
 };
 
 type Block = import('@contensis/canvas-html').Block;
 
 export type ConfirmationRuleReturnContent = {
-    content: Block[] | Dictionary<Block[]>;
+    content: Block[];
 };
 
 export type ConfirmationRuleReturn = ConfirmationRuleReturnUri | ConfirmationRuleReturnMessage | ConfirmationRuleReturnContent;
+
+
+
+
+
+
+

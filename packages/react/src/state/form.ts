@@ -1,18 +1,17 @@
 import { useMemo } from 'react';
 import { FormProps, FormState } from '../models';
 import { createActions } from './actions';
+import { getForm } from './client';
 import { createSelectors } from './selectors';
-import { DEFAULT_LANGUAGE } from './shared';
 import { createStore } from './store';
 
 export type Form = ReturnType<typeof createForm>;
 
-export function createForm({ formId, form, language, client }: FormProps, htmlId: string) {
+export function createForm({ alias, projectId, formId, language, versionStatus }: FormProps, htmlId: string) {
     return useMemo(() => {
         const initialState: FormState = {
             htmlId: htmlId || '',
             form: null,
-            language: language || DEFAULT_LANGUAGE,
             steps: [],
             value: {},
             defaultValue: {},
@@ -34,13 +33,12 @@ export function createForm({ formId, form, language, client }: FormProps, htmlId
             })
         );
 
-        if (form) {
-            store.setForm(form);
-        } else if (formId && client) {
-            store.setForm(client.forms.get(formId));
+        if (alias && projectId && formId) {
+            // todo: remove as any and hanlde null values
+            store.setForm(getForm(alias, projectId, formId, language || '', versionStatus || 'published') as any);
         }
 
         return store;
-    }, [formId, form, language, htmlId]);
+    }, [alias, projectId, formId, language, htmlId]);
 
 }

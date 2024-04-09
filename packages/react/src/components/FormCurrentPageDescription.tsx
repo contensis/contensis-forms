@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StringOrCanvas } from '../models';
+import { Nullable, StringOrCanvas } from '../models';
 import { useFormSelector } from './FormContext';
 import { createMarkdownRenderer, createSimpleRenderer } from './html';
 
@@ -29,7 +29,7 @@ export function FormCurrentPageDescription() {
         : null;
 }
 
-async function getDescriptionHtml(description: StringOrCanvas) {
+async function getDescriptionHtml(description: Nullable<StringOrCanvas>) {
     if (!description) {
         return '';
     }

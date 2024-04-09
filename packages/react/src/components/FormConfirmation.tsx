@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FormConfirmationProps } from '../models';
-import { getLocalisedValue, isConfirmationRuleReturnContent, isConfirmationRuleReturnMessage, localisations } from '../state';
+import { isConfirmationRuleReturnContent, isConfirmationRuleReturnMessage, localisations } from '../state';
 import { createConfirmationRenderer, createLiquidRenderer, createMarkdownRenderer } from './html';
 
 export function FormConfirmation(props: FormConfirmationProps) {
@@ -32,24 +32,20 @@ export function FormConfirmation(props: FormConfirmationProps) {
         )
 }
 
-async function getConfirmationHtml({ rule, formResponse, language }: FormConfirmationProps) {
+async function getConfirmationHtml({ rule, formResponse }: FormConfirmationProps) {
     if (isConfirmationRuleReturnContent(rule?.return) || isConfirmationRuleReturnMessage(rule?.return)) {
         try {
             const liquidRenderer = await createLiquidRenderer();
             if (isConfirmationRuleReturnContent(rule?.return)) {
                 // render canvas to html then execute liquid
                 const htmlRenderer = await createConfirmationRenderer();
-                const content = Array.isArray(rule.return.content)
-                    ? rule.return.content
-                    : getLocalisedValue(rule.return.content, language, []);
+                const content = rule.return.content;
                 const htmlTemplate = htmlRenderer({ data: content });
                 const html: string = await liquidRenderer.parseAndRender(htmlTemplate, formResponse || {});
                 return html;
             } else {
                 // execute liquid then render markdown 
-                const message = (typeof rule.return.message === 'string')
-                    ? rule.return.message
-                    : getLocalisedValue(rule.return.message, language, '');
+                const message = rule.return.message;
                 const markdown = await liquidRenderer.parseAndRender(message, formResponse || {});
                 const markdownRenderer = await createMarkdownRenderer();
                 return markdownRenderer.render(markdown);

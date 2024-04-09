@@ -1,11 +1,11 @@
 import { ContentType, Dictionary, FormState, Nullable } from '../models';
 import { getDefaultValue, getEmptyFieldValue, getInputValue, getNowDateTime, getProgressExpiry } from './fields';
-import { moveToNextPage, moveToPreviousPage, moveToPage, reduceFields, getFirstPage, getCurrentPageId, getPageFields } from './shared';
+import { getCurrentPageId, getFirstPage, getPageFields, moveToNextPage, moveToPage, moveToPreviousPage, reduceFields } from './shared';
 import { CreateStoreArgs } from './store';
 import { validate } from './validation';
 
-function getDefaultFormValue(form: ContentType, language: string) {
-    return reduceFields(form, field => getDefaultValue(field, language));
+function getDefaultFormValue(form: ContentType) {
+    return reduceFields(form, field => getDefaultValue(field));
 }
 
 function getFormInputValue(form: ContentType, value: Dictionary<any>) {
@@ -73,15 +73,8 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
     const resetProgressInStorage = () => resetProgress(getState());
 
     const getFormResponse = () => {
-        const { value, form, language } = getState();
-        return {
-            ...value,
-            sys: {
-                contentTypeId: form?.id as string,
-                dataFormat: 'form' as const,
-                language
-            }
-        };
+        const { value } = getState();
+        return value;
     };
 
     const getConfirmationRules = () => {
@@ -111,7 +104,7 @@ function currentPageHasErrors(state: FormState) {
 
 function onSetForm(state: FormState, form: ContentType): FormState {
     const firstPageId = getFirstPage(form);
-    const defaultValue = getDefaultFormValue(form, state.language);
+    const defaultValue = getDefaultFormValue(form);
     const emptyValue = getEmptyFormValue(form);
     let value = defaultValue;
 
@@ -133,7 +126,7 @@ function onSetForm(state: FormState, form: ContentType): FormState {
 
     const errors = form?.fields.reduce((prev, f) => ({
         ...prev,
-        [f.id]: validate(value[f.id], f, f.id === form.entryTitleField, state.language)
+        [f.id]: validate(value[f.id], f, f.id === form.entryTitleField)
     }), {} as Dictionary<any>);
 
     addToHistory(firstPageId, 'push');
@@ -141,7 +134,6 @@ function onSetForm(state: FormState, form: ContentType): FormState {
     return {
         htmlId: state.htmlId,
         form,
-        language: state.language,
         steps: [firstPageId || ''],
         value,
         defaultValue,
@@ -157,10 +149,10 @@ function onSetForm(state: FormState, form: ContentType): FormState {
 }
 
 function onSetValue(state: FormState, fieldId: string, fieldValue: any): FormState {
-    const { form, errors, value, language } = state;
+    const { form, errors, value } = state;
     const field = form?.fields.find(f => f.id === fieldId);
     if (field) {
-        const fieldErrors = validate(fieldValue, field, field.id === form?.entryTitleField, language);
+        const fieldErrors = validate(fieldValue, field, field.id === form?.entryTitleField);
         state = {
             ...state,
             value: {

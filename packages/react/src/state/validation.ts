@@ -1,7 +1,6 @@
 import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldValidation, FieldValidationWithValue, FieldValidations, Nullable, ValidationError } from '../models';
-import { getNowDateTime, getNowTime } from './fields';
+import { getNowDateTime } from './fields';
 import { localisations } from './localisations';
-import { getLocalisedValue } from './shared';
 import { memo } from './store';
 
 type Validator<TError extends Dictionary<any>> = (value: any) => null | TError;
@@ -22,20 +21,20 @@ const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {
     url: localisations.fieldDataFormatUrlValidationMessage
 };
 
-const createFieldValidator = memo((field: Field, isEntryTitle: boolean, language: string) => {
+const createFieldValidator = memo((field: Field, isEntryTitle: boolean) => {
     const validators: [string, Validator<Dictionary<any>>, message: string][] = [
         ['dataType', createDataTypeValidator(field.dataType), DATA_TYPE_MESSAGES[field.dataType]],
         ['dataFormat', createDataFormatValidator(field.dataFormat), field.dataFormat ? DATA_FORMAT_MESSAGES[field.dataFormat] : ''],
-        ['required', createRequiredValidator(field.validations?.required, isEntryTitle), getLocalisedValue(field.validations?.required?.message, language, localisations.fieldRequiredValidationMessage)],
-        ['min', createMinValidator(field.validations?.min), getLocalisedValue(field.validations?.min?.message, language, localisations.fieldMinValidationMessage)],
-        ['max', createMaxValidator(field.validations?.max), getLocalisedValue(field.validations?.max?.message, language, localisations.fieldMaxValidationMessage)],
-        ['minLength', createMinLengthValidator(field.validations?.minLength), getLocalisedValue(field.validations?.minLength?.message, language, localisations.fieldMinLengthValidationMessage)],
-        ['maxLength', createMaxLengthValidator(field.validations?.maxLength), getLocalisedValue(field.validations?.maxLength?.message, language, localisations.fieldMaxLengthValidationMessage)],
-        ['minCount', createMinCountValidator(field.validations?.minCount), getLocalisedValue(field.validations?.minCount?.message, language, localisations.fieldMinCountValidationMessage)],
-        ['maxCount', createMaxCountValidator(field.validations?.maxCount), getLocalisedValue(field.validations?.maxCount?.message, language, localisations.fieldMaxCountValidationMessage)],
-        ['regex', createRegExValidator(field.validations?.regex), getLocalisedValue(field.validations?.regex?.message, language, localisations.fieldRegExValidationMessage)],
-        ['allowedValues', createAllowedValuesValidator(field.validations?.allowedValues, language), getLocalisedValue(field.validations?.allowedValues?.message, language, localisations.fieldAllowedValuesValidationMessage)],
-        ['pastDateTime', createPastDateTimeValidator(field.dataType, field.validations?.pastDateTime), getLocalisedValue(field.validations?.pastDateTime?.message, language, localisations.fieldPastDateTimeValidationMessage)]
+        ['required', createRequiredValidator(field.validations?.required, isEntryTitle), field.validations?.required?.message || localisations.fieldRequiredValidationMessage],
+        ['min', createMinValidator(field.validations?.min), field.validations?.min?.message || localisations.fieldMinValidationMessage],
+        ['max', createMaxValidator(field.validations?.max), field.validations?.max?.message || localisations.fieldMaxValidationMessage],
+        ['minLength', createMinLengthValidator(field.validations?.minLength), field.validations?.minLength?.message || localisations.fieldMinLengthValidationMessage],
+        ['maxLength', createMaxLengthValidator(field.validations?.maxLength), field.validations?.maxLength?.message || localisations.fieldMaxLengthValidationMessage],
+        ['minCount', createMinCountValidator(field.validations?.minCount), field.validations?.minCount?.message || localisations.fieldMinCountValidationMessage],
+        ['maxCount', createMaxCountValidator(field.validations?.maxCount), field.validations?.maxCount?.message || localisations.fieldMaxCountValidationMessage],
+        ['regex', createRegExValidator(field.validations?.regex), field.validations?.regex?.message || localisations.fieldRegExValidationMessage],
+        ['allowedValues', createAllowedValuesValidator(field.validations?.allowedValues), field.validations?.allowedValues?.message || localisations.fieldAllowedValuesValidationMessage],
+        ['pastDateTime', createPastDateTimeValidator(field.dataType, field.validations?.pastDateTime), field.validations?.pastDateTime?.message || localisations.fieldPastDateTimeValidationMessage]
     ];
 
     return function (value: any) {
@@ -144,7 +143,7 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
 }
 
 function createRequiredValidator(required: Nullable<FieldValidation>, isEntryTitle: boolean): Validator<{}> {
-    // todo: entry title field is automatically required in the API but should it be?????
+    // todo: entry title field is automatically required in the API but should it be?????    
     return !!(isEntryTitle || required)
         ? fromValid(
             (value: any) => !isEmpty(value),
@@ -206,7 +205,7 @@ function createMaxCountValidator(maxCount: Nullable<FieldValidationWithValue<num
         ? fromValid(
             (value: any) => {
                 const length = hasLength(value) ? value.length : 0;
-                return (value.length <= maxCount.value);
+                return (length <= maxCount.value);
             },
             () => ({ maxCount: maxCount?.value })
         )
@@ -234,13 +233,10 @@ function createRegExValidator(regex: Nullable<FieldValidation & { pattern: strin
     );
 }
 
-function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['allowedValues']>, language: string): Validator<{ allowed: string[] }> {
+function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['allowedValues']>): Validator<{ allowed: string[] }> {
     const allowed = allowedValues?.keyValues
-        ? allowedValues.keyValues.map(dict => {
-            const key = Object.keys(dict)[0];
-            return key;
-        })
-        : allowedValues?.values?.map(value => getLocalisedValue(value, language, ''));
+        ? allowedValues.keyValues.map(value => value.key)
+        : allowedValues?.values;
     if (!allowed?.length) {
         return noopValidator;
     }
@@ -274,7 +270,7 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
         : noopValidator;
 }
 
-export function validate(value: any, field: Field, isEntryTitle: boolean, language: string) {
-    const validator = createFieldValidator(field, isEntryTitle, language);
+export function validate(value: any, field: Field, isEntryTitle: boolean) {
+    const validator = createFieldValidator(field, isEntryTitle);
     return validator(value);
 }

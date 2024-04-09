@@ -64,7 +64,6 @@ export function inputAttrs(field: FormField, fieldType: string, settings?: Input
 }
 
 export function textValue(value: any): string {
-    const t = typeof value;
     if (typeof value === 'string') {
         return value;
     }

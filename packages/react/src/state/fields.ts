@@ -1,6 +1,5 @@
 import { localeInfo } from '../dates';
 import { Field, FieldDataFormat, FieldDataType, FieldEditorId, FieldEditorType, FormFieldOption, Nullable } from '../models';
-import { getLocalisedValue } from './shared';
 
 const DEFAULT_DATA_TYPE_EDITOR_TYPES: Record<FieldDataType, FieldEditorType> = {
     boolean: 'checkbox',
@@ -56,27 +55,23 @@ export function getEmptyFieldValue(field: Field) {
     return EMPTY_FIELD_VALUES[field.dataType];
 }
 
-export function getOptions(field: Field, language: string, htmlId: string): undefined | FormFieldOption[] {
+export function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[] {
     const pairs = field?.validations?.allowedValues?.keyValues
-        ? field?.validations?.allowedValues?.keyValues?.map(dict => {
-            const key = Object.keys(dict)[0];
-            return { key, value: dict[key] };
-        })
-        : field?.validations?.allowedValues?.values?.map(value => ({ key: '', value }));
+        ? field?.validations?.allowedValues?.keyValues?.map(value => value)
+        : field?.validations?.allowedValues?.values?.map(value => ({ key: value, value }));
 
     return pairs?.map((pair, index) => {
-        const value = getLocalisedValue(pair.value, language, '');
         return {
             key: `${index}`,
             htmlId: `${htmlId}-option-${index}`,
-            value: pair.key || value,
-            label: value,
+            value: pair.key,
+            label: pair.value,
         };
     });
 }
 
-export function getDefaultValue(field: Field, language: string) {
-    const defaultValue = getLocalisedValue(field?.default, language, getEmptyFieldValue(field));
+export function getDefaultValue(field: Field) {
+    const defaultValue = typeof field?.default ! == 'undefined' ? field.default : getEmptyFieldValue(field);
     if ((field.dataType === 'dateTime') && (defaultValue === 'now()')) {
         return getNowDateTime();
     } else if ((field.dataType === 'string') && (field.dataFormat === 'time') && (defaultValue === 'now()')) {
