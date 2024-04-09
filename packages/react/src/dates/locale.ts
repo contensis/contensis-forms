@@ -15,7 +15,7 @@ function isDatePartKey(key: string): key is DatePartKey {
     return (key === 'day') || (key === 'month') || (key === 'year');
 }
 
-function isDate(d: any): d is Date {
+function isDate(d: unknown): d is Date {
     return Object.prototype.toString.call(d) === '[object Date]';
 }
 

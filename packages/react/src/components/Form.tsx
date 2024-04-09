@@ -15,7 +15,6 @@ export function Form(props: FormProps) {
         const canSave = form.submit();
         e.preventDefault();
         if (canSave) {
-            // const client = props.client;
             const formResponse = form.getFormResponse();
             // todo: add hook to manipulate forms response            
             const confirmationRules = form.getConfirmationRules();

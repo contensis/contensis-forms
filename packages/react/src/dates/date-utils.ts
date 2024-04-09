@@ -45,7 +45,7 @@ function padYear(year: number) {
         : year;
 }
 
-function toNumber(n: any): null | number {
+function toNumber(n: unknown): null | number {
     if (typeof n === 'number') {
         return n;
     }

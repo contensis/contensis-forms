@@ -48,7 +48,7 @@ export type FormPage = {
     group: Group;
 };
 
-export type FormFieldOption = { key: string, htmlId: string; value: any; label: any; };
+export type FormFieldOption = { key: string, htmlId: string; value: string; label: string; };
 
 export type FormFieldState = {
     htmlId: string;
