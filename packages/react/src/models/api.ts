@@ -10,8 +10,9 @@ export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
 
 export type FormResponse = Dictionary<unknown>;
 
+// todo: should we change this to Form????
 export type ContentType = {
-    entryTitleField?: string;
+    entryTitleField?: string; // todo: this is only needed for validation of entry title if entry title is not required this can be removed
     enabled: boolean; // todo: is this needed? or does the api return an error
     id: string;
     fields: Field[];

@@ -6,7 +6,7 @@ import { FormContents } from './FormContents';
 import { useFormSelector } from './FormContext';
 import { FormProgress } from './FormProgress';
 
-type FormLoaderProps = FormProps & { onSubmit: FormEventHandler<HTMLFormElement> };
+type FormLoaderProps = FormProps & { onFormSubmit: FormEventHandler<HTMLFormElement> };
 
 export function FormLoader(props: FormLoaderProps) {
     const isLoading = useFormSelector(f => f.selectIsLoading);
@@ -26,7 +26,7 @@ export function FormLoader(props: FormLoaderProps) {
     }
 
     return (
-        <form noValidate={true} onSubmit={props.onSubmit}>
+        <form noValidate={true} onSubmit={props.onFormSubmit}>
             <FormProgress />
             <FormContents />
             <FormButtons />

@@ -1,4 +1,4 @@
-import { ContentType, Dictionary, Field, FormPage, Nullable } from '../models';
+import { ContentType, Dictionary, Field, FormPage, Group, Nullable } from '../models';
 
 export function reduceFields<T>(form: Nullable<ContentType>, fn: (field: Field, index: number) => T): Dictionary<T> {
     return form?.fields
@@ -7,6 +7,16 @@ export function reduceFields<T>(form: Nullable<ContentType>, fn: (field: Field, 
 }
 
 export type PageDefinition = Pick<FormPage, 'pageNo' | 'id' | 'title' | 'description' | 'group' | 'fields'>;
+
+const DEFAULT_GROUP: Group = {
+    id: '_default_',
+    name: '',
+    description: null
+};
+
+function ensureGroups(form: Nullable<ContentType>): Group[] {
+    return form?.groups?.length ? form.groups : [DEFAULT_GROUP];
+}
 
 export function getPages(form: Nullable<ContentType>): PageDefinition[] {
     if (!form) {
@@ -29,7 +39,7 @@ export function getPages(form: Nullable<ContentType>): PageDefinition[] {
             }
         }) || [];
     } else {
-        return form.groups?.map((group, index) => {
+        return ensureGroups(form).map((group, index) => {
             const { id, name, description } = group;
             return {
                 pageNo: index + 1,
@@ -37,9 +47,9 @@ export function getPages(form: Nullable<ContentType>): PageDefinition[] {
                 title: name,
                 description,
                 group,
-                fields: (form?.fields || []).filter(field => field.groupId === id).map(field => field.id)
-            }
-        }) || [];
+                fields: (form?.fields || []).filter(field => field.groupId === id || (!field.groupId && id === DEFAULT_GROUP.id)).map(field => field.id)
+            };
+        });
     }
 }
 
@@ -49,9 +59,7 @@ function getPageIndex(form: Nullable<ContentType>, pageId: Nullable<string>) {
             ? form.fields.findIndex(field => field.id === pageId)
             : -1;
     } else {
-        return form?.groups
-            ? form.groups.findIndex(group => group.id === pageId)
-            : -1;
+        return ensureGroups(form).findIndex(group => group.id === pageId);
     }
 }
 
@@ -70,7 +78,7 @@ export function getPageFields(form: Nullable<ContentType>, pageId: Nullable<stri
 export function getPageCount(form: Nullable<ContentType>) {
     return (form?.properties?.mode === 'survey')
         ? form?.fields?.length
-        : form?.groups?.length || 0;
+        : ensureGroups(form).length;
 }
 
 export function getIsFirstPage(form: Nullable<ContentType>, pageId: Nullable<string>) {
@@ -87,7 +95,7 @@ export function getIsLastPage(form: Nullable<ContentType>, pageId: Nullable<stri
 function getPageIdAt(form: Nullable<ContentType>, index: number) {
     return (form?.properties?.mode === 'survey')
         ? form?.fields?.[index]?.id || null
-        : form?.groups?.[index]?.id || null;
+        : ensureGroups(form)[index]?.id || null;
 }
 
 export function getCurrentPageId(steps: string[]) {

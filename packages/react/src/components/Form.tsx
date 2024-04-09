@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useId, useState } from 'react';
-import { ConfirmationRuleReturn, FormProps, FormResponse, FormRule, Nullable } from '../models';
+import { ConfirmationRuleReturn, ContentType, FormProps, FormResponse, FormRule, Nullable } from '../models';
 import { createForm, saveForm, findRule, isConfirmationRuleReturnUri } from '../state';
 import { FormConfirmation } from './FormConfirmation';
 import { FormContextProvider } from './FormContext';
@@ -11,29 +11,45 @@ export function Form(props: FormProps) {
     const htmlId = useId();
     const form = createForm(props, htmlId);
 
-    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-        const canSave = form.submit();
+    const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (canSave) {
-            const formResponse = form.getFormResponse();
-            // todo: add hook to manipulate forms response            
-            const confirmationRules = form.getConfirmationRules();
-            // todo: what do we do with captcha????
-            saveForm(props.alias, props.projectId, props.formId, props.language, props.versionStatus, formResponse).then(
-                (result) => {
-                    const rule = findRule(confirmationRules, result);
-                    if (isConfirmationRuleReturnUri(rule?.return)) {
-                        // todo: redirect
-                        console.log('redirect');
-                    } else {
-                        setFormResponse(result);
-                        setConfirmationRule(rule);
-                        form.resetProgress();
-                    }
-                },
-                () => { /* todo: handle save error */ }
-            );
+        const canSave = form.submit();
+        if (!canSave) {
+            return;
         }
+
+        const formContentType = form.getForm();
+        const originalFormResponse = form.getFormResponse();
+
+        const formResponse = props?.onSubmit ? props.onSubmit(originalFormResponse, formContentType as ContentType) : originalFormResponse;
+        if (!formResponse) {
+            return;
+        }
+
+        const confirmationRules = form.getConfirmationRules();
+        // todo: what do we do with captcha????
+        try {
+            const result = await saveForm(props.alias, props.projectId, props.formId, props.language, props.versionStatus, formResponse);            
+            const success = props?.onSubmitSuccess ? props.onSubmitSuccess(result) : true;
+            if (success) {
+                const rule = findRule(confirmationRules, result);
+                // todo: what do we do when there is no confirmation rule??
+                if (isConfirmationRuleReturnUri(rule?.return)) {
+                    // todo: redirect
+                    console.log('redirect');
+                } else {
+                    setFormResponse(result);
+                    setConfirmationRule(rule);
+                    form.resetProgress();
+                }
+            }
+        } catch (e) {
+            const handleError = props?.onSubmitError ? props.onSubmitError(e) : true;
+            if (handleError) {
+                // todo: handle save error
+            }
+        }
+
     };
 
     useEffect(() => {
@@ -51,7 +67,7 @@ export function Form(props: FormProps) {
     return (
         <div className="form">
             <FormContextProvider form={form}>
-                {!confirmationRule ? (<FormLoader {...props} onSubmit={onSubmit} />) : null}
+                {!confirmationRule ? (<FormLoader {...props} onFormSubmit={onFormSubmit} />) : null}
                 {(!!confirmationRule && !!formResponse) ? (<FormConfirmation rule={confirmationRule} formResponse={formResponse} language={props.language} />) : null}
             </FormContextProvider>
         </div>

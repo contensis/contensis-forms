@@ -73,6 +73,11 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
 
     const resetProgressInStorage = () => resetProgress(getState());
 
+    const getForm = () => {
+        const { form } = getState();
+        return form;
+    };
+
     const getFormResponse = () => {
         const { value } = getState();
         return value;
@@ -88,6 +93,7 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         setValue,
         setInputValue,
         setFocussed,
+        getForm,
         getFormResponse,
         getConfirmationRules,
         submit,

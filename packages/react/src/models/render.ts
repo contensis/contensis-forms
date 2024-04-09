@@ -11,6 +11,9 @@ export type FormProps = {
     loading?: ReactNode;
     disabled?: ReactNode;
     error?: (error: unknown) => ReactNode;
+    onSubmit?: (response: FormResponse, form: ContentType) => false | FormResponse;
+    onSubmitSuccess?: (response: FormResponse) => boolean;
+    onSubmitError?: (error: unknown) => boolean;
 };
 
 export type FormConfirmationProps = {
