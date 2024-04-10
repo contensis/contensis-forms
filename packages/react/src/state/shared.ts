@@ -1,6 +1,6 @@
-import { ContentType, Dictionary, Field, FormPage, Group, Nullable } from '../models';
+import { FormContentType, Dictionary, Field, FormPage, Group, Nullable } from '../models';
 
-export function reduceFields<T>(form: Nullable<ContentType>, fn: (field: Field, index: number) => T): Dictionary<T> {
+export function reduceFields<T>(form: Nullable<FormContentType>, fn: (field: Field, index: number) => T): Dictionary<T> {
     return form?.fields
         ? form.fields.reduce((prev, field, index) => ({ ...prev, [field.id]: fn(field, index) }), {} as Dictionary<T>)
         : {}
@@ -14,11 +14,11 @@ const DEFAULT_GROUP: Group = {
     description: null
 };
 
-function ensureGroups(form: Nullable<ContentType>): Group[] {
+function ensureGroups(form: Nullable<FormContentType>): Group[] {
     return form?.groups?.length ? form.groups : [DEFAULT_GROUP];
 }
 
-export function getPages(form: Nullable<ContentType>): PageDefinition[] {
+export function getPages(form: Nullable<FormContentType>): PageDefinition[] {
     if (!form) {
         return [];
     }
@@ -53,7 +53,7 @@ export function getPages(form: Nullable<ContentType>): PageDefinition[] {
     }
 }
 
-function getPageIndex(form: Nullable<ContentType>, pageId: Nullable<string>) {
+function getPageIndex(form: Nullable<FormContentType>, pageId: Nullable<string>) {
     if (form?.properties?.mode === 'survey') {
         return form?.fields
             ? form.fields.findIndex(field => field.id === pageId)
@@ -63,7 +63,7 @@ function getPageIndex(form: Nullable<ContentType>, pageId: Nullable<string>) {
     }
 }
 
-export function getPageFields(form: Nullable<ContentType>, pageId: Nullable<string>) {
+export function getPageFields(form: Nullable<FormContentType>, pageId: Nullable<string>) {
     if (form?.properties?.mode === 'survey') {
         return form?.fields
             ? form.fields.filter(field => field.id === pageId).map(field => field.id)
@@ -75,24 +75,24 @@ export function getPageFields(form: Nullable<ContentType>, pageId: Nullable<stri
     }
 }
 
-export function getPageCount(form: Nullable<ContentType>) {
+export function getPageCount(form: Nullable<FormContentType>) {
     return (form?.properties?.mode === 'survey')
         ? form?.fields?.length
         : ensureGroups(form).length;
 }
 
-export function getIsFirstPage(form: Nullable<ContentType>, pageId: Nullable<string>) {
+export function getIsFirstPage(form: Nullable<FormContentType>, pageId: Nullable<string>) {
     const pageIndex = getPageIndex(form, pageId);
     return (pageIndex === 0);
 }
 
-export function getIsLastPage(form: Nullable<ContentType>, pageId: Nullable<string>) {
+export function getIsLastPage(form: Nullable<FormContentType>, pageId: Nullable<string>) {
     const pageIndex = getPageIndex(form, pageId);
     const pageCount = getPageCount(form);
     return !!pageCount && (pageIndex === (pageCount - 1));
 }
 
-function getPageIdAt(form: Nullable<ContentType>, index: number) {
+function getPageIdAt(form: Nullable<FormContentType>, index: number) {
     return (form?.properties?.mode === 'survey')
         ? form?.fields?.[index]?.id || null
         : ensureGroups(form)[index]?.id || null;
@@ -102,7 +102,7 @@ export function getCurrentPageId(steps: string[]) {
     return !!steps?.length ? steps[steps.length - 1] : null;
 }
 
-export function getFirstPage(form: Nullable<ContentType>) {
+export function getFirstPage(form: Nullable<FormContentType>) {
     return getPageIdAt(form, 0);
 }
 
@@ -113,7 +113,7 @@ type MoveToPage = {
     direction: 'forward' | 'backward' | 'same';
 };
 
-export function moveToNextPage(form: Nullable<ContentType>, currentSteps: string[]): MoveToPage {
+export function moveToNextPage(form: Nullable<FormContentType>, currentSteps: string[]): MoveToPage {
     const currentPageId = getCurrentPageId(currentSteps);
     if (!currentPageId) {
         return {
@@ -143,7 +143,7 @@ export function moveToNextPage(form: Nullable<ContentType>, currentSteps: string
     };
 }
 
-export function moveToPreviousPage(_form: Nullable<ContentType>, currentSteps: string[]): MoveToPage {
+export function moveToPreviousPage(_form: Nullable<FormContentType>, currentSteps: string[]): MoveToPage {
     const steps = (currentSteps.length > 1)
         ? currentSteps.slice(0, -1)
         : currentSteps;
@@ -155,7 +155,7 @@ export function moveToPreviousPage(_form: Nullable<ContentType>, currentSteps: s
     };
 }
 
-export function moveToPage(form: Nullable<ContentType>, currentSteps: string[], pageId: string): MoveToPage {
+export function moveToPage(form: Nullable<FormContentType>, currentSteps: string[], pageId: string): MoveToPage {
     const pageIndex = getPageIndex(form, pageId);
     if (pageIndex < 0) {
         return {

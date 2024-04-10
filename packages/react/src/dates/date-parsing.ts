@@ -5,39 +5,39 @@ const ISO_REG_EX = /^([0-9]{4})-([0-1][0-9])(?:-([0-3][0-9]))?(?:[T ]?([0-2][0-9
 
 const SHORT_DATE_REG_EX = /^(\d{1,2})(\/|\-|\.)(\d{1,2})(\/|\-|\.)(\d{2,4})$/
 
-export function parseDate(date: string) {
+export function parseDate(date: string, includeTimeZoneOffset: boolean) {
     if (!date) {
         return date;
     }
-    let d = parseIso(date);
+    let d = parseIso(date, includeTimeZoneOffset);
     if (d) {
         return d.date;
     }
-    d = parseShortDate(date);
+    d = parseShortDate(date, includeTimeZoneOffset);
     if (d) {
         return d.date;
     }
-    d = localeInfo().formatters.reduce((prev, formatter) => prev || parseDateFromFormatter(date, formatter), undefined as undefined | DateValidation);
+    d = localeInfo().formatters.reduce((prev, formatter) => prev || parseDateFromFormatter(date, formatter, includeTimeZoneOffset), undefined as undefined | DateValidation);
     if (d) {
         return d.date;
     }
     return INVALID_DATE;
 }
 
-function parseIso(date: string) {
+function parseIso(date: string, includeTimeZoneOffset: boolean) {
     let match = date.match(ISO_REG_EX);
     if (match) {
         const year = match[1];
         const month = match[2];
         const day = match[3];
-        return validateDateParts({ year, month, day });
+        return validateDateParts({ year, month, day }, includeTimeZoneOffset);
     }
 }
 
-function parseShortDate(date: string) {
+function parseShortDate(date: string, includeTimeZoneOffset: boolean) {
     let match = date.match(SHORT_DATE_REG_EX);
     if (match) {
         const dateParts = localeInfo().shortDateMatchToParts([match[1], match[3], match[5]]);
-        return validateDateParts(dateParts);
+        return validateDateParts(dateParts, includeTimeZoneOffset);
     }
 }

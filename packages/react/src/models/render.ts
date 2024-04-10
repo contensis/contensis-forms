@@ -1,5 +1,5 @@
 import { MutableRefObject, ReactNode } from 'react';
-import { ConfirmationRuleReturn, ContentType, Field, FieldLabelPosition, FieldSize, FormResponse, FormRule, Group, StringOrCanvas } from './api';
+import { ConfirmationRuleReturn, FormContentType, Field, FieldLabelPosition, FieldSize, FormResponse, FormRule, Group, StringOrCanvas } from './api';
 import { Dictionary, Nullable } from './shared';
 
 export type FormProps = {
@@ -11,7 +11,7 @@ export type FormProps = {
     loading?: ReactNode;
     disabled?: ReactNode;
     error?: (error: unknown) => ReactNode;
-    onSubmit?: (response: FormResponse, form: ContentType) => false | FormResponse;
+    onSubmit?: (response: FormResponse, form: FormContentType) => false | FormResponse;
     onSubmitSuccess?: (response: FormResponse) => boolean;
     onSubmitError?: (error: unknown) => boolean;
 };
@@ -24,7 +24,7 @@ export type FormConfirmationProps = {
 
 export type FormState = {
     htmlId: string;
-    form: Nullable<ContentType>;
+    form: Nullable<FormContentType>;
     steps: string[];
     value: Dictionary<unknown>;
     defaultValue: Dictionary<unknown>;

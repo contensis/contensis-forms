@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useId, useState } from 'react';
-import { ConfirmationRuleReturn, ContentType, FormProps, FormResponse, FormRule, Nullable } from '../models';
+import { ConfirmationRuleReturn, FormContentType, FormProps, FormResponse, FormRule, Nullable } from '../models';
 import { createForm, saveForm, findRule, isConfirmationRuleReturnUri } from '../state';
 import { FormConfirmation } from './FormConfirmation';
 import { FormContextProvider } from './FormContext';
@@ -9,11 +9,14 @@ export function Form(props: FormProps) {
     const [confirmationRule, setConfirmationRule] = useState<Nullable<FormRule<ConfirmationRuleReturn>>>(null);
     const [formResponse, setFormResponse] = useState<Nullable<FormResponse>>(null);
     const htmlId = useId();
-    const form = createForm(props, htmlId);
+    const form = createForm(props, htmlId); 
+    // todo: do we need a hook to populate form values??
+    // it could then be used to populate fields before the form is shown
 
     const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const canSave = form.submit();
+        // todo: hook for on next page???
         if (!canSave) {
             return;
         }
@@ -21,7 +24,7 @@ export function Form(props: FormProps) {
         const formContentType = form.getForm();
         const originalFormResponse = form.getFormResponse();
 
-        const formResponse = props?.onSubmit ? props.onSubmit(originalFormResponse, formContentType as ContentType) : originalFormResponse;
+        const formResponse = props?.onSubmit ? props.onSubmit(originalFormResponse, formContentType as FormContentType) : originalFormResponse;
         if (!formResponse) {
             return;
         }

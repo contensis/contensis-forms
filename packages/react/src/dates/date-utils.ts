@@ -1,4 +1,3 @@
-import { Nullable } from '../models';
 
 export type DateParts = {
     year?: string;
@@ -9,7 +8,7 @@ export type DateParts = {
 export type DatePartKey = keyof DateParts;
 
 export type DateValidation = {
-    date: Nullable<string>;
+    date: null | string;
     invalid?: DatePartKey[];
 };
 
@@ -23,7 +22,7 @@ export type DateTimeParts = DateParts & TimeParts;
 export type DateTimePartKey = keyof DateTimeParts;
 
 export type DateTimeValidation = {
-    datetime: Nullable<string>;
+    datetime: null | string;
     invalid?: DateTimePartKey[];
 };
 
@@ -68,7 +67,7 @@ function isWithinRange(n: null | number, min: number, max: number): n is number 
 export const INVALID_DATE = 'Invalid date';
 export const INVALID_TIME = 'Invalid time';
 
-export function validateDateTimeParts(parts: DateTimeParts): DateTimeValidation {
+export function validateDateTimeParts(parts: DateTimeParts, includeTimeZoneOffset: boolean): DateTimeValidation {
     if (!parts?.year && !parts?.month && !parts?.day && !parts?.hour && !parts?.minute) {
         return { datetime: null };
     }
@@ -109,11 +108,11 @@ export function validateDateTimeParts(parts: DateTimeParts): DateTimeValidation 
         };
     }
     return {
-        datetime: `${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T${pad(hour as number)}:${pad(minute as number)}`
+        datetime: withTimeZoneOffset(`${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T${pad(hour as number)}:${pad(minute as number)}`, includeTimeZoneOffset)
     };
 }
 
-export function validateDateParts(parts: DateParts): DateValidation {
+export function validateDateParts(parts: DateParts, includeTimeZoneOffset: boolean): DateValidation {
     if (!parts?.year && !parts?.month && !parts?.day) {
         return { date: null };
     }
@@ -146,7 +145,7 @@ export function validateDateParts(parts: DateParts): DateValidation {
         };
     }
     return {
-        date: `${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T00:00`
+        date: withTimeZoneOffset(`${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T00:00`, includeTimeZoneOffset)
     };
 }
 
@@ -154,4 +153,21 @@ function daysInMonth(year: number, month: number): number {
     const date = new Date(year, month - 1, 1);
     date.setDate(0);
     return date.getDate();
+}
+
+
+export function withTimeZoneOffset(local: string, includeTimeZoneOffset: boolean) {
+    if (!includeTimeZoneOffset) {
+        return local;
+    }
+    const dt = new Date(local);
+    const offset = minsToOffset(dt.getTimezoneOffset())
+    return `${local}${offset}`;
+}
+
+function minsToOffset(totalMins: number) {
+    const hours = Math.floor(Math.abs(totalMins / 60));
+    const mins = Math.abs(totalMins % 60);
+    const sign = totalMins > 0 ? '-' : '+';
+    return `${sign}${pad(hours)}${pad(mins)}`;
 }

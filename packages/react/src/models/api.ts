@@ -1,17 +1,24 @@
 import { Dictionary, Nullable } from './shared';
 
-// todo: add time zone information to dat and date-time fields
-
 // todo: investigate captcha v3
 
-// todo: i think there is an issue with dates that have no default value they should be empty in the UI but they are 1/1/1970
+// todo: considerations
+// localise name / messages etc in the UI
+// are we having labels for fields or just using names
+// add time zone property to UI
+// add all form properties to the UI:
+// captcha
+// localizations
+// confirmationRules
+// autoSaveProgress
+// mode
+
 
 export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
 
 export type FormResponse = Dictionary<unknown>;
 
-// todo: should we change this to Form????
-export type ContentType = {
+export type FormContentType = {
     entryTitleField?: string; // todo: this is only needed for validation of entry title if entry title is not required this can be removed
     enabled: boolean; // todo: is this needed? or does the api return an error
     id: string;
@@ -36,21 +43,6 @@ export type Group = {
     id: string;
     name: string;
     description?: Nullable<StringOrCanvas>;
-};
-
-export type VersionInfo = {
-    // createdBy?: Nullable<string>;
-    // created?: Nullable<string>;
-    // modifiedBy?: Nullable<string>;
-    // modified?: Nullable<string>;
-    // publishedBy?: Nullable<string>;
-    // published?: Nullable<string>;
-    // versionNo?: Nullable<string>;
-    // workflowStatus?: Nullable<string>;
-    // deletedBy?: Nullable<string>;
-    // deleted?: Nullable<string>;
-    // archivedBy?: Nullable<string>;
-    // archived?: Nullable<string>;
 };
 
 export type FormDataFormat = 'form';
@@ -130,6 +122,7 @@ type FieldEditorProperties = {
     labelPosition?: FieldLabelPosition;
     cssClass?: string;
     hidden?: boolean;
+    includeTimeZoneOffset?: boolean; // todo: where does this come from?
 };
 
 

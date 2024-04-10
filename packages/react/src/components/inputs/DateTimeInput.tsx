@@ -8,7 +8,7 @@ export function DateTimeInput({ id }: FormInputProps) {
     const field = useFormField(id);
 
     const onChange = ($event: ChangeEvent<HTMLInputElement>) => {
-        const date = parseDateTime($event.target.value);
+        const date = parseDateTime($event.target.value, !!field.field.editor?.properties?.includeTimeZoneOffset);
         field.onChange($event.target.value, date);
     };  
 

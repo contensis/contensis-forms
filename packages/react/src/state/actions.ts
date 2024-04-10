@@ -1,18 +1,18 @@
-import { ContentType, Dictionary, FormState, Nullable, ValidationError } from '../models';
+import { FormContentType, Dictionary, FormState, Nullable, ValidationError } from '../models';
 import { getDefaultValue, getEmptyFieldValue, getInputValue, getNowDateTime, getProgressExpiry } from './fields';
 import { getCurrentPageId, getFirstPage, getPageFields, moveToNextPage, moveToPage, moveToPreviousPage, reduceFields } from './shared';
 import { CreateStoreArgs } from './store';
 import { validate } from './validation';
 
-function getDefaultFormValue(form: ContentType) {
+function getDefaultFormValue(form: FormContentType) {
     return reduceFields(form, field => getDefaultValue(field));
 }
 
-function getFormInputValue(form: ContentType, value: Dictionary<unknown>) {
+function getFormInputValue(form: FormContentType, value: Dictionary<unknown>) {
     return reduceFields(form, field => getInputValue(field, value?.[field.id]));
 }
 
-function getEmptyFormValue(form: ContentType) {
+function getEmptyFormValue(form: FormContentType) {
     return reduceFields(form, field => getEmptyFieldValue(field));
 }
 
@@ -33,7 +33,7 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
     };
 
     let loadingPromise: null | Promise<void> = null;
-    const setForm = (form: ContentType | Promise<ContentType>) => {
+    const setForm = (form: FormContentType | Promise<FormContentType>) => {
         if (isPromise(form)) {
             set(state => ({ ...state, loading: true }));
             const p = form.then(
@@ -109,7 +109,7 @@ function currentPageHasErrors(state: FormState) {
     return !!currentPageFieldIds.some(id => !!state.errors[id]);
 }
 
-function onSetForm(state: FormState, form: ContentType): FormState {
+function onSetForm(state: FormState, form: FormContentType): FormState {
     const firstPageId = getFirstPage(form);
     const defaultValue = getDefaultFormValue(form);
     const emptyValue = getEmptyFormValue(form);
@@ -320,11 +320,11 @@ function resetProgress(state: FormState) {
     }
 }
 
-function loadSavedProgress(form: ContentType) {
+function loadSavedProgress(form: FormContentType) {
     if (!!form) {
         const expiry = localStorage.getItem(`contensis-form-${form.id}-expiry`);
         const jsonValue = localStorage.getItem(`contensis-form-${form.id}-value`);
-        const d = getNowDateTime();
+        const d = getNowDateTime(false);
         if (expiry && jsonValue && (d < expiry)) {
             try {
                 const value = JSON.parse(jsonValue);

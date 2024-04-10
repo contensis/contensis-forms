@@ -1,5 +1,4 @@
 import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldValidation, FieldValidationWithValue, FieldValidations, Nullable, ValidationError } from '../models';
-import { getNowDateTime } from './fields';
 import { localisations } from './localisations';
 import { memo } from './store';
 
@@ -119,6 +118,8 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
             if (isEmpty(value) || !dataFormat) {
                 return true;
             }
+            // todo: these validations seem a bit crazy are there simpler / better regexs
+            // ie. email -> [any string]@[any string].[somehting with 2 or more chars]
             switch (dataFormat) {
                 case 'email': {
                     const emailRegex = new RegExp("^(([^<>()\\[\\]\\.,;:\\s@\\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$", 'i')
@@ -260,8 +261,9 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
                     return true;
                 }
                 if (dataType === 'dateTime') {
-                    const now = getNowDateTime();
-                    return `${value}` <= now;
+                    const now = new Date();
+                    const dt = new Date(`${value}`);
+                    return dt.getTime() <= now.getTime();
                 }
                 return true;
             },

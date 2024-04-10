@@ -25,12 +25,7 @@ try {
                         onSubmit={(response) => ({ ...response, name: 'bob' })}
                         onSubmitSuccess={(response) => {
                             console.log(response);
-                            window.location.assign('http://www.bbc.co.uk');
                             return false;
-                        }}
-                        onSubmitError={(error) => {
-                            console.log(error);
-                            return true;
                         }}
                     />
                 </React.StrictMode>

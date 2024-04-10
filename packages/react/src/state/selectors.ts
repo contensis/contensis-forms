@@ -1,4 +1,4 @@
-import { ContentType, Dictionary, FormFieldState, FormPage, FormState, Nullable, ValidationError } from '../models';
+import { FormContentType, Dictionary, FormFieldState, FormPage, FormState, Nullable, ValidationError } from '../models';
 import { getFieldEditorType, getOptions } from './fields';
 import { format, localisations } from './localisations';
 import { PageDefinition, getCurrentPageId, getIsFirstPage, getIsLastPage, getPageCount, getPages, reduceFields } from './shared';
@@ -81,11 +81,11 @@ function getErrorMessages(errors: Nullable<Dictionary<ValidationError>>) {
     return !!errors ? Object.values(errors).map((e) => e.message) : null;
 }
 
-function getPagesRecord(form: Nullable<ContentType>) {
+function getPagesRecord(form: Nullable<FormContentType>) {
     return getPages(form).reduce((prev, page) => ({ ...prev, [page.id]: page }), {} as Dictionary<PageDefinition>);
 }
 
-function getFieldsRecord(formHtmlId: string, form: Nullable<ContentType>) {
+function getFieldsRecord(formHtmlId: string, form: Nullable<FormContentType>) {
     return reduceFields(form, (field) => {
         const { id, name, editor } = field;
         const htmlId = `${formHtmlId}-${id}`;
@@ -106,7 +106,7 @@ function getFieldsRecord(formHtmlId: string, form: Nullable<ContentType>) {
     });
 }
 
-function getFocussedFieldsRecord(form: Nullable<ContentType>, focussed: Nullable<string>) {
+function getFocussedFieldsRecord(form: Nullable<FormContentType>, focussed: Nullable<string>) {
     return reduceFields(form, (field) => (field.id === focussed));
 }
 
@@ -177,7 +177,7 @@ function getField(
 }
 
 
-function getLocalizations(form: Nullable<ContentType>) {
+function getLocalizations(form: Nullable<FormContentType>) {
     const l = form?.properties?.localizations;
     return {
         next: l?.next || localisations.nextButtonText,

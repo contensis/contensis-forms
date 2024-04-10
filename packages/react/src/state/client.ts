@@ -1,5 +1,5 @@
 import {
-    ContentType,
+    FormContentType,
     Dictionary,
     Field,
     FormProperties,
@@ -116,7 +116,7 @@ export async function saveForm(alias: string, projectId: string, formId: string,
 }
 
 // todo: remove this mapping
-function toContentType(managementContentType: ManagementContentType, language: string): ContentType {
+function toContentType(managementContentType: ManagementContentType, language: string): FormContentType {
     const {
         entryTitleField,
         enabled,
@@ -286,7 +286,10 @@ function toFieldEditor(managementFieldEditor: Nullable<ManagementFieldEditor>, l
     return {
         id,
         instructions: getLocalisedValue(instructions, language, undefined),
-        properties,
+        properties: {
+            ...(properties || {}),
+            includeTimeZoneOffset: true // todo: what is this property?
+        }
     };
 }
 

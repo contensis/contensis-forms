@@ -15,7 +15,7 @@ function isDatePartKey(key: string): key is DatePartKey {
     return (key === 'day') || (key === 'month') || (key === 'year');
 }
 
-function isDate(d: unknown): d is Date {
+export function isDate(d: unknown): d is Date {
     return Object.prototype.toString.call(d) === '[object Date]';
 }
 
@@ -57,10 +57,16 @@ export const localeInfo = (function () {
                 };
             },
             toShortDateString(input: number | string | Date) {
+                if (!input) {
+                    return '';
+                }
                 const dt = isDate(input) ? input : new Date(input);
                 return isValidDate(dt) ? shortDateFormatter.format(dt) : '';
             },
             toShortDateTimeString(input: number | string | Date) {
+                if (!input) {
+                    return '';
+                }
                 const dt = isDate(input) ? input : new Date(input);
                 return isValidDate(dt)
                     ? `${shortDateFormatter.format(dt)} ${shortTimeFormatter.format(dt)}`
@@ -91,7 +97,7 @@ function dateFormatter(dateStyle: 'short' | 'medium' | 'long' | 'full'): DateFor
     return { parts, monthNames };
 }
 
-export function parseDateFromFormatter(input: string, formatter: DateFormatter) {
+export function parseDateFromFormatter(input: string, formatter: DateFormatter, includeTimeZoneOffset: boolean) {
     const pattern = createDateParsePattern(formatter.parts);
     const result: Partial<Record<Intl.DateTimeFormatPartTypes, string>> = {};
     for (const p of pattern) {
@@ -117,7 +123,7 @@ export function parseDateFromFormatter(input: string, formatter: DateFormatter) 
             year: result.year,
             month: `${month}`,
             day: result.day
-        });
+        }, includeTimeZoneOffset);
         if (!dt.invalid) {
             return dt;
         }
@@ -140,7 +146,7 @@ function createDateParsePattern(parts: Intl.DateTimeFormatPart[]) {
     }, [] as Pattern[]);
 }
 
-export function parseDateTimeFromFormatter(input: string, formatter: DateFormatter) {
+export function parseDateTimeFromFormatter(input: string, formatter: DateFormatter, includeTimeZoneOffset: boolean) {
     const pattern = createDateTimeParsePattern(formatter.parts);
     const result: Partial<Record<Intl.DateTimeFormatPartTypes, string>> = {};
     for (const p of pattern) {
@@ -177,7 +183,7 @@ export function parseDateTimeFromFormatter(input: string, formatter: DateFormatt
             day: result.day,
             hour,
             minute
-        });
+        }, includeTimeZoneOffset);
         if (!dt.invalid) {
             return dt;
         }
