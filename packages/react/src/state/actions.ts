@@ -1,4 +1,5 @@
-import { FormContentType, Dictionary, FormState, Nullable, ValidationError } from '../models';
+import { FormContentType, Dictionary, FormState, Nullable, ValidationError, GetFormParams, SaveFormResponseParams } from '../models';
+import { handleError } from './errors';
 import { getDefaultValue, getEmptyFieldValue, getInputValue, getNowDateTime, getProgressExpiry } from './fields';
 import { getCurrentPageId, getFirstPage, getPageFields, moveToNextPage, moveToPage, moveToPreviousPage, reduceFields } from './shared';
 import { CreateStoreArgs } from './store';
@@ -20,6 +21,37 @@ function isPromise(o: unknown): o is Promise<unknown> {
     return typeof (o as any)?.then === 'function';
 }
 
+type ValueOrPromise<T> = T | Promise<T>;
+
+function promiseHandler() {
+    let current: null | Promise<unknown> = null;
+    const handle = async function <T>(valueOrPromise: ValueOrPromise<T>): Promise<{ result?: T, error?: unknown, cancelled: boolean }> {
+        if (isPromise(valueOrPromise)) {
+            current = valueOrPromise;
+            try {
+                const result = await valueOrPromise;
+                if (current === valueOrPromise) {
+                    current = null;
+                    return { result, cancelled: false };
+                } else {
+                    return { result, cancelled: true };
+                }
+            } catch (error) {
+                if (current === valueOrPromise) {
+                    current = null;
+                    return { error, cancelled: false };
+                } else {
+                    return { error, cancelled: true };
+                }
+            }
+        } else {
+            current = null;
+            return { result: valueOrPromise, cancelled: false };
+        }
+    };
+    return { handle };
+}
+
 export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
 
     const setWithProgress = (updates: (state: FormState) => FormState) => {
@@ -32,28 +64,34 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         });
     };
 
-    let loadingPromise: null | Promise<void> = null;
-    const setForm = (form: FormContentType | Promise<FormContentType>) => {
-        if (isPromise(form)) {
-            set(state => ({ ...state, loading: true }));
-            const p = form.then(
-                (form) => {
-                    set((state) => (p === loadingPromise) ? onSetForm(state, form) : state);
-                    loadingPromise = null;
-                },
-                (loadError) => {
-                    console.log(loadError);
-                    set((state) => (p === loadingPromise) ? ({ ...state, loadError, loading: false }) : state);
-                    loadingPromise = null;
-                }
-            );
-            loadingPromise = p;
-        } else {
-            loadingPromise = null;
-            set((state) => onSetForm(state, form));
+    const setFormHandler = promiseHandler();
+    const setForm = async (formPromise: ValueOrPromise<FormContentType>) => {
+        set(state => ({ ...state, loading: true }));
+        const { cancelled, result: form, error: apiError } = await setFormHandler.handle(formPromise);
+        if (!cancelled) {
+            if (form) {
+                set((state) => onSetForm(state, form));
+            } else if (apiError) {
+                handleError(apiError);
+                set((state) => ({ ...state, apiError, loading: false }));
+            }
         }
     };
 
+    const setCaptchaSiteKeyHandler = promiseHandler();
+    const setCaptchaSiteKey = async (captchaSiteKeyPromise: ValueOrPromise<string>) => {
+        const { cancelled, result: captchaSiteKey, error } = await setCaptchaSiteKeyHandler.handle(captchaSiteKeyPromise);
+        if (!cancelled) {
+            if (captchaSiteKey) {
+                set((state) => ({ ...state, captchaSiteKey }));
+            } else if (error) {
+                handleError(error);
+                set((state) => ({ ...state, captchaSiteKey: null }));
+            }
+        }
+    };
+
+    const setApiError = (apiError: unknown) => set((state) => ({ ...state, apiError }));
     const setValue = (fieldId: string, fieldValue: unknown) => setWithProgress((state) => onSetValue(state, fieldId, fieldValue));
     const setInputValue = (fieldId: string, fieldInputValue: unknown) => set((state) => onSetInputValue(state, fieldId, fieldInputValue));
     const setFocussed = (fieldId: string, focussed: boolean) => set(state => onSetFocussed(state, fieldId, focussed));
@@ -88,14 +126,48 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         return form?.properties?.confirmationRules;
     };
 
+    const getCaptchaSiteKey = () => {
+        const { captchaSiteKey } = getState();
+        return captchaSiteKey;
+    };
+
+    const getFormParams = (): GetFormParams => {
+        const { apiUrl, projectId, formId, language, versionStatus } = getState();
+        return {
+            apiUrl,
+            projectId,
+            formId,
+            language,
+            versionStatus
+        };
+    };
+
+    const getSaveFormResponseParams = (): Omit<SaveFormResponseParams, 'formResponse'> => {
+        const { apiUrl, projectId, formId, language, versionStatus, captchaSiteKey, form } = getState();
+        return {
+            apiUrl,
+            projectId,
+            formId,
+            language,
+            versionStatus,
+            captchaSiteKey,
+            useCaptcha: !!form?.properties?.captcha
+        };
+    };
+
     return {
         setForm,
+        setCaptchaSiteKey,
+        setApiError,
         setValue,
         setInputValue,
         setFocussed,
         getForm,
         getFormResponse,
         getConfirmationRules,
+        getCaptchaSiteKey,
+        getFormParams,
+        getSaveFormResponseParams,
         submit,
         previousPage,
         gotoPage,
@@ -139,8 +211,15 @@ function onSetForm(state: FormState, form: FormContentType): FormState {
     addToHistory(firstPageId, 'push');
 
     return {
+        apiUrl: state.apiUrl,
+        projectId: state.projectId,
+        formId: state.formId,
+        language: state.language,
+        versionStatus: state.versionStatus,
+
         htmlId: state.htmlId,
         form,
+        captchaSiteKey: state.captchaSiteKey,
         steps: [firstPageId || ''],
         value,
         defaultValue,
@@ -150,7 +229,7 @@ function onSetForm(state: FormState, form: FormContentType): FormState {
         showErrors: false,
         focussed: null,
         loading: false,
-        loadError: null,
+        apiError: null,
         defaultPageTitle: state.defaultPageTitle
     };
 }

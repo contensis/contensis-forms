@@ -16,10 +16,12 @@ export function createSelectors({ select, selectById }: CreateStoreArgs<FormStat
     const selectErrors = select(s => s.errors);
     const selectFocussed = select(s => s.focussed);
     const selectIsLoading = select(s => !!s.loading);
-    const selectLoadError = select(s => s.loadError);
+    const selectApiError = select(s => s.apiError);
     const selectShowErrors = select(s => s.showErrors);
     const selectDefaultPageTitle = select(s => s.defaultPageTitle);
     const selectSteps = select(s => s.steps);
+    const selectCaptchaSiteKey = select(s => s.captchaSiteKey);
+    const selectVersionStatus = select(s => s.versionStatus);
 
     const selectCurrentPageId = select(selectSteps, getCurrentPageId);
     const selectLocalizations = select(selectForm, getLocalizations);
@@ -69,7 +71,9 @@ export function createSelectors({ select, selectById }: CreateStoreArgs<FormStat
         selectFocussed,
         selectShowErrors,
         selectIsLoading,
-        selectLoadError
+        selectApiError,
+        selectCaptchaSiteKey,
+        selectVersionStatus
     };
 }
 

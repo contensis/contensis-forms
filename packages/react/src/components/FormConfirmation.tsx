@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FormConfirmationProps } from '../models';
-import { isConfirmationRuleReturnContent, isConfirmationRuleReturnMessage, localisations } from '../state';
+import { Rules, localisations } from '../state';
 import { createConfirmationRenderer, createLiquidRenderer, createMarkdownRenderer } from './html';
 
 export function FormConfirmation(props: FormConfirmationProps) {
@@ -33,10 +33,10 @@ export function FormConfirmation(props: FormConfirmationProps) {
 }
 
 async function getConfirmationHtml({ rule, formResponse }: FormConfirmationProps) {
-    if (isConfirmationRuleReturnContent(rule?.return) || isConfirmationRuleReturnMessage(rule?.return)) {
+    if (Rules.isConfirmationRuleReturnContent(rule?.return) || Rules.isConfirmationRuleReturnMessage(rule?.return)) {
         try {
             const liquidRenderer = await createLiquidRenderer();
-            if (isConfirmationRuleReturnContent(rule?.return)) {
+            if (Rules.isConfirmationRuleReturnContent(rule?.return)) {
                 // render canvas to html then execute liquid
                 const htmlRenderer = await createConfirmationRenderer();
                 const content = rule.return.content;

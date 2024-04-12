@@ -1,6 +1,6 @@
 import { ConfirmationRuleReturn, ConfirmationRuleReturnContent, ConfirmationRuleReturnMessage, ConfirmationRuleReturnUri, FormResponse, FormRule, Nullable } from '../models';
 
-export function findRule<TReturn>(rules: Nullable<FormRule<TReturn>[]>, formValues: FormResponse) {
+function findRule<TReturn>(rules: Nullable<FormRule<TReturn>[]>, formValues: FormResponse) {
     return rules?.find(rule => {
         if (!rule.when) {
             return true;
@@ -14,14 +14,21 @@ export function findRule<TReturn>(rules: Nullable<FormRule<TReturn>[]>, formValu
     });
 }
 
-export function isConfirmationRuleReturnUri(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnUri {
+function isConfirmationRuleReturnUri(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnUri {
     return !!(r as ConfirmationRuleReturnUri)?.link?.uri;
 }
 
-export function isConfirmationRuleReturnMessage(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnMessage {
+function isConfirmationRuleReturnMessage(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnMessage {
     return !!(r as ConfirmationRuleReturnMessage)?.message
 }
 
-export function isConfirmationRuleReturnContent(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnContent {
+function isConfirmationRuleReturnContent(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnContent {
     return !!(r as ConfirmationRuleReturnContent)?.content;
 }
+
+export const Rules = {
+    findRule,
+    isConfirmationRuleReturnContent,
+    isConfirmationRuleReturnMessage,
+    isConfirmationRuleReturnUri
+};

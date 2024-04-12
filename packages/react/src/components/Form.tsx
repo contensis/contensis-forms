@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useId, useState } from 'react';
 import { ConfirmationRuleReturn, FormContentType, FormProps, FormResponse, FormRule, Nullable } from '../models';
-import { createForm, saveForm, findRule, isConfirmationRuleReturnUri } from '../state';
+import { createForm, Api, Rules, handleError } from '../state';
 import { FormConfirmation } from './FormConfirmation';
 import { FormContextProvider } from './FormContext';
 import { FormLoader } from './FormLoader';
@@ -9,7 +9,7 @@ export function Form(props: FormProps) {
     const [confirmationRule, setConfirmationRule] = useState<Nullable<FormRule<ConfirmationRuleReturn>>>(null);
     const [formResponse, setFormResponse] = useState<Nullable<FormResponse>>(null);
     const htmlId = useId();
-    const form = createForm(props, htmlId); 
+    const form = createForm(props, htmlId);
     // todo: do we need a hook to populate form values??
     // it could then be used to populate fields before the form is shown
 
@@ -30,14 +30,16 @@ export function Form(props: FormProps) {
         }
 
         const confirmationRules = form.getConfirmationRules();
-        // todo: what do we do with captcha????
         try {
-            const result = await saveForm(props.alias, props.projectId, props.formId, props.language, props.versionStatus, formResponse);            
+            const result = await Api.saveFormResponse({
+                ...form.getSaveFormResponseParams(),
+                formResponse
+            });
             const success = props?.onSubmitSuccess ? props.onSubmitSuccess(result) : true;
             if (success) {
-                const rule = findRule(confirmationRules, result);
+                const rule = Rules.findRule(confirmationRules, result);
                 // todo: what do we do when there is no confirmation rule??
-                if (isConfirmationRuleReturnUri(rule?.return)) {
+                if (Rules.isConfirmationRuleReturnUri(rule?.return)) {
                     // todo: redirect
                     console.log('redirect');
                 } else {
@@ -47,9 +49,10 @@ export function Form(props: FormProps) {
                 }
             }
         } catch (e) {
-            const handleError = props?.onSubmitError ? props.onSubmitError(e) : true;
-            if (handleError) {
-                // todo: handle save error
+            const handleSubmitError = props?.onSubmitError ? props.onSubmitError(e) : true;
+            if (handleSubmitError) {                
+                handleError(e);
+                form.setApiError(e);
             }
         }
 
@@ -71,7 +74,7 @@ export function Form(props: FormProps) {
         <div className="form">
             <FormContextProvider form={form}>
                 {!confirmationRule ? (<FormLoader {...props} onFormSubmit={onFormSubmit} />) : null}
-                {(!!confirmationRule && !!formResponse) ? (<FormConfirmation rule={confirmationRule} formResponse={formResponse} language={props.language} />) : null}
+                {(!!confirmationRule && !!formResponse) ? (<FormConfirmation rule={confirmationRule} formResponse={formResponse} />) : null}
             </FormContextProvider>
         </div>
     );

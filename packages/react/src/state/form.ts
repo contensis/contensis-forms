@@ -1,17 +1,23 @@
 import { useMemo } from 'react';
 import { FormProps, FormState } from '../models';
 import { createActions } from './actions';
-import { getForm } from './client';
+import { Api } from './api';
 import { createSelectors } from './selectors';
 import { createStore } from './store';
 
 export type Form = ReturnType<typeof createForm>;
 
-export function createForm({ alias, projectId, formId, language, versionStatus }: FormProps, htmlId: string) {
+export function createForm({ apiUrl, projectId, formId, language, versionStatus }: FormProps, htmlId: string) {
     return useMemo(() => {
         const initialState: FormState = {
+            apiUrl: apiUrl || '',
+            projectId,
+            formId,
+            language: language || null,
+            versionStatus: versionStatus || 'published',
             htmlId: htmlId || '',
             form: null,
+            captchaSiteKey: null,
             steps: [],
             value: {},
             defaultValue: {},
@@ -21,7 +27,7 @@ export function createForm({ alias, projectId, formId, language, versionStatus }
             showErrors: false,
             focussed: null,
             loading: false,
-            loadError: null,
+            apiError: null,
             defaultPageTitle: document.title
         };
 
@@ -33,11 +39,10 @@ export function createForm({ alias, projectId, formId, language, versionStatus }
             })
         );
 
-        if (alias && projectId && formId) {
-            store.setForm(getForm(alias, projectId, formId, language || '', versionStatus || 'published'));
-        }
+        store.setForm(Api.getForm(store.getFormParams()));
+        store.setCaptchaSiteKey(Api.getCaptchaSiteKey());
 
         return store;
-    }, [alias, projectId, formId, language, htmlId]);
+    }, [apiUrl, projectId, formId, language, htmlId]);
 
 }

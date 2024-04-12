@@ -1,13 +1,8 @@
 import { MutableRefObject, ReactNode } from 'react';
-import { ConfirmationRuleReturn, FormContentType, Field, FieldLabelPosition, FieldSize, FormResponse, FormRule, Group, StringOrCanvas } from './api';
+import { ConfirmationRuleReturn, Field, FieldLabelPosition, FieldSize, FormApiInputParams, FormContentType, FormResponse, FormRule, GetFormParams, Group, StringOrCanvas } from './api';
 import { Dictionary, Nullable } from './shared';
 
-export type FormProps = {
-    alias: string;
-    projectId: string;
-    formId: string;
-    language: string;
-    versionStatus?: Nullable<'latest' | 'published'>;
+export type FormProps = FormApiInputParams & {
     loading?: ReactNode;
     disabled?: ReactNode;
     error?: (error: unknown) => ReactNode;
@@ -17,14 +12,14 @@ export type FormProps = {
 };
 
 export type FormConfirmationProps = {
-    language: string;
     rule: FormRule<ConfirmationRuleReturn>;
     formResponse: FormResponse;
 };
 
-export type FormState = {
+export type FormState = Required<GetFormParams> & {
     htmlId: string;
     form: Nullable<FormContentType>;
+    captchaSiteKey: Nullable<string>;
     steps: string[];
     value: Dictionary<unknown>;
     defaultValue: Dictionary<unknown>;
@@ -34,7 +29,7 @@ export type FormState = {
     showErrors: boolean;
     focussed: Nullable<string>;
     loading: boolean;
-    loadError: unknown;
+    apiError: unknown;
     defaultPageTitle: string;
 };
 

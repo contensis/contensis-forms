@@ -1,6 +1,6 @@
 import { FormEventHandler } from 'react';
 import { FormProps } from '../models';
-import { localisations } from '../state';
+import { localisations, Captcha, isPublishedVersion } from '../state';
 import { FormButtons } from './FormButtons';
 import { FormContents } from './FormContents';
 import { useFormSelector } from './FormContext';
@@ -10,19 +10,25 @@ type FormLoaderProps = FormProps & { onFormSubmit: FormEventHandler<HTMLFormElem
 
 export function FormLoader(props: FormLoaderProps) {
     const isLoading = useFormSelector(f => f.selectIsLoading);
-    const loadError = useFormSelector(f => f.selectLoadError);
+    const apiError = useFormSelector(f => f.selectApiError);
     const formDefinition = useFormSelector(f => f.selectForm);
+    const siteKey = useFormSelector(f => f.selectCaptchaSiteKey);
+    const versionStatus = useFormSelector(f => f.selectVersionStatus);
 
     if (isLoading) {
         return props.loading || (<FormLoading />)
     }
 
-    if (loadError) {
-        return props.error ? props.error(loadError) : (<FormLoadError error={loadError} />);
+    if (apiError) {
+        return props.error ? props.error(apiError) : (<FormLoadError error={apiError} />);
     }
 
     if (!formDefinition?.enabled) {
         return props.disabled || (<FormDisabled />);
+    }
+
+    if (formDefinition?.properties?.captcha && siteKey && isPublishedVersion(versionStatus)) {
+        Captcha.load(siteKey);
     }
 
     return (

@@ -12,8 +12,11 @@ import {
     AllowedValues,
     FormRule,
     ConfirmationRuleReturn,
-    FormResponse
+    FormResponse,
+    GetFormParams,
+    SaveFormResponseParams
 } from '../models';
+import { Captcha } from './captcha';
 import {
     ContentType as ManagementContentType,
     Field as ManagementField,
@@ -27,41 +30,43 @@ import {
     FormRule as ManagementFormRule,
     ConfirmationRuleReturn as ManagementConfirmationRuleReturn
 } from './management-api';
+import { isPublishedVersion } from './version';
 
 // todo: update these methods when forms delivery api is done
 
 type RequestOptions = {
     url: string;
-    alias: string;
+    apiUrl: string;
     method: 'GET' | 'POST';
     body?: any;
+    headers?: null | Record<string, string>;
 };
 
 async function request<T>(options: RequestOptions) {
     try {
 
-        const baseUrl = `https://cms-${options.alias}.cloud.contensis.com`;
-
-        const authResponse = await fetch(`${baseUrl}/authenticate/connect/token`, {
-            "headers": {
-                "content-type": "application/x-www-form-urlencoded;charset=UTF-8"
+        const authResponse = await fetch(`${options.apiUrl}/authenticate/connect/token`, {
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
             },
-            "body": "scope=Security_Administrator%20ContentType_Read%20ContentType_Write%20ContentType_Delete%20Entry_Read%20Entry_Write%20Entry_Delete%20Project_Read%20Project_Write%20Project_Delete%20Workflow_Administrator&grant_type=client_credentials&client_id=dbff74a6-d327-4c1a-992b-a7315fb1ca19&client_secret=0b5f524afdb842738fd3379b603e41f7-287dd32557454776a2a6627d9458b202-e876b6bc20a541d6b0a30fbf57786f88",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "omit"
+            body: 'scope=Security_Administrator%20ContentType_Read%20ContentType_Write%20ContentType_Delete%20Entry_Read%20Entry_Write%20Entry_Delete%20Project_Read%20Project_Write%20Project_Delete%20Workflow_Administrator&grant_type=client_credentials&client_id=dbff74a6-d327-4c1a-992b-a7315fb1ca19&client_secret=0b5f524afdb842738fd3379b603e41f7-287dd32557454776a2a6627d9458b202-e876b6bc20a541d6b0a30fbf57786f88',
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'omit'
         });
 
         const auth: { access_token: string } = await authResponse.json();
 
-        const response = await fetch(`${baseUrl}${options.url}`, {
-            "headers": {
-                "authorization": `Bearer ${auth?.access_token}`,
-                "content-type": "application/json"
+        const response = await fetch(`${options.apiUrl}${options.url}`, {
+            headers: {
+                // todo: when the forms api is done need to get the authorization token for the current user
+                authorization: `Bearer ${auth?.access_token}`,
+                'content-type': 'application/json',
+                ...(options.headers || {})
             },
-            "body": (options.method === 'POST') ? JSON.stringify(options.body) : null,
-            "method": options.method,
-            "mode": "cors"
+            body: (options.method === 'POST') ? JSON.stringify(options.body) : null,
+            method: options.method,
+            mode: 'cors'
         });
 
         if (response.ok) {
@@ -82,21 +87,27 @@ async function request<T>(options: RequestOptions) {
     }
 }
 
-export async function getForm(alias: string, projectId: string, formId: string, language: string, versionStatus: 'latest' | 'published') {
+function getCaptchaSiteKey() {
+    return Promise.resolve('6Leis7YpAAAAACivYTBH2yEFrViWlHDa5CNPT0ML'); // todo: captcha where do we get this from
+}
+
+async function getForm({ apiUrl, projectId, formId, language, versionStatus }: GetFormParams) {
     const managementContentType = await request<ManagementContentType>({
         url: `/api/management/projects/${projectId}/contenttypes/${formId}?versionStatus=${versionStatus}`,
-        alias,
+        apiUrl,
         method: 'GET'
     });
-    const contentType = toContentType(managementContentType, language);
+    const contentType = toContentType(managementContentType, language || DEFAULT_LANGUAGE);
     return contentType;
 }
 
-
-export async function saveForm(alias: string, projectId: string, formId: string, language: string, versionStatus: Nullable<'latest' | 'published'>, formResponse: FormResponse) {
-    if (versionStatus === 'latest') {
+async function saveFormResponse({ apiUrl, projectId, formId, language, versionStatus, formResponse, useCaptcha, captchaSiteKey }: SaveFormResponseParams) {
+    
+    if (!isPublishedVersion(versionStatus)) {
         return formResponse;
     }
+    
+    const captchaResponse = (useCaptcha && captchaSiteKey) ? await Captcha.submit(captchaSiteKey) : '';
 
     formResponse = {
         ...formResponse,
@@ -109,11 +120,37 @@ export async function saveForm(alias: string, projectId: string, formId: string,
 
     return await request<FormResponse>({
         url: `/api/management/projects/${projectId}/entries`,
-        alias,
+        apiUrl,
         method: 'POST',
-        body: formResponse
+        body: formResponse,
+        headers: !!captchaResponse ? {
+            'X-Captcha-Response': captchaResponse
+        } : null
     });
 }
+
+export const Api = {
+    getCaptchaSiteKey,
+    getForm,
+    saveFormResponse
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // todo: remove this mapping
 function toContentType(managementContentType: ManagementContentType, language: string): FormContentType {

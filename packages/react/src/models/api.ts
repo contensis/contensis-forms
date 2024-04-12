@@ -1,7 +1,5 @@
 import { Dictionary, Nullable } from './shared';
 
-// todo: investigate captcha v3
-
 // todo: considerations
 // localise name / messages etc in the UI
 // are we having labels for fields or just using names
@@ -12,6 +10,33 @@ import { Dictionary, Nullable } from './shared';
 // confirmationRules
 // autoSaveProgress
 // mode
+
+export type VersionStatus = null | 'latest' | 'published'
+
+export type FormApiInputParams = {
+    apiUrl?: null | string;
+    projectId: string;
+    formId: string;
+    language?: null | string;
+    versionStatus?: VersionStatus;
+};
+
+
+type ApiParams = {
+    apiUrl: string;
+    projectId: string;
+    formId: string;
+    language: null | string;
+    versionStatus: VersionStatus;
+};
+
+export type GetFormParams = ApiParams;
+
+export type SaveFormResponseParams = ApiParams & {
+    formResponse: FormResponse;
+    useCaptcha: boolean;
+    captchaSiteKey: Nullable<string>;
+};
 
 
 export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
