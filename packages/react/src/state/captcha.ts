@@ -1,12 +1,11 @@
-import { VersionStatus } from '../models';
-import { isPublishedVersion } from './version';
+import { CaptchaSettings, Nullable } from '../models';
 
 const CAPTCHA_LOAD_CALLBACK = 'on_captcha_load';
 
 type LoadCallback = (() => void) & { loaded: Promise<unknown> };
 
 type ReCaptchaAction = {
-    action: 'submit';
+    action: string;
 };
 
 type ReCaptcha = {
@@ -23,13 +22,15 @@ declare global {
 }
 
 function getCaptchaUrl(siteKey: string) {
+    // todo: possibly use alternative recaptcha url
     return `https://www.google.com/recaptcha/api.js?onload=${CAPTCHA_LOAD_CALLBACK}&render=${siteKey}`;
 }
 
-function load(siteKey: string) {
+function load(captcha: Nullable<CaptchaSettings>) {
+    if (captcha?.enabled && captcha?.siteKey) {
         ensureLoadCallback();
 
-        const captchaUrl = getCaptchaUrl(siteKey)
+        const captchaUrl = getCaptchaUrl(captcha.siteKey)
         const head = document.getElementsByTagName('head')[0];
         const scripts = [...head.getElementsByTagName('script')];
         const scriptSrcs = scripts.map(s => s.src);
@@ -40,13 +41,18 @@ function load(siteKey: string) {
             captcha.src = captchaUrl;
             head.appendChild(captcha);
         }
+    }
 }
 
-async function submit(siteKey: string): Promise<string> {
-    load(siteKey);
-    await window[CAPTCHA_LOAD_CALLBACK].loaded;
-    await new Promise(resolve => grecaptcha.ready(() => resolve(true)));
-    return grecaptcha.execute(siteKey, { action: 'submit' });
+async function submit(formId: string, captcha: Nullable<CaptchaSettings>): Promise<string> {
+    if (captcha?.enabled && captcha?.siteKey) {
+        load(captcha);
+        await window[CAPTCHA_LOAD_CALLBACK].loaded;
+        await new Promise(resolve => grecaptcha.ready(() => resolve(true)));
+        return grecaptcha.execute(captcha.siteKey, { action: `${formId}_submit` });
+    } else {
+        return Promise.resolve('')
+    }
 }
 
 function ensureLoadCallback() {

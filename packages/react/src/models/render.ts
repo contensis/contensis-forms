@@ -19,7 +19,6 @@ export type FormConfirmationProps = {
 export type FormState = Required<GetFormParams> & {
     htmlId: string;
     form: Nullable<FormContentType>;
-    captchaSiteKey: Nullable<string>;
     steps: string[];
     value: Dictionary<unknown>;
     defaultValue: Dictionary<unknown>;

@@ -17,7 +17,6 @@ export function createForm({ apiUrl, projectId, formId, language, versionStatus 
             versionStatus: versionStatus || 'published',
             htmlId: htmlId || '',
             form: null,
-            captchaSiteKey: null,
             steps: [],
             value: {},
             defaultValue: {},
@@ -40,7 +39,6 @@ export function createForm({ apiUrl, projectId, formId, language, versionStatus 
         );
 
         store.setForm(Api.getForm(store.getFormParams()));
-        store.setCaptchaSiteKey(Api.getCaptchaSiteKey());
 
         return store;
     }, [apiUrl, projectId, formId, language, htmlId]);

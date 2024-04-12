@@ -12,7 +12,6 @@ export function FormLoader(props: FormLoaderProps) {
     const isLoading = useFormSelector(f => f.selectIsLoading);
     const apiError = useFormSelector(f => f.selectApiError);
     const formDefinition = useFormSelector(f => f.selectForm);
-    const siteKey = useFormSelector(f => f.selectCaptchaSiteKey);
     const versionStatus = useFormSelector(f => f.selectVersionStatus);
 
     if (isLoading) {
@@ -23,12 +22,8 @@ export function FormLoader(props: FormLoaderProps) {
         return props.error ? props.error(apiError) : (<FormLoadError error={apiError} />);
     }
 
-    if (!formDefinition?.enabled) {
-        return props.disabled || (<FormDisabled />);
-    }
-
-    if (formDefinition?.properties?.captcha && siteKey && isPublishedVersion(versionStatus)) {
-        Captcha.load(siteKey);
+    if (formDefinition?.properties?.captcha && isPublishedVersion(versionStatus)) {
+        Captcha.load(formDefinition.properties.captcha);
     }
 
     return (
@@ -49,11 +44,5 @@ function FormLoading() {
 function FormLoadError(props: { error: any }) {
     return (
         <div className="form-load-error">{props?.error?.message || localisations.formLoadError}</div>
-    )
-}
-
-function FormDisabled() {
-    return (
-        <div className="form-disabled">{localisations.formDisabled}</div>
     )
 }

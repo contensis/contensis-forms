@@ -1,34 +1,34 @@
 import {
-    FormContentType,
+    AllowedValues,
+    ConfirmationRuleReturn,
     Dictionary,
     Field,
-    FormProperties,
-    Group,
-    Nullable,
-    FieldValidations,
+    FieldEditor,
     FieldValidation,
     FieldValidationWithValue,
-    FieldEditor,
-    AllowedValues,
-    FormRule,
-    ConfirmationRuleReturn,
+    FieldValidations,
+    FormContentType,
+    FormProperties,
     FormResponse,
+    FormRule,
     GetFormParams,
+    Group,
+    Nullable,
     SaveFormResponseParams
 } from '../models';
 import { Captcha } from './captcha';
 import {
+    AllowedValues as ManagementAllowedValues,
+    ConfirmationRuleReturn as ManagementConfirmationRuleReturn,
     ContentType as ManagementContentType,
     Field as ManagementField,
-    FormProperties as ManagementFormProperties,
-    Group as ManagementGroup,
-    FieldValidations as ManagementFieldValidations,
+    FieldEditor as ManagementFieldEditor,
     FieldValidation as ManagementFieldValidation,
     FieldValidationWithValue as ManagementFieldValidationWithValue,
-    FieldEditor as ManagementFieldEditor,
-    AllowedValues as ManagementAllowedValues,
+    FieldValidations as ManagementFieldValidations,
+    FormProperties as ManagementFormProperties,
     FormRule as ManagementFormRule,
-    ConfirmationRuleReturn as ManagementConfirmationRuleReturn
+    Group as ManagementGroup
 } from './management-api';
 import { isPublishedVersion } from './version';
 
@@ -87,10 +87,6 @@ async function request<T>(options: RequestOptions) {
     }
 }
 
-function getCaptchaSiteKey() {
-    return Promise.resolve('6Leis7YpAAAAACivYTBH2yEFrViWlHDa5CNPT0ML'); // todo: captcha where do we get this from
-}
-
 async function getForm({ apiUrl, projectId, formId, language, versionStatus }: GetFormParams) {
     const managementContentType = await request<ManagementContentType>({
         url: `/api/management/projects/${projectId}/contenttypes/${formId}?versionStatus=${versionStatus}`,
@@ -101,13 +97,13 @@ async function getForm({ apiUrl, projectId, formId, language, versionStatus }: G
     return contentType;
 }
 
-async function saveFormResponse({ apiUrl, projectId, formId, language, versionStatus, formResponse, useCaptcha, captchaSiteKey }: SaveFormResponseParams) {
-    
+async function saveFormResponse({ apiUrl, projectId, formId, language, versionStatus, formResponse, captcha }: SaveFormResponseParams) {
+
     if (!isPublishedVersion(versionStatus)) {
         return formResponse;
     }
-    
-    const captchaResponse = (useCaptcha && captchaSiteKey) ? await Captcha.submit(captchaSiteKey) : '';
+
+    const captchaResponse = await Captcha.submit(formId, captcha);
 
     formResponse = {
         ...formResponse,
@@ -124,13 +120,12 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, versionSt
         method: 'POST',
         body: formResponse,
         headers: !!captchaResponse ? {
-            'X-Captcha-Response': captchaResponse
+            'Recaptha-Token': captchaResponse
         } : null
     });
 }
 
 export const Api = {
-    getCaptchaSiteKey,
     getForm,
     saveFormResponse
 };
@@ -156,7 +151,6 @@ export const Api = {
 function toContentType(managementContentType: ManagementContentType, language: string): FormContentType {
     const {
         entryTitleField,
-        enabled,
         id,
         fields,
         groups,
@@ -164,11 +158,11 @@ function toContentType(managementContentType: ManagementContentType, language: s
     } = managementContentType;
     return {
         entryTitleField,
-        enabled,
         id,
         fields: fields?.map(f => toField(f, language)),
         groups: groups?.map(g => toGroup(g, language)),
-        properties: toFormProperties(properties, language)
+        properties: toFormProperties(properties, language),
+        language
     };
 }
 
@@ -222,7 +216,10 @@ function toFormProperties(managementFormProperties: Nullable<ManagementFormPrope
         mode
     } = managementFormProperties;
     return {
-        captcha,
+        captcha: {
+            enabled: captcha,
+            siteKey: captcha ? '6Leis7YpAAAAACivYTBH2yEFrViWlHDa5CNPT0ML' : null
+        },
         localizations: {
             submit: getLocalisedValue(localizations?.submit, language, undefined),
             next: getLocalisedValue(localizations?.next, language, undefined),
@@ -323,10 +320,7 @@ function toFieldEditor(managementFieldEditor: Nullable<ManagementFieldEditor>, l
     return {
         id,
         instructions: getLocalisedValue(instructions, language, undefined),
-        properties: {
-            ...(properties || {}),
-            includeTimeZoneOffset: true // todo: what is this property?
-        }
+        properties
     };
 }
 

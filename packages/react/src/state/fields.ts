@@ -1,4 +1,4 @@
-import { localeInfo, withTimeZoneOffset } from '../dates';
+import { localeInfo } from '../dates';
 import { Field, FieldDataFormat, FieldDataType, FieldEditorId, FieldEditorType, FormFieldOption, Nullable } from '../models';
 
 const DEFAULT_DATA_TYPE_EDITOR_TYPES: Record<FieldDataType, FieldEditorType> = {
@@ -74,8 +74,8 @@ export function getDefaultValue(field: Field) {
     const defaultValue = typeof field?.default !== 'undefined' ? field.default : getEmptyFieldValue(field);
     if ((field.dataType === 'dateTime') && (defaultValue === 'now()')) {
         return (getFieldEditorType(field) === 'datetime')
-            ? getNowDateTime(!!field.editor?.properties?.includeTimeZoneOffset)
-            : getNowDate(!!field.editor?.properties?.includeTimeZoneOffset);
+            ? getNowDateTime()
+            : getNowDate();
     } else if ((field.dataType === 'string') && (field.dataFormat === 'time') && (defaultValue === 'now()')) {
         return getNowTime();
     }
@@ -94,24 +94,24 @@ export function getInputValue(field: Field, value: unknown) {
     return value;
 }
 
-function getNowDate(includeTimeZoneOffset: boolean) {
-    return toLocalIsoDate(new Date(), includeTimeZoneOffset);
+function getNowDate() {
+    return toLocalIsoDate(new Date());
 }
 
-export function getNowDateTime(includeTimeZoneOffset: boolean) {
-    return toLocalIsoDateTime(new Date(), includeTimeZoneOffset);
+export function getNowDateTime() {
+    return toLocalIsoDateTime(new Date());
 }
 
 function getNowTime() {
     return toLocalIsoTime(new Date());
 }
 
-function toLocalIsoDate(dt: Date, includeTimeZoneOffset: boolean) {
-    return withTimeZoneOffset(`${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T00:00`, includeTimeZoneOffset);
+function toLocalIsoDate(dt: Date) {
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T00:00`;
 }
 
-function toLocalIsoDateTime(dt: Date, includeTimeZoneOffset: boolean) {
-    return withTimeZoneOffset(`${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`, includeTimeZoneOffset);
+function toLocalIsoDateTime(dt: Date) {
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
 }
 
 function toLocalIsoTime(dt: Date) {
@@ -123,7 +123,7 @@ const AUTO_SAVE_PROGRESS_EXPIRY_DAYS = 30;
 export function getProgressExpiry() {
     const d = new Date();
     d.setDate(d.getDate() + AUTO_SAVE_PROGRESS_EXPIRY_DAYS);
-    return toLocalIsoDateTime(d, false);
+    return toLocalIsoDateTime(d);
 }
 
 function pad(n: number, length: number = 2) {

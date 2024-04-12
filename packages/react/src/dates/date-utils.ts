@@ -67,7 +67,7 @@ function isWithinRange(n: null | number, min: number, max: number): n is number 
 export const INVALID_DATE = 'Invalid date';
 export const INVALID_TIME = 'Invalid time';
 
-export function validateDateTimeParts(parts: DateTimeParts, includeTimeZoneOffset: boolean): DateTimeValidation {
+export function validateDateTimeParts(parts: DateTimeParts): DateTimeValidation {
     if (!parts?.year && !parts?.month && !parts?.day && !parts?.hour && !parts?.minute) {
         return { datetime: null };
     }
@@ -108,11 +108,11 @@ export function validateDateTimeParts(parts: DateTimeParts, includeTimeZoneOffse
         };
     }
     return {
-        datetime: withTimeZoneOffset(`${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T${pad(hour as number)}:${pad(minute as number)}`, includeTimeZoneOffset)
+        datetime: `${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T${pad(hour as number)}:${pad(minute as number)}`
     };
 }
 
-export function validateDateParts(parts: DateParts, includeTimeZoneOffset: boolean): DateValidation {
+export function validateDateParts(parts: DateParts): DateValidation {
     if (!parts?.year && !parts?.month && !parts?.day) {
         return { date: null };
     }
@@ -145,7 +145,7 @@ export function validateDateParts(parts: DateParts, includeTimeZoneOffset: boole
         };
     }
     return {
-        date: withTimeZoneOffset(`${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T00:00`, includeTimeZoneOffset)
+        date: `${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T00:00`
     };
 }
 
@@ -153,21 +153,4 @@ function daysInMonth(year: number, month: number): number {
     const date = new Date(year, month - 1, 1);
     date.setDate(0);
     return date.getDate();
-}
-
-
-export function withTimeZoneOffset(local: string, includeTimeZoneOffset: boolean) {
-    if (!includeTimeZoneOffset) {
-        return local;
-    }
-    const dt = new Date(local);
-    const offset = minsToOffset(dt.getTimezoneOffset())
-    return `${local}${offset}`;
-}
-
-function minsToOffset(totalMins: number) {
-    const hours = Math.floor(Math.abs(totalMins / 60));
-    const mins = Math.abs(totalMins % 60);
-    const sign = totalMins > 0 ? '-' : '+';
-    return `${sign}${pad(hours)}${pad(mins)}`;
 }

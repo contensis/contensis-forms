@@ -3,7 +3,6 @@ import { Dictionary, Nullable } from './shared';
 // todo: considerations
 // localise name / messages etc in the UI
 // are we having labels for fields or just using names
-// add time zone property to UI
 // add all form properties to the UI:
 // captcha
 // localizations
@@ -34,8 +33,7 @@ export type GetFormParams = ApiParams;
 
 export type SaveFormResponseParams = ApiParams & {
     formResponse: FormResponse;
-    useCaptcha: boolean;
-    captchaSiteKey: Nullable<string>;
+    captcha: Nullable<CaptchaSettings>;
 };
 
 
@@ -44,12 +42,12 @@ export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
 export type FormResponse = Dictionary<unknown>;
 
 export type FormContentType = {
-    entryTitleField?: string; // todo: this is only needed for validation of entry title if entry title is not required this can be removed
-    enabled: boolean; // todo: is this needed? or does the api return an error
+    entryTitleField?: string; // todo: this is only needed for validation of entry title if entry title is not required this can be removed    
     id: string;
     fields: Field[];
     groups?: Group[];
     properties?: Nullable<FormProperties>;
+    language: string;
 };
 
 export type Field = {
@@ -72,8 +70,13 @@ export type Group = {
 
 export type FormDataFormat = 'form';
 
+export type CaptchaSettings = {
+    enabled: boolean;
+    siteKey?: Nullable<string>;
+};
+
 export type FormProperties = {
-    captcha: boolean;
+    captcha: CaptchaSettings;
     localizations: Nullable<{
         submit?: Nullable<string>;
         next?: Nullable<string>;
@@ -147,7 +150,6 @@ type FieldEditorProperties = {
     labelPosition?: FieldLabelPosition;
     cssClass?: string;
     hidden?: boolean;
-    includeTimeZoneOffset?: boolean; // todo: where does this come from?
 };
 
 
@@ -178,10 +180,3 @@ export type ConfirmationRuleReturnContent = {
 };
 
 export type ConfirmationRuleReturn = ConfirmationRuleReturnUri | ConfirmationRuleReturnMessage | ConfirmationRuleReturnContent;
-
-
-
-
-
-
-

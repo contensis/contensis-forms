@@ -78,19 +78,6 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         }
     };
 
-    const setCaptchaSiteKeyHandler = promiseHandler();
-    const setCaptchaSiteKey = async (captchaSiteKeyPromise: ValueOrPromise<string>) => {
-        const { cancelled, result: captchaSiteKey, error } = await setCaptchaSiteKeyHandler.handle(captchaSiteKeyPromise);
-        if (!cancelled) {
-            if (captchaSiteKey) {
-                set((state) => ({ ...state, captchaSiteKey }));
-            } else if (error) {
-                handleError(error);
-                set((state) => ({ ...state, captchaSiteKey: null }));
-            }
-        }
-    };
-
     const setApiError = (apiError: unknown) => set((state) => ({ ...state, apiError }));
     const setValue = (fieldId: string, fieldValue: unknown) => setWithProgress((state) => onSetValue(state, fieldId, fieldValue));
     const setInputValue = (fieldId: string, fieldInputValue: unknown) => set((state) => onSetInputValue(state, fieldId, fieldInputValue));
@@ -126,11 +113,6 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         return form?.properties?.confirmationRules;
     };
 
-    const getCaptchaSiteKey = () => {
-        const { captchaSiteKey } = getState();
-        return captchaSiteKey;
-    };
-
     const getFormParams = (): GetFormParams => {
         const { apiUrl, projectId, formId, language, versionStatus } = getState();
         return {
@@ -143,21 +125,19 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
     };
 
     const getSaveFormResponseParams = (): Omit<SaveFormResponseParams, 'formResponse'> => {
-        const { apiUrl, projectId, formId, language, versionStatus, captchaSiteKey, form } = getState();
+        const { apiUrl, projectId, formId, language, versionStatus, form } = getState();
         return {
             apiUrl,
             projectId,
             formId,
             language,
             versionStatus,
-            captchaSiteKey,
-            useCaptcha: !!form?.properties?.captcha
+            captcha: form?.properties?.captcha
         };
     };
 
     return {
         setForm,
-        setCaptchaSiteKey,
         setApiError,
         setValue,
         setInputValue,
@@ -165,7 +145,6 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         getForm,
         getFormResponse,
         getConfirmationRules,
-        getCaptchaSiteKey,
         getFormParams,
         getSaveFormResponseParams,
         submit,
@@ -219,7 +198,6 @@ function onSetForm(state: FormState, form: FormContentType): FormState {
 
         htmlId: state.htmlId,
         form,
-        captchaSiteKey: state.captchaSiteKey,
         steps: [firstPageId || ''],
         value,
         defaultValue,
@@ -403,7 +381,7 @@ function loadSavedProgress(form: FormContentType) {
     if (!!form) {
         const expiry = localStorage.getItem(`contensis-form-${form.id}-expiry`);
         const jsonValue = localStorage.getItem(`contensis-form-${form.id}-value`);
-        const d = getNowDateTime(false);
+        const d = getNowDateTime();
         if (expiry && jsonValue && (d < expiry)) {
             try {
                 const value = JSON.parse(jsonValue);
