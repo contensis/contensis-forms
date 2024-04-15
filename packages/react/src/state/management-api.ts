@@ -135,7 +135,8 @@ type FieldEditorProperties = {
     size?: FieldSize;
     labelPosition?: FieldLabelPosition;
     cssClass?: string;
-    hidden?: boolean;
+    hidden?: boolean; // todo: do we still need this??
+    readOnly?: boolean;
 };
 
 

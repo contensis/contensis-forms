@@ -150,6 +150,7 @@ type FieldEditorProperties = {
     labelPosition?: FieldLabelPosition;
     cssClass?: string;
     hidden?: boolean;
+    readOnly?: boolean;
 };
 
 
