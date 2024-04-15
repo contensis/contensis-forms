@@ -245,7 +245,7 @@ function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['
     return fromValid(
         (value: unknown) => {
             console.log(value);
-            if (isNull(value)) {
+            if (isEmpty(value)) {
                 return true;
             }
             return Array.isArray(value) ? value.every(v => allowed.includes(v)) : allowed.includes(value as any);

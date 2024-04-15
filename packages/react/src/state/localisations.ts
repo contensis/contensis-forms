@@ -38,7 +38,9 @@ export const localisations = {
     formLoadError: 'Error loading form',
     formDisabled: 'Form is disabled',
     confirmationMessage: 'Form submitted successfully',
-    errorPageTitle: 'Error'
+    errorPageTitle: 'Error',
+
+    pleaseSelect: 'Please select'
 };
 
 export function format(s: string, ...args: any[]): string {

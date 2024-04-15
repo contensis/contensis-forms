@@ -151,6 +151,7 @@ type FieldEditorProperties = {
     cssClass?: string;
     hidden?: boolean;
     readOnly?: boolean;
+    placeholderText?: string;
 };
 
 

@@ -1,5 +1,6 @@
 import { localeInfo } from '../dates';
 import { Field, FieldDataFormat, FieldDataType, FieldEditorId, FieldEditorType, FormFieldOption, Nullable } from '../models';
+import { localisations } from './localisations';
 
 const DEFAULT_DATA_TYPE_EDITOR_TYPES: Record<FieldDataType, FieldEditorType> = {
     boolean: 'checkbox',
@@ -60,7 +61,8 @@ export function getOptions(field: Field, htmlId: string): undefined | FormFieldO
         ? field?.validations?.allowedValues?.keyValues?.map(value => value)
         : field?.validations?.allowedValues?.values?.map(value => ({ key: value, value }));
 
-    return pairs?.map((pair, index) => {
+    
+    let options = pairs?.map((pair, index) => {
         return {
             key: `${index}`,
             htmlId: `${htmlId}-option-${index}`,
@@ -68,6 +70,23 @@ export function getOptions(field: Field, htmlId: string): undefined | FormFieldO
             label: pair.value,
         };
     });
+
+    if (getFieldEditorType(field) === 'select') {
+        const emptyOption = options?.find(o => o.value === '');
+        if (!emptyOption) {
+            options = [
+                {
+                    key:'',
+                    htmlId: `${htmlId}-option--1`,
+                    value: '',
+                    label: field?.editor?.properties?.placeholderText || localisations.pleaseSelect 
+                },
+                ...(options || [])
+            ];
+        }
+    }
+
+    return options;
 }
 
 export function getDefaultValue(field: Field) {
