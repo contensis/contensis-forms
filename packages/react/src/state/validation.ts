@@ -25,6 +25,7 @@ const createFieldValidator = memo((field: Field, isEntryTitle: boolean) => {
         ['dataType', createDataTypeValidator(field.dataType), DATA_TYPE_MESSAGES[field.dataType]],
         ['dataFormat', createDataFormatValidator(field.dataFormat), field.dataFormat ? DATA_FORMAT_MESSAGES[field.dataFormat] : ''],
         ['required', createRequiredValidator(field.validations?.required, isEntryTitle), field.validations?.required?.message || localisations.fieldRequiredValidationMessage],
+        ['allowedValue', createAllowedValueValidator(field.validations?.allowedValue), field.validations?.allowedValue?.message || localisations.fieldAllowedValueValidationMessage],
         ['min', createMinValidator(field.validations?.min), field.validations?.min?.message || format(localisations.fieldMinValidationMessage, field.validations?.min?.value)],
         ['max', createMaxValidator(field.validations?.max), field.validations?.max?.message || format(localisations.fieldMaxValidationMessage, field.validations?.max?.value)],
         ['minLength', createMinLengthValidator(field.validations?.minLength), field.validations?.minLength?.message || format(localisations.fieldMinLengthValidationMessage, field.validations?.minLength?.value)],
@@ -234,6 +235,23 @@ function createRegExValidator(regex: Nullable<FieldValidation & { pattern: strin
     );
 }
 
+function createAllowedValueValidator(allowedValue: Nullable<FieldValidations['allowedValue']>): Validator<{ allowed: any }> {
+    const allowed = allowedValue?.value;
+    if (isNull(allowed)) {
+        return noopValidator;
+    }
+
+    return fromValid(
+        (value: unknown) => {
+            if (isEmpty(value)) {
+                return true;
+            }
+            return (value === allowed);
+        },
+        () => ({ allowed })
+    );
+}
+
 function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['allowedValues']>): Validator<{ allowed: string[] }> {
     const allowed = allowedValues?.keyValues
         ? allowedValues.keyValues.map(value => value.key)
@@ -244,7 +262,6 @@ function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['
 
     return fromValid(
         (value: unknown) => {
-            console.log(value);
             if (isEmpty(value)) {
                 return true;
             }

@@ -113,6 +113,7 @@ export type FieldValidations = {
     minCount?: FieldValidationWithValue<number>;
     maxCount?: FieldValidationWithValue<number>;
     regex?: FieldValidation & { pattern: string };
+    allowedValue?: FieldValidationWithValue<any>;
     allowedValues?: FieldValidation & AllowedValues;
     pastDateTime?: FieldValidation;
     decimalPlaces?: FieldValidationWithValue<number>;

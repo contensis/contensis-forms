@@ -245,6 +245,7 @@ function toFieldValidations(managementFieldValidations: Nullable<ManagementField
         minCount,
         maxCount,
         regex,
+        allowedValue,
         allowedValues,
         pastDateTime,
         decimalPlaces
@@ -258,6 +259,7 @@ function toFieldValidations(managementFieldValidations: Nullable<ManagementField
         minCount: toFieldValidationWithValue(minCount, language),
         maxCount: toFieldValidationWithValue(maxCount, language),
         regex: toFieldRegexValidation(regex, language),
+        allowedValue: toFieldValidationWithValue(allowedValue, language),
         allowedValues: toFieldAllowedValuesValidation(allowedValues, language),
         pastDateTime: toFieldValidation(pastDateTime, language),
         decimalPlaces: toFieldValidationWithValue(decimalPlaces, language)

@@ -17,6 +17,7 @@ export const localisations = {
     fieldDataFormatUrlValidationMessage: 'Fieldis not a valid URL',
 
     fieldRequiredValidationMessage: 'Field is required',
+    fieldAllowedValueValidationMessage: 'Field is required',
     fieldMinValidationMessage: 'Minimum of {0}',
     fieldMaxValidationMessage: 'Maximum of {0}',
     fieldMinLengthValidationMessage: 'Minimum length of {0}',

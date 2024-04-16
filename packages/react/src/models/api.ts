@@ -128,6 +128,7 @@ export type FieldValidations = {
     minCount?: Nullable<FieldValidationWithValue<number>>;
     maxCount?: Nullable<FieldValidationWithValue<number>>;
     regex?: Nullable<FieldValidation & { pattern: string }>;
+    allowedValue?: Nullable<FieldValidationWithValue<any>>;
     allowedValues?: Nullable<FieldValidation & AllowedValues>;
     pastDateTime?: Nullable<FieldValidation>;
     decimalPlaces?: Nullable<FieldValidationWithValue<number>>;
