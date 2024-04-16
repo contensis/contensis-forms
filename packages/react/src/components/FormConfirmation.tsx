@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FormConfirmationProps } from '../models';
 import { Rules, localisations } from '../state';
-import { createConfirmationRenderer, createLiquidRenderer, createMarkdownRenderer } from './html';
+import { createConfirmationRenderer, createLiquidRenderer } from './html';
 
 export function FormConfirmation(props: FormConfirmationProps) {
     const [confirmation, setConfirmation] = useState<null | string>();
@@ -33,23 +33,15 @@ export function FormConfirmation(props: FormConfirmationProps) {
 }
 
 async function getConfirmationHtml({ rule, formResponse }: FormConfirmationProps) {
-    if (Rules.isConfirmationRuleReturnContent(rule?.return) || Rules.isConfirmationRuleReturnMessage(rule?.return)) {
+    if (Rules.isConfirmationRuleReturnContent(rule?.return)) {
         try {
             const liquidRenderer = await createLiquidRenderer();
-            if (Rules.isConfirmationRuleReturnContent(rule?.return)) {
-                // render canvas to html then execute liquid
-                const htmlRenderer = await createConfirmationRenderer();
-                const content = rule.return.content;
-                const htmlTemplate = htmlRenderer({ data: content });
-                const html: string = await liquidRenderer.parseAndRender(htmlTemplate, formResponse || {});
-                return html;
-            } else {
-                // execute liquid then render markdown 
-                const message = rule.return.message;
-                const markdown = await liquidRenderer.parseAndRender(message, formResponse || {});
-                const markdownRenderer = await createMarkdownRenderer();
-                return markdownRenderer.render(markdown);
-            }
+            // render canvas to html then execute liquid
+            const htmlRenderer = await createConfirmationRenderer();
+            const content = rule.return.content;
+            const htmlTemplate = htmlRenderer({ data: content });
+            const html: string = await liquidRenderer.parseAndRender(htmlTemplate, formResponse || {});
+            return html;
         } catch {
             return null;
         }

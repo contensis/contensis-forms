@@ -124,6 +124,7 @@ export type FieldValidationWithValue<T> = FieldValidation & { value: T };
 export type FieldEditor = {
     id?: FieldEditorId;
     instructions?: Dictionary<string>;
+    label?: Dictionary<string>;
     properties?: FieldEditorProperties;
 };
 
@@ -156,14 +157,10 @@ export type ConfirmationRuleReturnUri = {
     };
 };
 
-export type ConfirmationRuleReturnMessage = {
-    message: Dictionary<string>;
-};
-
 type Block = import('@contensis/canvas-html').Block;
 
 export type ConfirmationRuleReturnContent = {
     content: Dictionary<Block[]>;
 };
 
-export type ConfirmationRuleReturn = ConfirmationRuleReturnUri | ConfirmationRuleReturnMessage | ConfirmationRuleReturnContent;
+export type ConfirmationRuleReturn = ConfirmationRuleReturnUri | ConfirmationRuleReturnContent;

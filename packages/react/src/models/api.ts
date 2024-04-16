@@ -9,6 +9,7 @@ import { Dictionary, Nullable } from './shared';
 // confirmationRules
 // autoSaveProgress
 // mode
+// do form descriptions / field descriptions need canvas?
 
 export type VersionStatus = null | 'latest' | 'published'
 
@@ -138,6 +139,7 @@ export type FieldValidationWithValue<T> = FieldValidation & { value: T };
 export type FieldEditor = {
     id?: FieldEditorId;
     instructions?: Nullable<string>;
+    label?: Nullable<string>;
     properties?: FieldEditorProperties;
 };
 
@@ -171,14 +173,10 @@ export type ConfirmationRuleReturnUri = {
     };
 };
 
-export type ConfirmationRuleReturnMessage = {
-    message: string;
-};
-
 type Block = import('@contensis/canvas-html').Block;
 
 export type ConfirmationRuleReturnContent = {
     content: Block[];
 };
 
-export type ConfirmationRuleReturn = ConfirmationRuleReturnUri | ConfirmationRuleReturnMessage | ConfirmationRuleReturnContent;
+export type ConfirmationRuleReturn = ConfirmationRuleReturnUri | ConfirmationRuleReturnContent;

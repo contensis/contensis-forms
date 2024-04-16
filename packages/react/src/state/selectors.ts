@@ -94,7 +94,7 @@ function getFieldsRecord(formHtmlId: string, form: Nullable<FormContentType>) {
         return {
             htmlId,
             id,
-            label: name,
+            label: editor?.label || name,
             instructions: editor?.instructions,
             autoFill: field?.editor?.properties?.autoFill,
             size: field?.editor?.properties?.size,

@@ -315,11 +315,13 @@ function toFieldEditor(managementFieldEditor: Nullable<ManagementFieldEditor>, l
     const {
         id,
         instructions,
+        label,
         properties,
     } = managementFieldEditor;
     return {
         id,
         instructions: getLocalisedValue(instructions, language, undefined),
+        label: getLocalisedValue(label, language, undefined),
         properties
     };
 }
@@ -333,7 +335,6 @@ function toFormRule(managementRule: ManagementFormRule<ManagementConfirmationRul
             link: r?.link?.uri ? {
                 uri: getLocalisedValue(r?.link?.uri, language, undefined)
             } : (undefined as any),
-            message: r?.message ? getLocalisedValue(r?.message, language, undefined) : (undefined as any),
             content: r?.content ? getLocalisedValue(r?.content, language, undefined) : (undefined as any)
         }
     };
