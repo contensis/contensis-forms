@@ -11,10 +11,12 @@ export function FormCurrentPage() {
     }, [currentPage.pageTitle]);
     return (
         <div className="form-current-page">
-            <div className="form-current-page-title">{currentPage?.title}</div>            
-            <FormCurrentPageDescription />
+            <div className="form-current-page-header">
+                <div className="form-current-page-title">{currentPage?.title}</div>            
+                <FormCurrentPageDescription />
+            </div>
             <FormValidationSummary />
-            <div className="form-current-page-inputs-container">
+            <div className="form-fields-container">
                 {currentPage?.fields ? currentPage.fields.map(id => (<FormFieldContainer key={id} id={id} />)) : null}
             </div>
         </div>

@@ -1,147 +1,298 @@
-.form {
-    --error-color: #d4351c;
-    --focus-color: #fd0;
-    --border-color: #0b0c0c;
+:root {
+  --global-bg-color: #f0f0f0;
+  --global-bg-color-subtle: #fafafa;
+  --global-font-family: system-ui, sans-serif;
+  --global-font-size: 1rem;
+  --global-font-weight-bold: 600;
+  --global-text-color: #444;
+  --global-text-color-subtle: #595959;
 
-    --small-border-width: 2px;
-    --border-width: 3px;
-    --outline-width: 3px;
+  --global-border-color: #949494;
+  --global-border-width: 0.1875em;
+  --global-border-width-small: 2px;
+  --global-border-radius: 0.1875em;
 
-    --margin: 20px;
+  --global-focus-color: #4c9aff;
+  --global-error-color: #d4351c;
+  --global-success-color: ;
+  --global-progress-color: #43d2b9;
+  --global-accent-color: #00857e;
 
-    margin: var(--margin);
-    font-family: arial, sans-serif;
-    font-size: 16px;
+  --global-label-color: var(--global-text-color);
+  --global-label-font-size: 1.1875em; /* 19/16 */
+
+  /* Form */
+  --form-bg-color: var(--global-bg-color-subtle);
+  --form-text-color: ;
+  --form-border-radius: var(--global-border-radius);
+  --form-width: 90ch;
+
+  /* Page header */
+  --form-current-page-title-font-size: 1.5em; /* 24/16 */
+  --form-current-page-description-font-size: 1em; /* 16/16 */
+
+  /* Progress indicator */
+  --form-progress-label-color: var(--global-label-color);
+  --form-progress-label-font-size: var(--global-font-size);
+  --form-progress-bar-bg-color: #fff;
+  --form-progress-value-bg-color: var(--global-progress-color);
+
+  /* Form fields */
+  --form-field-label-color: var(--global-label-color);
+  --form-field-label-font-size: var(--global-label-font-size);
+  --form-field-label-font-weight: bold;
+  --form-field-text-color: var(--global-text-color);
+  --form-field-bg-color: #fff;
+  --form-field-hover-bg-color: #effefc;
+  --form-field-error-bg-color: #f9d7d7;
+  --form-field-border-color: var(--global-border-color);
+  --form-field-border-focus-color: #00857e;
+  --form-field-border-error-color: var(--global-error-color);
+
+  --form-field-border-width: var(--global-border-width-small);
+  --form-field-border-radius: var(--global-border-radius);
+  --form-field-padding: 0.5em;
+  --form-field-border-width-error: 0.25em; /* 4px */
+
+  /* Form field width */
+  --form-field-width-tiny: 3em;
+  --form-field-width-small: 6em;
+  --form-field-width-medium: 9.5em;
+  --form-field-width-large: 12em;
+  --form-field-width-full: 100%;
+
+  /* Form validation */
+
+  /* Form buttons */
+  --form-button-bg-color: ;
+  --form-button-font-size: 1em;
+  --form-button-text-color: var(--global-text-color);
+  --form-button-border-color: var(--global-border-color);
+  --form-button-border-width: var(--global-border-width);
+  --form-button-border-radius: var(--global-border-radius);
 }
 
-.form-loading {
-
-}
-
-.form-load-error {
-    color: var(--error-color);
-}
-
-.form-pager {
-    margin-bottom: var(--margin);
-}
-
-.form-current-page {
-    margin: var(--margin);
-}
-
-.form-current-page-title {
-    font-size: 2em;
-    font-weight: bolder;
-    margin-bottom: var(--margin);
-}
-
-.form-current-page-description {
-    font-size: 1.5em;
-    margin-bottom: var(--margin);
-}
-
-.form-current-page-inputs-container {}
-
-.form-field {
-    margin-bottom: var(--margin);
-}
-
-.form-field-has-error {
-    border-left: var(--border-width) solid var(--error-color);
-    padding-left: 10px;
-}
-
-.form-field-label-left {
-    display: flex;
-}
-
-.form-field-label-top {}
-
-.form-fieldset {
-    border: none;
-    padding: 0;
-    margin-bottom: var(--margin);
-}
-
-.form-fieldset legend {
-    font-weight: bolder;
-    padding: 0;
-}
-
-.form-fieldset-has-error {
-    border-left: var(--border-width) solid var(--error-color);
-    padding-left: 10px;
-}
-
-.form-fieldset-label-left {}
-
-.form-fieldset-label-top {}
-
-
-.form-field-label-container {
-    margin-bottom: 5px;
-}
-
-.form-field-label {
-    font-weight: bolder;
-}
-
-.form-field-input-container {}
-
-.form-field-instructions {}
-
-.form-fieldset-input-container {}
-
-.form-validation-summary {
-    border: var(--border-width) solid var(--error-color);
-    padding: var(--margin);
-    margin-bottom: var(--margin);
-}
-
-.form-validation-summary:focus {
-    outline: var(--outline-width) solid var(--focus-color);
-    outline-offset: 0;
-}
-
-.form-validation-summary-title {
-    margin-bottom: 0px;
-}
-
-.form-validation-summary-body {}
-
-.form-validation-summary-list {
-    color: var(--error-color);
-    font-weight: bolder;
-    list-style-type: none;
-    padding-left: 0;
-    line-height: 2em;
-    margin: var(--margin) 0 0 0;
-}
-
-.form-validation-summary-list a {
-    color: var(--error-color);
-}
-
-.form-field-error {
-    color: var(--error-color);
-    font-weight: bolder;
-    margin: 5px 0 5px 0;
-}
-
-.form-previous-button,
-.form-next-button,
-.form-submit-button {
-    margin: 10px;
-    padding: 10px;
-    border: var(--border-width) solid var(--border-color);
-    font-size: 16px;
+*,
+::after,
+::before {
+  box-sizing: border-box;
 }
 
 .visually-hidden {
-    display: none;
+  display: none;
 }
 
+html {
+  background-color: var(--global-bg-color-subtle);
+  font-family: var(--global-font-family);
+  color: var(--global-text-color);
+  font-size: var(--global-font-size);
+}
+
+form {
+  --outline-width: 3px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--form-bg-color);
+  font-size: var(--global-font-size);
+  border-radius: var(--form-border-radius);
+  margin: 3em auto;
+  inline-size: 100%;
+  max-inline-size: var(--form-width);
+}
+
+.form-load-error {
+  color: var(--global-error-color);
+}
+
+.form-pager {
+  margin-block-end: var(--margin);
+}
+
+/* --------------------------------------------------------*/
+/* Current page                                            */
+/* --------------------------------------------------------*/
+
+.form-current-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+.form-current-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.form-current-page-title {
+  font-size: var(--form-current-page-title-font-size);
+  font-weight: bolder;
+}
+
+.form-current-page-description {
+  font-size: var(--form-current-page-description-font-size);
+
+  & p {
+    margin: 0;
+  }
+}
+
+/* --------------------------------------------------------*/
+/* Field container                                         */
+/* --------------------------------------------------------*/
+
+.form-fields-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+/* --------------------------------------------------------*/
+/* Fieldset                                                */
+/* --------------------------------------------------------*/
+
+.form-fieldset {
+  border: none;
+  padding: 0;
+
+  & legend {
+    padding: 0;
+    font-size: var(--form-field-label-font-size);
+    color: var(--form-field-label-color);
+    font-weight: var(--form-field-label-font-weight);
+  }
+}
+
+.form-fieldset-has-error {
+  border-inline-start: var(--form-field-border-width-error) solid var(--global-error-color);
+  padding-inline-start: 1em;
+}
+
+/* --------------------------------------------------------*/
+/* Field                                                   */
+/* --------------------------------------------------------*/
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+
+.form-field-has-error {
+  border-inline-start: var(--form-field-border-width-error) solid var(--global-error-color);
+  padding-inline-start: 1em;
+}
+
+.form-field-error {
+  color: var(--global-error-color);
+  font-weight: bolder;
+  margin: 5px 0 5px 0;
+}
+
+.form-field-label {
+  font-size: var(--form-field-label-font-size);
+  color: var(--form-field-label-color);
+  font-weight: var(--form-field-label-font-weight);
+}
+
+.form-field-instructions {
+  color: var(--global-text-color-subtle);
+  line-height: 1.5;
+  margin-block-end: 0.5em;
+}
+
+/* --------------------------------------------------------*/
+/* Validation summary                                      */
+/* --------------------------------------------------------*/
+
+.form-validation-summary {
+  border: var(--global-border-width) solid var(--global-error-color);
+  padding: 1em;
+
+  &:focus {
+    outline: var(--outline-width) solid var(--global-focus-color);
+    outline-offset: 0;
+  }
+}
+
+.form-validation-summary-title {
+  margin-block-start: 0;
+}
+
+.form-validation-summary-list {
+  color: var(--global-error-color);
+  font-weight: bolder;
+  list-style-type: none;
+  padding-inline-start: 0;
+  line-height: 2em;
+
+  & a {
+    color: var(--global-error-color);
+  }
+}
+
+/* --------------------------------------------------------*/
+/* Buttons                                                 */
+/* --------------------------------------------------------*/
+
+.form-actions {
+  display: flex;
+  gap: 1em; /* todo: replace with var */
+  justify-content: flex-end;
+  padding-block: 2em; /* todo: replace with var */
+}
+
+.form-button {
+  border: var(--global-border-width) solid var(--global-border-color);
+  border-radius: var(--form-button-border-radius);
+  padding: 0.75em 0.5em;
+  font-size: var(--form-button-font-size);
+  font-weight: var(--global-font-weight-bold);
+
+  &:focus {
+    outline: var(--outline-width) solid var(--global-focus-color);
+    outline-offset: 0;
+  }
+}
+
+.form-button--primary {
+  background-color: #00857e;
+  color: #fff;
+  border-color: #00857e;
+
+  &:hover {
+    background-color: #006C67;
+    border-color: #006C67;
+  }
+
+  &:disabled {
+    background-color: #949494;
+    color: var(--global-text-color);
+    border-color: #949494;
+  }
+}
+
+.form-button--secondary {
+  background-color: #ffffff;
+  color: var(--global-text-color);
+  border-color: #dbdbdb;
+
+  &:hover {
+    background-color: #F0F0F0;
+    border-color: #DBDBDB;
+  }
+
+  &:disabled {
+    background-color: #949494;
+    color: #fff;
+    border-color: #C9C9C9;
+  }
+}
+
+/* --------------------------------------------------------*/
+/* Form standard inputs                                    */
+/* --------------------------------------------------------*/
 .form-text-input,
 .form-email-input,
 .form-tel-input,
@@ -158,10 +309,17 @@
 .form-date-year-input,
 .form-date-hour-input,
 .form-date-minute-input {
-    font-size: 14px;
-    padding: 8px;
-    width: 100%;
-    border: var(--small-border-width) solid var(--border-color);
+  padding: var(--form-field-padding);
+  inline-size: 100%;
+  border: var(--form-field-border-width) solid var(--form-field-border-color);
+  border-radius: var(--form-field-border-radius);
+  min-block-size: 2.5rem;
+  font-size: var(--global-font-size);
+  background-color: var(--form-field-bg-color);
+
+  &:hover {
+    background-color: var(--form-field-hover-bg-color);
+  }
 }
 
 .form-text-input:focus,
@@ -182,9 +340,10 @@
 .form-date-year-input:focus,
 .form-date-hour-input:focus,
 .form-date-minute-input:focus {
-    outline: var(--outline-width) solid var(--focus-color);
-    outline-offset: 0;
-    box-shadow: inset 0 0 0 2px;
+  outline: var(--outline-width) solid var(--global-focus-color);
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 1px var(--form-field-border-focus-color);
+  border-color: var(--form-field-border-focus-color);
 }
 
 .form-text-input.form-text-input-has-error,
@@ -203,67 +362,100 @@
 .form-date-year-input.form-date-year-input-has-error,
 .form-date-hour-input.form-date-hour-input-has-error,
 .form-date-minute-input.form-date-minute-input-has-error {
-    font-size: 14px;
-    padding: 8px;
-    width: 100%;
-    border: var(--small-border-width) solid var(--error-color);
+  border: var(--form-field-border-width) solid var(--global-error-color);
+  box-shadow: inset 0 0 0 1px var(--form-field-border-error-color);
+  background-color: var(--form-field-error-bg-color);
 }
 
 .form-multiline-input {
-    height: 100px;
+  block-size: 100px;
 }
 
-.form-multiline-input.form-multiline-input-auto {}
+.form-multiline-input.form-multiline-input-auto {
+  block-size: auto;
+}
 
 .form-multiline-input.form-multiline-input-small {
-    height: 50px;
+  block-size: 50px;
 }
 
 .form-multiline-input.form-multiline-input-medium {
-    height: 100px;
+  block-size: 100px;
 }
 
 .form-multiline-input.form-multiline-input-large {
-    height: 150px;
+  block-size: 150px;
 }
 
-.form-radio-list {}
+/* --------------------------------------------------------*/
+/* Select dropdown                                         */
+/* --------------------------------------------------------*/
+
+.form-select-input {
+  -webkit-appearance: none;
+  background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E);
+  background-repeat: no-repeat, repeat;
+  background-position: right 0.7em top 50%, 0 0;
+  background-size: 0.65em auto, 100%;
+  background-color: var(--form-field-bg-color);
+  padding-inline-end: 1.5em;
+}
+
+
+/* --------------------------------------------------------*/
+/* Radio and checkboxes                                    */
+/* --------------------------------------------------------*/
+
+.form-radio-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em; /* todo: replace with var */
+}
 
 .form-radio {
-    display: flex;
+  display: flex;
 }
 
 .form-radio-label {
-    margin-left: 10px;
-    align-self: center;
+  margin-inline-start: 12px; /* todo: replace with var */
+  align-self: center;
 }
 
 .form-radio-input {
-    width: 30px;
-    height: 30px;
-    border: var(--small-border-width) solid var(--border-color);
+  inline-size: 2.5rem;/* todo: replace with var */
+  block-size: 2.5rem;/* todo: replace with var */
+  border: var(--form-field-border-width) solid var(--form-field-border-color);
+  accent-color: var(--global-accent-color);
 }
 
-.form-checkbox-list {}
+.form-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em; /* todo: replace with var */
+}
 
 .form-checkbox {
-    display: flex;
+  display: flex;
 }
 
 .form-checkbox-label {
-    margin-left: 10px;
-    align-self: center;
+  margin-inline-start: 12px; /* todo: replace with var */
+  align-self: center;
 }
 
 .form-checkbox-input {
-    width: 30px;
-    height: 30px;
-    border: var(--small-border-width) solid var(--border-color);
+  inline-size: 2.5rem;/* todo: replace with var */
+  block-size: 2.5rem;/* todo: replace with var */
+  border: var(--form-field-border-width) solid var(--form-field-border-color);
+  accent-color: var(--global-accent-color);
 }
 
+/* --------------------------------------------------------*/
+/* Date and time                                           */
+/* --------------------------------------------------------*/
+
 .form-date-item {
-    display: inline-block;
-    margin-right: var(--margin);
+  display: inline-block;
 }
 
 .form-date-day-input,
@@ -271,32 +463,56 @@
 .form-date-year-input,
 .form-date-hour-input,
 .form-date-minute-input {
-    max-width: 50px;
-}
-
-.form-date-input {
-    max-width: 250px;
-}
-
-.form-date-time-input {
-    max-width: 350px;
+  max-inline-size: var(--form-field-width-tiny);
 }
 
 .form-time-input {
-    max-width: 100px;
+  max-inline-size: var(--form-field-width-small);
 }
 
-.form-confirmation-message {}
+.form-date-input {
+  max-inline-size: var(--form-field-width-medium);
+}
+
+.form-date-time-input {
+  max-inline-size: var(--form-field-width-large);
+}
+
+/* --------------------------------------------------------*/
+/* Progress bar                                            */
+/* --------------------------------------------------------*/
 
 .form-progress {
-    display: flex;
-    margin: var(--margin);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  padding-block-end: 1.5em;
 }
 
 .form-progress-label {
-    flex: 1;
+  font-size: var(--form-progress-label-font-size);
+  color: var(--form-progress-label-color);
 }
 
-.form-progress-indicator {
-    flex: 5;
+progress[value] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+
+  block-size: 0.5em;
+  border-radius: 0.5em;
+  background: var(--form-progress-bar-bg-color);
+}
+progress[value]::-webkit-progress-bar {
+  border-radius: 0.5em;
+  background: var(--form-progress-bar-bg-color);
+}
+progress[value]::-webkit-progress-value {
+  border-radius: 0.5em;
+  background: var(--form-progress-value-bg-color);
+}
+progress[value]::-moz-progress-bar {
+  border-radius: 0.5em;
+  background: var(--form-progress-value-bg-color);
 }
