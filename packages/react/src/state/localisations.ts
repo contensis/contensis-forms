@@ -14,7 +14,7 @@ export const localisations = {
     fieldDataFormatEmailValidationMessage: 'Field is not a valid email',
     fieldDataFormatPhoneValidationMessage: 'Field is not a valid telephone number',
     fieldDataFormatTimeValidationMessage: 'Field is not a valid time',
-    fieldDataFormatUrlValidationMessage: 'Fieldis not a valid URL',
+    fieldDataFormatUrlValidationMessage: 'Field is not a valid URL',
 
     fieldRequiredValidationMessage: 'Field is required',
     fieldAllowedValueValidationMessage: 'Field is required',

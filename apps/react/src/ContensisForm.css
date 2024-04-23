@@ -1,75 +1,104 @@
 :root {
-  --global-bg-color: #f0f0f0;
-  --global-bg-color-subtle: #fafafa;
+
+
   --global-font-family: system-ui, sans-serif;
   --global-font-size: 1rem;
+  --global-base-font-size: 16;
+  --global-label-font-size: 1.1875rem; /* 19/16 */
+
   --global-font-weight-bold: 600;
-  --global-text-color: #444;
-  --global-text-color-subtle: #595959;
 
-  --global-border-color: #949494;
-  --global-border-width: 0.1875em;
-  --global-border-width-small: 2px;
-  --global-border-radius: 0.1875em;
+  --color-background-light: #fff;
+  --color-background-subtle: #fafafa;
+  --color-text: #444;
+  --color-text-subtle: #595959;
+  --color-text-label: var(--color-text);
+  --color-border: #949494;
 
-  --global-focus-color: #4c9aff;
-  --global-error-color: #d4351c;
-  --global-success-color: ;
-  --global-progress-color: #43d2b9;
-  --global-accent-color: #00857e;
+  --size-border: 0.1875rem;
+  --size-border-small: 0.125rem;
 
-  --global-label-color: var(--global-text-color);
-  --global-label-font-size: 1.1875em; /* 19/16 */
+  --size-border-radius: 0.1875rem;
+
+  --size-space-4: 0.25rem;
+  --size-space-8: 0.5rem;
+  --size-space-12: 0.75rem;
+  --size-space-16: 1rem;
+  --size-space-24: 1.5rem;
+  --size-space-32: 2rem;
+
+  --size-dimension-4: 0.25rem;
+  --size-dimension-8: 0.5rem;
+  --size-dimension-40: 2.5rem;
+
+  --size-outline: 0.1875rem;
+
+  --color-accent: #00857e;
+  --color-error: #d4351c;
+  --color-focus: #4c9aff;
+  --color-progress: #00857e;
+
+
+  /* --------------------------------------------------------*/
+
+  
 
   /* Form */
-  --form-bg-color: var(--global-bg-color-subtle);
-  --form-text-color: ;
-  --form-border-radius: var(--global-border-radius);
-  --form-width: 90ch;
+  --form-bg-color: var(--color-background-subtle);
+  --form-border-radius: var(--size-border-radius);
+  --form-width: calc(68ch + 2ch + 0.125em);
+  --form-text-size-title: 2em; /* 32/16 */
+  --form-text-size-description: 1em; /* 16 */
 
   /* Page header */
   --form-current-page-title-font-size: 1.5em; /* 24/16 */
   --form-current-page-description-font-size: 1em; /* 16/16 */
 
   /* Progress indicator */
-  --form-progress-label-color: var(--global-label-color);
+  --form-progress-label-color: var(--color-text-label);
   --form-progress-label-font-size: var(--global-font-size);
   --form-progress-bar-bg-color: #fff;
-  --form-progress-value-bg-color: var(--global-progress-color);
+  --form-progress-value-bg-color: var(--color-progress);
 
   /* Form fields */
-  --form-field-label-color: var(--global-label-color);
+  --form-field-label-color: var(--color-text-label);
   --form-field-label-font-size: var(--global-label-font-size);
-  --form-field-label-font-weight: bold;
-  --form-field-text-color: var(--global-text-color);
-  --form-field-bg-color: #fff;
+  --form-field-label-font-weight: var(--global-font-weight-bold);
+  --form-field-text-color: var(--color-text);
+  --form-field-bg-color:  var(--color-background-light);
   --form-field-hover-bg-color: #effefc;
   --form-field-error-bg-color: #f9d7d7;
-  --form-field-border-color: var(--global-border-color);
-  --form-field-border-focus-color: #00857e;
-  --form-field-border-error-color: var(--global-error-color);
+  --form-field-border-color: var(--color-border);
+  --form-field-border-focus-color: var(--color-accent);
+  --form-field-border-error-color: var(--color-error);
 
-  --form-field-border-width: var(--global-border-width-small);
-  --form-field-border-radius: var(--global-border-radius);
-  --form-field-padding: 0.5em;
-  --form-field-border-width-error: 0.25em; /* 4px */
+  --form-field-border-width: var(--size-border-small);
+  --form-field-border-radius: var(--size-border-radius);
+  --form-field-padding: var(--size-space-8);
+  --form-field-border-width-error: var(--size-dimension-4); 
 
   /* Form field width */
-  --form-field-width-tiny: 3em;
-  --form-field-width-small: 6em;
-  --form-field-width-medium: 9.5em;
-  --form-field-width-large: 12em;
-  --form-field-width-full: 100%;
+  --form-field-width-25: 25%;
+  --form-field-width-33: 33.33%;
+  --form-field-width-50: 50%;
+  --form-field-width-66: 66.66%;
+  --form-field-width-75: 75%;
+  --form-field-width-100: 100%;
 
-  /* Form validation */
+  --form-field-width-char-2: calc(2ch + 2ch + 0.125em); /* 2 Characters + Padding + Border */
+  --form-field-width-char-3: calc(3ch + 2ch + 0.125em); /* 3 Characters + Padding + Border */
+  --form-field-width-char-4: calc(4ch + 2ch + 0.125em); /* 4 Characters + Padding + Border */
+  --form-field-width-char-5: calc(5ch + 2ch + 0.125em); /* 5 Characters + Padding + Border */
+  --form-field-width-char-10: calc(10ch + 2ch + 0.125em); /* 10 Characters + Padding + Border */
+  --form-field-width-char-20: calc(20ch + 2ch + 0.125em); /* 20 Characters + Padding + Border */
+  --form-field-width-char-30: calc(30ch + 2ch + 0.125em); /* 30 Characters + Padding + Border */
 
   /* Form buttons */
-  --form-button-bg-color: ;
-  --form-button-font-size: 1em;
-  --form-button-text-color: var(--global-text-color);
-  --form-button-border-color: var(--global-border-color);
-  --form-button-border-width: var(--global-border-width);
-  --form-button-border-radius: var(--global-border-radius);
+  --form-button-font-size: var(--global-font-size);
+  --form-button-text-color: var(--color-text);
+  --form-button-border-color: var(--color-border);
+  --form-button-border-width: var(--size-border);
+  --form-button-border-radius: var(--size-border-radius);
 }
 
 *,
@@ -83,30 +112,49 @@
 }
 
 html {
-  background-color: var(--global-bg-color-subtle);
+  background-color: var(--color-background-subtle);
   font-family: var(--global-font-family);
-  color: var(--global-text-color);
+  color: var(--color-text);
   font-size: var(--global-font-size);
 }
 
 form {
-  --outline-width: 3px;
+  --background-color: var(--form-bg-color);
+  --font-size: var(--global-font-size);
+  --border-radius: var(--form-border-radius);
+  --width: var(--form-width);
+
   display: flex;
   flex-direction: column;
-  background-color: var(--form-bg-color);
-  font-size: var(--global-font-size);
-  border-radius: var(--form-border-radius);
+  background-color: var(--background-color);
+  font-size: var(--font-size);
+  border-radius: var(--border-radius);
   margin: 3em auto;
   inline-size: 100%;
-  max-inline-size: var(--form-width);
+  max-inline-size: var(--width);
 }
 
 .form-load-error {
-  color: var(--global-error-color);
+  color: var(--color-error);
 }
 
-.form-pager {
-  margin-block-end: var(--margin);
+/* --------------------------------------------------------*/
+/* Form header                                             */
+/* --------------------------------------------------------*/
+
+.form-header {
+  padding-block-end: var(--size-space-24);
+}
+
+.form-title {
+  font-size: var(--form-text-size-title);
+  margin: 0;
+  padding-block-end: var(--size-space-8);
+}
+
+.form-description {
+  font-size: var(--form-text-size-description);
+  margin: 0;
 }
 
 /* --------------------------------------------------------*/
@@ -116,22 +164,28 @@ form {
 .form-current-page {
   display: flex;
   flex-direction: column;
-  gap: 1.5em;
+  gap: var(--size-space-32);
 }
 
 .form-current-page-header {
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: var(--size-space-8);
 }
 
 .form-current-page-title {
-  font-size: var(--form-current-page-title-font-size);
-  font-weight: bolder;
+  --font-size: var(--form-current-page-title-font-size);
+  --font-weight: var(--global-font-weight-bold);
+
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  margin: 0;
 }
 
 .form-current-page-description {
-  font-size: var(--form-current-page-description-font-size);
+  --font-size: var(--form-current-page-description-font-size);
+
+  font-size: var(--font-size);
 
   & p {
     margin: 0;
@@ -139,13 +193,13 @@ form {
 }
 
 /* --------------------------------------------------------*/
-/* Field container                                         */
+/* Fields container                                        */
 /* --------------------------------------------------------*/
 
 .form-fields-container {
   display: flex;
   flex-direction: column;
-  gap: 2em;
+  gap: var(--size-space-32);
 }
 
 /* --------------------------------------------------------*/
@@ -157,16 +211,20 @@ form {
   padding: 0;
 
   & legend {
+    --color: var(--form-field-label-color);
+    --font-size: var(--form-field-label-font-size);
+    --font-weight: var(--form-field-label-font-weight);
+
+    color: var(--color);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
     padding: 0;
-    font-size: var(--form-field-label-font-size);
-    color: var(--form-field-label-color);
-    font-weight: var(--form-field-label-font-weight);
   }
 }
 
 .form-fieldset-has-error {
-  border-inline-start: var(--form-field-border-width-error) solid var(--global-error-color);
-  padding-inline-start: 1em;
+  border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
+  padding-inline-start: var(--size-space-16);
 }
 
 /* --------------------------------------------------------*/
@@ -176,18 +234,17 @@ form {
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
+  gap: var(--size-space-4);
 }
 
 .form-field-has-error {
-  border-inline-start: var(--form-field-border-width-error) solid var(--global-error-color);
-  padding-inline-start: 1em;
+  border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
+  padding-inline-start: var(--size-space-16);
 }
 
 .form-field-error {
-  color: var(--global-error-color);
+  color: var(--color-error);
   font-weight: bolder;
-  margin: 5px 0 5px 0;
 }
 
 .form-field-label {
@@ -197,9 +254,9 @@ form {
 }
 
 .form-field-instructions {
-  color: var(--global-text-color-subtle);
+  color: var(--color-text-subtle);
   line-height: 1.5;
-  margin-block-end: 0.5em;
+  margin-block-end: var(--size-space-8);
 }
 
 /* --------------------------------------------------------*/
@@ -207,11 +264,12 @@ form {
 /* --------------------------------------------------------*/
 
 .form-validation-summary {
-  border: var(--global-border-width) solid var(--global-error-color);
-  padding: 1em;
+  border: var(--size-border) solid var(--color-error);
+  background-color: var(--color-background-light);
+  padding: var(--size-space-16);
 
   &:focus {
-    outline: var(--outline-width) solid var(--global-focus-color);
+    outline: var(--size-outline) solid var(--color-focus);
     outline-offset: 0;
   }
 }
@@ -221,14 +279,14 @@ form {
 }
 
 .form-validation-summary-list {
-  color: var(--global-error-color);
-  font-weight: bolder;
+  color: var(--color-error);
+  font-weight: var(--global-font-weight-bold);
   list-style-type: none;
   padding-inline-start: 0;
-  line-height: 2em;
+  margin: 0;
 
   & a {
-    color: var(--global-error-color);
+    color: var(--color-error);
   }
 }
 
@@ -238,20 +296,20 @@ form {
 
 .form-actions {
   display: flex;
-  gap: 1em; /* todo: replace with var */
+  gap: var(--size-space-16);
   justify-content: flex-end;
-  padding-block: 2em; /* todo: replace with var */
+  padding-block: var(--size-space-32);
 }
 
 .form-button {
-  border: var(--global-border-width) solid var(--global-border-color);
+  border: var(--size-border) solid var(--color-border);
   border-radius: var(--form-button-border-radius);
-  padding: 0.75em 0.5em;
+  padding: var(--size-space-12) var(--size-space-8);
   font-size: var(--form-button-font-size);
   font-weight: var(--global-font-weight-bold);
 
   &:focus {
-    outline: var(--outline-width) solid var(--global-focus-color);
+    outline: var(--size-outline) solid var(--color-focus);
     outline-offset: 0;
   }
 }
@@ -262,31 +320,31 @@ form {
   border-color: #00857e;
 
   &:hover {
-    background-color: #006C67;
-    border-color: #006C67;
+    background-color: #006c67;
+    border-color: #006c67;
   }
 
   &:disabled {
     background-color: #949494;
-    color: var(--global-text-color);
+    color: var(--color-text);
     border-color: #949494;
   }
 }
 
 .form-button--secondary {
   background-color: #ffffff;
-  color: var(--global-text-color);
+  color: var(--color-text);
   border-color: #dbdbdb;
 
   &:hover {
-    background-color: #F0F0F0;
-    border-color: #DBDBDB;
+    background-color: #f0f0f0;
+    border-color: #dbdbdb;
   }
 
   &:disabled {
     background-color: #949494;
     color: #fff;
-    border-color: #C9C9C9;
+    border-color: #c9c9c9;
   }
 }
 
@@ -309,11 +367,13 @@ form {
 .form-date-year-input,
 .form-date-hour-input,
 .form-date-minute-input {
+  --width: var(--form-field-width-100);
+
   padding: var(--form-field-padding);
-  inline-size: 100%;
+  inline-size: var(--width);
   border: var(--form-field-border-width) solid var(--form-field-border-color);
   border-radius: var(--form-field-border-radius);
-  min-block-size: 2.5rem;
+  min-block-size: var(--size-dimension-40);
   font-size: var(--global-font-size);
   background-color: var(--form-field-bg-color);
 
@@ -340,9 +400,9 @@ form {
 .form-date-year-input:focus,
 .form-date-hour-input:focus,
 .form-date-minute-input:focus {
-  outline: var(--outline-width) solid var(--global-focus-color);
+  outline: var(--size-outline) solid var(--color-focus);
   outline-offset: 0;
-  box-shadow: inset 0 0 0 1px var(--form-field-border-focus-color);
+  box-shadow: inset 0 0 0 0.0625em var(--form-field-border-focus-color);
   border-color: var(--form-field-border-focus-color);
 }
 
@@ -362,13 +422,13 @@ form {
 .form-date-year-input.form-date-year-input-has-error,
 .form-date-hour-input.form-date-hour-input-has-error,
 .form-date-minute-input.form-date-minute-input-has-error {
-  border: var(--form-field-border-width) solid var(--global-error-color);
-  box-shadow: inset 0 0 0 1px var(--form-field-border-error-color);
+  border: var(--form-field-border-width) solid var(--color-error);
+  box-shadow: inset 0 0 0 0.0625em var(--form-field-border-error-color);
   background-color: var(--form-field-error-bg-color);
 }
 
 .form-multiline-input {
-  block-size: 100px;
+  block-size: 8rem;
 }
 
 .form-multiline-input.form-multiline-input-auto {
@@ -376,15 +436,15 @@ form {
 }
 
 .form-multiline-input.form-multiline-input-small {
-  block-size: 50px;
+  block-size: 8rem;
 }
 
 .form-multiline-input.form-multiline-input-medium {
-  block-size: 100px;
+  block-size: 8rem;
 }
 
 .form-multiline-input.form-multiline-input-large {
-  block-size: 150px;
+  block-size: 16rem;
 }
 
 /* --------------------------------------------------------*/
@@ -398,9 +458,8 @@ form {
   background-position: right 0.7em top 50%, 0 0;
   background-size: 0.65em auto, 100%;
   background-color: var(--form-field-bg-color);
-  padding-inline-end: 1.5em;
+  padding-inline-end: var(--size-space-32);
 }
-
 
 /* --------------------------------------------------------*/
 /* Radio and checkboxes                                    */
@@ -409,7 +468,7 @@ form {
 .form-radio-list {
   display: flex;
   flex-direction: column;
-  gap: 1em; /* todo: replace with var */
+  gap: var(--size-space-16);
 }
 
 .form-radio {
@@ -417,21 +476,22 @@ form {
 }
 
 .form-radio-label {
-  margin-inline-start: 12px; /* todo: replace with var */
+  margin-inline-start: var(--size-space-12);
   align-self: center;
 }
 
 .form-radio-input {
-  inline-size: 2.5rem;/* todo: replace with var */
-  block-size: 2.5rem;/* todo: replace with var */
+  inline-size: var(--size-dimension-40);
+  block-size: var(--size-dimension-40);
   border: var(--form-field-border-width) solid var(--form-field-border-color);
-  accent-color: var(--global-accent-color);
+  accent-color: var(--color-accent);
+  margin: 0;
 }
 
 .form-checkbox-list {
   display: flex;
   flex-direction: column;
-  gap: 1em; /* todo: replace with var */
+  gap: var(--size-space-16);
 }
 
 .form-checkbox {
@@ -439,15 +499,16 @@ form {
 }
 
 .form-checkbox-label {
-  margin-inline-start: 12px; /* todo: replace with var */
+  margin-inline-start: var(--size-space-12);
   align-self: center;
 }
 
 .form-checkbox-input {
-  inline-size: 2.5rem;/* todo: replace with var */
-  block-size: 2.5rem;/* todo: replace with var */
+  inline-size: var(--size-dimension-40);
+  block-size: var(--size-dimension-40);
   border: var(--form-field-border-width) solid var(--form-field-border-color);
-  accent-color: var(--global-accent-color);
+  accent-color: var(--color-accent);
+  margin: 0;
 }
 
 /* --------------------------------------------------------*/
@@ -459,34 +520,40 @@ form {
 }
 
 .form-date-day-input,
-.form-date-month-input,
-.form-date-year-input,
 .form-date-hour-input,
 .form-date-minute-input {
-  max-inline-size: var(--form-field-width-tiny);
+  max-inline-size: var(--form-field-width-char-2);
+}
+
+.form-date-month-input {
+  max-inline-size: var(--form-field-width-char-3);
+}
+
+.form-date-year-input {
+  max-inline-size: var(--form-field-width-char-4);
 }
 
 .form-time-input {
-  max-inline-size: var(--form-field-width-small);
+  max-inline-size: var(--form-field-width-char-10);
 }
 
 .form-date-input {
-  max-inline-size: var(--form-field-width-medium);
+  max-inline-size: var(--form-field-width-char-20);
 }
 
 .form-date-time-input {
-  max-inline-size: var(--form-field-width-large);
+  max-inline-size: var(--form-field-width-char-30);
 }
 
 /* --------------------------------------------------------*/
-/* Progress bar                                            */
+/* Progress bar                                            
 /* --------------------------------------------------------*/
 
 .form-progress {
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
-  padding-block-end: 1.5em;
+  gap: var(--size-space-4);
+  padding-block-end: var(--size-space-24);
 }
 
 .form-progress-label {
@@ -500,9 +567,10 @@ progress[value] {
   appearance: none;
   border: none;
 
-  block-size: 0.5em;
+  block-size: var(--size-dimension-8);
   border-radius: 0.5em;
   background: var(--form-progress-bar-bg-color);
+  inline-size: 100%;
 }
 progress[value]::-webkit-progress-bar {
   border-radius: 0.5em;
@@ -515,4 +583,29 @@ progress[value]::-webkit-progress-value {
 progress[value]::-moz-progress-bar {
   border-radius: 0.5em;
   background: var(--form-progress-value-bg-color);
+}
+
+/* --------------------------------------------------------*/
+/*
+/* RTL Languages
+/* 
+/* Most of the styles for RTL are handled by the browser
+/* using logical properties. but there are a few exceptions 
+/* that need to be handled.
+/*
+/* --------------------------------------------------------*/
+
+[dir='rtl'] {
+
+  /* Ensures that email address and telephone number inputs are left-aligned */
+  & .form-tel-input,
+  & .form-email-input {
+    text-align: end;
+  }
+
+   /* Places the dropdown caret to the left hand side of the dropdown */
+  & .form-select-input {
+    background-position: left 0.7em top 50%, 0 0;
+  }
+
 }

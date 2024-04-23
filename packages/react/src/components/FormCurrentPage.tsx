@@ -12,7 +12,7 @@ export function FormCurrentPage() {
     return (
         <div className="form-current-page">
             <div className="form-current-page-header">
-                <div className="form-current-page-title">{currentPage?.title}</div>            
+                <h2 className="form-current-page-title">{currentPage?.title}</h2>            
                 <FormCurrentPageDescription />
             </div>
             <FormValidationSummary />
