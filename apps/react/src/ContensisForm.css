@@ -8,12 +8,25 @@
 
   --global-font-weight-bold: 600;
 
+  --color-accent: #00857e;
+  --color-border: #949494;
+  --color-error: #d4351c;
+  --color-focus: #4c9aff;
+  --color-progress: var(--color-accent);
+
+
   --color-background-light: #fff;
   --color-background-subtle: #fafafa;
+
   --color-text: #444;
   --color-text-subtle: #595959;
+
+  --color-text-title: var(--color-text);
+  --color-text-description: var(--color-text-subtle);
   --color-text-label: var(--color-text);
-  --color-border: #949494;
+  --color-text-hint: var(--color-text-subtle);
+  --color-text-error: var(--color-error);
+  
 
   --size-border: 0.1875rem;
   --size-border-small: 0.125rem;
@@ -33,10 +46,7 @@
 
   --size-outline: 0.1875rem;
 
-  --color-accent: #00857e;
-  --color-error: #d4351c;
-  --color-focus: #4c9aff;
-  --color-progress: #00857e;
+
 
 
   /* --------------------------------------------------------*/
@@ -48,6 +58,7 @@
   --form-border-radius: var(--size-border-radius);
   --form-width: calc(68ch + 2ch + 0.125em);
   --form-text-size-title: 2em; /* 32/16 */
+  --form-text-size-subtitle: 1.5em; /* 24/16 */
   --form-text-size-description: 1em; /* 16 */
 
   /* Page header */
@@ -61,9 +72,6 @@
   --form-progress-value-bg-color: var(--color-progress);
 
   /* Form fields */
-  --form-field-label-color: var(--color-text-label);
-  --form-field-label-font-size: var(--global-label-font-size);
-  --form-field-label-font-weight: var(--global-font-weight-bold);
   --form-field-text-color: var(--color-text);
   --form-field-bg-color:  var(--color-background-light);
   --form-field-hover-bg-color: #effefc;
@@ -134,8 +142,13 @@ form {
   max-inline-size: var(--width);
 }
 
+label,
+legend {
+  padding: 0;
+}
+
 .form-load-error {
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 /* --------------------------------------------------------*/
@@ -150,11 +163,13 @@ form {
   font-size: var(--form-text-size-title);
   margin: 0;
   padding-block-end: var(--size-space-8);
+  color: var(--color-text-title);
 }
 
 .form-description {
   font-size: var(--form-text-size-description);
   margin: 0;
+  color: var(--color-text-description);
 }
 
 /* --------------------------------------------------------*/
@@ -180,12 +195,14 @@ form {
   font-size: var(--font-size);
   font-weight: var(--font-weight);
   margin: 0;
+  color: var(--color-text-title);
 }
 
 .form-current-page-description {
   --font-size: var(--form-current-page-description-font-size);
 
   font-size: var(--font-size);
+  color: var(--color-text-description);
 
   & p {
     margin: 0;
@@ -209,17 +226,6 @@ form {
 .form-fieldset {
   border: none;
   padding: 0;
-
-  & legend {
-    --color: var(--form-field-label-color);
-    --font-size: var(--form-field-label-font-size);
-    --font-weight: var(--form-field-label-font-weight);
-
-    color: var(--color);
-    font-size: var(--font-size);
-    font-weight: var(--font-weight);
-    padding: 0;
-  }
 }
 
 .form-fieldset-has-error {
@@ -243,14 +249,14 @@ form {
 }
 
 .form-field-error {
-  color: var(--color-error);
-  font-weight: bolder;
+  color: var(--color-text-error); 
+  font-weight: var(--global-font-weight-bold);
 }
 
 .form-field-label {
-  font-size: var(--form-field-label-font-size);
-  color: var(--form-field-label-color);
-  font-weight: var(--form-field-label-font-weight);
+  font-size: var(--global-label-font-size);
+  color: var(--color-text-label);
+  font-weight: var(--global-font-weight-bold);
 }
 
 .form-field-instructions {
@@ -275,18 +281,19 @@ form {
 }
 
 .form-validation-summary-title {
+  font-size: var(--form-text-size-subtitle);
   margin-block-start: 0;
 }
 
 .form-validation-summary-list {
-  color: var(--color-error);
+  color: var(--color-text-error);
   font-weight: var(--global-font-weight-bold);
   list-style-type: none;
   padding-inline-start: 0;
   margin: 0;
 
   & a {
-    color: var(--color-error);
+    color: var(--color-text-error);
   }
 }
 
