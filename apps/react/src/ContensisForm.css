@@ -1,12 +1,13 @@
 :root {
 
+  /* --------------------------------------------------------*/
+  /* Base styles                                             */
+  /* --------------------------------------------------------*/
 
   --global-font-family: system-ui, sans-serif;
   --global-font-size: 1rem;
-  --global-base-font-size: 16;
-  --global-label-font-size: 1.1875rem; /* 19/16 */
-
   --global-font-weight-bold: 600;
+  --global-font-size-label: 1.1875rem;
 
   --color-accent: #00857e;
   --color-border: #949494;
@@ -14,9 +15,8 @@
   --color-focus: #4c9aff;
   --color-progress: var(--color-accent);
 
-
-  --color-background-light: #fff;
-  --color-background-subtle: #fafafa;
+  --color-bg-light: #fff;
+  --color-bg-subtle: #fafafa;
 
   --color-text: #444;
   --color-text-subtle: #595959;
@@ -26,12 +26,93 @@
   --color-text-label: var(--color-text);
   --color-text-hint: var(--color-text-subtle);
   --color-text-error: var(--color-error);
-  
+
+  --size-outline: 0.1875rem;
 
   --size-border: 0.1875rem;
   --size-border-small: 0.125rem;
 
   --size-border-radius: 0.1875rem;
+
+  /* --------------------------------------------------------*/
+  /* Form core styles                                        */
+  /* --------------------------------------------------------*/
+  --form-bg-color: var(--color-bg-subtle);
+  --form-border-radius: var(--size-border-radius);
+  --form-width: calc(68ch + 2ch + 0.125em);
+  --form-text-size-title: calc(var(--global-font-size) * 2); 
+  --form-text-size-subtitle: calc(var(--global-font-size) * 1.5); 
+  --form-text-size-description: var(--global-font-size); 
+
+  /* Page header */
+  --form-current-page-title-font-size: var(--form-text-size-subtitle);
+  --form-current-page-description-font-size: var(--form-text-size-description);
+
+  /* Progress indicator */
+  --form-progress-label-color: var(--color-text-label);
+  --form-progress-label-font-size: var(--global-font-size);
+  --form-progress-bar-bg-color: #fff;
+  --form-progress-value-bg-color: var(--color-progress);
+  --form-progress-border-radius: var(--size-dimension-8);
+
+  /* Form fields */
+  --form-field-text-color: var(--color-text);
+  --form-field-bg-color:  var(--color-bg-light);
+  --form-field-hover-bg-color: #effefc;
+  --form-field-error-bg-color: #f9d7d7;
+  --form-field-border-color: var(--color-border);
+  --form-field-border-focus-color: var(--color-accent);
+  --form-field-border-error-color: var(--color-error);
+
+  --form-field-border-width: var(--size-border-small);
+  --form-field-border-radius: var(--size-border-radius);
+  --form-field-padding: var(--size-space-8);
+  --form-field-border-width-error: var(--size-dimension-4); 
+
+  /* Buttons */
+  --btn-background: var(--color-bg-light);
+  --btn-text-color: var(--color-text);
+  --btn-font-size:  var(--global-font-size);
+  --btn-font-weight:  var(--global-font-weight-bold);
+  --btn-padding-block: var(--size-space-8);
+  --btn-padding-inline:  var(--size-space-12);
+  --btn-border-color: var(--color-border);
+  --btn-border-radius: var(--size-border-radius);
+  --btn-border-width: var(--size-border);
+
+  --btn-primary-bg-color: var(--color-accent);
+  --btn-primary-bg-color-hover: #006c67;
+  --btn-primary-bg-color-focus: #006c67;
+  --btn-primary-bg-color-disabled: #949494;
+
+  --btn-primary-border-color: var(--color-accent);
+  --btn-primary-border-color-hover: #006c67;
+  --btn-primary-border-color-focus: #006c67;
+  --btn-primary-border-color-disabled: #949494;
+
+  --btn-primary-text-color: #fff;
+  --btn-primary-text-color-hover: #fff;
+  --btn-primary-text-color-focus: #fff;
+  --btn-primary-text-color-disabled: #fff;
+
+  --btn-secondary-bg-color: #ffffff;
+  --btn-secondary-bg-color-hover: #f0f0f0;
+  --btn-secondary-bg-color-focus: #ffffff;
+  --btn-secondary-bg-color-disabled: #949494;
+
+  --btn-secondary-border-color: #dbdbdb;
+  --btn-secondary-border-color-hover: #dbdbdb;
+  --btn-secondary-border-color-focus: #dbdbdb;
+  --btn-secondary-border-color-disabled: #c9c9c9;
+
+  --btn-secondary-text-color: #262626;
+  --btn-secondary-text-color-hover: #262626;
+  --btn-secondary-text-color-focus: #262626;
+  --btn-secondary-text-color-disabled: #ffffff;
+
+  /* --------------------------------------------------------*/
+  /* Utility                                                 */
+  /* --------------------------------------------------------*/
 
   --size-space-4: 0.25rem;
   --size-space-8: 0.5rem;
@@ -44,69 +125,23 @@
   --size-dimension-8: 0.5rem;
   --size-dimension-40: 2.5rem;
 
-  --size-outline: 0.1875rem;
+  --size-width-25: 25%;
+  --size-width-33: 33.33%;
+  --size-width-50: 50%;
+  --size-width-66: 66.66%;
+  --size-width-75: 75%;
+  --size-width-100: 100%;
 
-
-
+  --size-width-ch-2: calc(2ch + 2ch + var(--size-border)); 
+  --size-width-ch-3: calc(3ch + 2ch + var(--size-border));
+  --size-width-ch-4: calc(4ch + 2ch + var(--size-border));
+  --size-width-ch-5: calc(5ch + 2ch + var(--size-border));
+  --size-width-ch-10: calc(10ch + 2ch + var(--size-border));
+  --size-width-ch-20: calc(20ch + 2ch + var(--size-border));
+  --size-width-ch-30: calc(30ch + 2ch + var(--size-border));
 
   /* --------------------------------------------------------*/
 
-  
-
-  /* Form */
-  --form-bg-color: var(--color-background-subtle);
-  --form-border-radius: var(--size-border-radius);
-  --form-width: calc(68ch + 2ch + 0.125em);
-  --form-text-size-title: 2em; /* 32/16 */
-  --form-text-size-subtitle: 1.5em; /* 24/16 */
-  --form-text-size-description: 1em; /* 16 */
-
-  /* Page header */
-  --form-current-page-title-font-size: 1.5em; /* 24/16 */
-  --form-current-page-description-font-size: 1em; /* 16/16 */
-
-  /* Progress indicator */
-  --form-progress-label-color: var(--color-text-label);
-  --form-progress-label-font-size: var(--global-font-size);
-  --form-progress-bar-bg-color: #fff;
-  --form-progress-value-bg-color: var(--color-progress);
-
-  /* Form fields */
-  --form-field-text-color: var(--color-text);
-  --form-field-bg-color:  var(--color-background-light);
-  --form-field-hover-bg-color: #effefc;
-  --form-field-error-bg-color: #f9d7d7;
-  --form-field-border-color: var(--color-border);
-  --form-field-border-focus-color: var(--color-accent);
-  --form-field-border-error-color: var(--color-error);
-
-  --form-field-border-width: var(--size-border-small);
-  --form-field-border-radius: var(--size-border-radius);
-  --form-field-padding: var(--size-space-8);
-  --form-field-border-width-error: var(--size-dimension-4); 
-
-  /* Form field width */
-  --form-field-width-25: 25%;
-  --form-field-width-33: 33.33%;
-  --form-field-width-50: 50%;
-  --form-field-width-66: 66.66%;
-  --form-field-width-75: 75%;
-  --form-field-width-100: 100%;
-
-  --form-field-width-char-2: calc(2ch + 2ch + 0.125em); /* 2 Characters + Padding + Border */
-  --form-field-width-char-3: calc(3ch + 2ch + 0.125em); /* 3 Characters + Padding + Border */
-  --form-field-width-char-4: calc(4ch + 2ch + 0.125em); /* 4 Characters + Padding + Border */
-  --form-field-width-char-5: calc(5ch + 2ch + 0.125em); /* 5 Characters + Padding + Border */
-  --form-field-width-char-10: calc(10ch + 2ch + 0.125em); /* 10 Characters + Padding + Border */
-  --form-field-width-char-20: calc(20ch + 2ch + 0.125em); /* 20 Characters + Padding + Border */
-  --form-field-width-char-30: calc(30ch + 2ch + 0.125em); /* 30 Characters + Padding + Border */
-
-  /* Form buttons */
-  --form-button-font-size: var(--global-font-size);
-  --form-button-text-color: var(--color-text);
-  --form-button-border-color: var(--color-border);
-  --form-button-border-width: var(--size-border);
-  --form-button-border-radius: var(--size-border-radius);
 }
 
 *,
@@ -120,7 +155,7 @@
 }
 
 html {
-  background-color: var(--color-background-subtle);
+  background-color: var(--color-bg-subtle);
   font-family: var(--global-font-family);
   color: var(--color-text);
   font-size: var(--global-font-size);
@@ -138,7 +173,7 @@ form {
   font-size: var(--font-size);
   border-radius: var(--border-radius);
   margin: 3em auto;
-  inline-size: 100%;
+  inline-size: var(--size-width-100);
   max-inline-size: var(--width);
 }
 
@@ -243,21 +278,20 @@ legend {
   gap: var(--size-space-4);
 }
 
-.form-field-has-error {
-  border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
-  padding-inline-start: var(--size-space-16);
-}
-
-.form-field-error {
-  color: var(--color-text-error); 
-  font-weight: var(--global-font-weight-bold);
-}
+  .form-field-has-error {
+    border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
+    padding-inline-start: var(--size-space-16);
+  }
 
 .form-field-label {
-  font-size: var(--global-label-font-size);
+  font-size: var(--global-font-size-label);
   color: var(--color-text-label);
   font-weight: var(--global-font-weight-bold);
 }
+  .form-field-error {
+    color: var(--color-text-error); 
+    font-weight: var(--global-font-weight-bold);
+  }
 
 .form-field-instructions {
   color: var(--color-text-subtle);
@@ -271,7 +305,7 @@ legend {
 
 .form-validation-summary {
   border: var(--size-border) solid var(--color-error);
-  background-color: var(--color-background-light);
+  background-color: var(--color-bg-light);
   padding: var(--size-space-16);
 
   &:focus {
@@ -309,11 +343,11 @@ legend {
 }
 
 .form-button {
-  border: var(--size-border) solid var(--color-border);
-  border-radius: var(--form-button-border-radius);
-  padding: var(--size-space-12) var(--size-space-8);
-  font-size: var(--form-button-font-size);
-  font-weight: var(--global-font-weight-bold);
+  border: var(--btn-border-width) solid var(--btn-border-color);
+  border-radius: var(--btn-border-radius);
+  padding: var(--btn-padding-block) var(--btn-padding-inline);
+  font-size: var(--btn-font-size);
+  font-weight: var(--btn-font-weight);
 
   &:focus {
     outline: var(--size-outline) solid var(--color-focus);
@@ -322,36 +356,50 @@ legend {
 }
 
 .form-button--primary {
-  background-color: #00857e;
-  color: #fff;
-  border-color: #00857e;
+  background-color: var(--btn-primary-bg-color);
+  color: var(--btn-primary-text-color);
+  border-color: var(--btn-primary-border-color);
 
   &:hover {
-    background-color: #006c67;
-    border-color: #006c67;
+    background-color: var(--btn-primary-bg-color-hover);
+    border-color: var(--btn-primary-border-color-hover);
+    color: var(--btn-primary-text-color-hover);
+  }
+
+  &:focus {
+    background-color: var(--btn-primary-bg-color-focus);
+    border-color: var(--btn-primary-border-color-focus);
+    color: var(--btn-primary-text-color-focus);
   }
 
   &:disabled {
-    background-color: #949494;
-    color: var(--color-text);
-    border-color: #949494;
+    background-color: var(--btn-primary-bg-color-disabled);
+    color: var(--btn-primary-text-color-disabled);
+    border-color: var(--btn-primary-border-color-disabled);
   }
 }
 
 .form-button--secondary {
-  background-color: #ffffff;
-  color: var(--color-text);
-  border-color: #dbdbdb;
+  background-color: var(--btn-secondary-bg-color);
+  color: var(--btn-secondary-text-color);
+  border-color: var(--btn-secondary-border-color);
 
   &:hover {
-    background-color: #f0f0f0;
-    border-color: #dbdbdb;
+    background-color: var(--btn-secondary-bg-color-hover);
+    border-color: var(--btn-secondary-border-color-hover);
+    color: var(--btn-secondary-text-color-hover);
+  }
+
+  &:focus {
+    background-color: var(--btn-secondary-bg-color-focus);
+    border-color: var(--btn-secondary-border-color-focus);
+    color: var(--btn-secondary-text-color-focus);
   }
 
   &:disabled {
-    background-color: #949494;
-    color: #fff;
-    border-color: #c9c9c9;
+    background-color: var(--btn-secondary-bg-color-disabled);
+    color: var(--btn-secondary-text-color-disabled);
+    border-color: var(--btn-secondary-border-color-disabled);
   }
 }
 
@@ -374,7 +422,7 @@ legend {
 .form-date-year-input,
 .form-date-hour-input,
 .form-date-minute-input {
-  --width: var(--form-field-width-100);
+  --width: var(--size-width-100);
 
   padding: var(--form-field-padding);
   inline-size: var(--width);
@@ -529,27 +577,27 @@ legend {
 .form-date-day-input,
 .form-date-hour-input,
 .form-date-minute-input {
-  max-inline-size: var(--form-field-width-char-2);
+  max-inline-size: var(--size-width-ch-2);
 }
 
 .form-date-month-input {
-  max-inline-size: var(--form-field-width-char-3);
+  max-inline-size: var(--size-width-ch-3);
 }
 
 .form-date-year-input {
-  max-inline-size: var(--form-field-width-char-4);
+  max-inline-size: var(--size-width-ch-4);
 }
 
 .form-time-input {
-  max-inline-size: var(--form-field-width-char-10);
+  max-inline-size: var(--size-width-ch-10);
 }
 
 .form-date-input {
-  max-inline-size: var(--form-field-width-char-20);
+  max-inline-size: var(--size-width-ch-20);
 }
 
 .form-date-time-input {
-  max-inline-size: var(--form-field-width-char-30);
+  max-inline-size: var(--size-width-ch-30);
 }
 
 /* --------------------------------------------------------*/
@@ -575,20 +623,20 @@ progress[value] {
   border: none;
 
   block-size: var(--size-dimension-8);
-  border-radius: 0.5em;
+  border-radius: var(--form-progress-border-radius);
   background: var(--form-progress-bar-bg-color);
-  inline-size: 100%;
+  inline-size: var(--size-width-100);
 }
 progress[value]::-webkit-progress-bar {
-  border-radius: 0.5em;
+  border-radius: var(--form-progress-border-radius);
   background: var(--form-progress-bar-bg-color);
 }
 progress[value]::-webkit-progress-value {
-  border-radius: 0.5em;
+  border-radius: var(--form-progress-border-radius);
   background: var(--form-progress-value-bg-color);
 }
 progress[value]::-moz-progress-bar {
-  border-radius: 0.5em;
+  border-radius: var(--form-progress-border-radius);
   background: var(--form-progress-value-bg-color);
 }
 
