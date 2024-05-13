@@ -12,7 +12,7 @@ export type FormProps = FormApiInputParams & {
 };
 
 export type FormConfirmationProps = {
-    rule: FormRule<ConfirmationRuleReturn>;
+    rule: ConfirmationRuleReturn;
     formResponse: FormResponse;
 };
 
@@ -93,6 +93,7 @@ export type FieldEditorType =
     | 'multiline'
     | 'multiselect'
     | 'radio'
+    | 'reference'
     | 'select'
     | 'tel'
     | 'text'

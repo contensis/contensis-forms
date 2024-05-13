@@ -4,3 +4,4 @@ export {
     createMarkdownRenderer,
     createSimpleRenderer
 } from './renderer';
+export { Description } from './Description';

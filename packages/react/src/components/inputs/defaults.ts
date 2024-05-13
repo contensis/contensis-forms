@@ -8,6 +8,7 @@ import { IntegerInput } from './IntegerInput';
 import { MultiSelectInput } from './MultiSelectInput';
 import { MultilineInput } from './MultilineInput';
 import { RadioInput } from './RadioInput';
+import { ReferenceInput } from './ReferenceInput';
 import { SelectInput } from './SelectInput';
 import { TelInput } from './TelInput';
 import { TextInput } from './TextInput';
@@ -25,9 +26,10 @@ export const DEFAULT_INPUTS: Record<FieldEditorType, FormInput> = {
     multiline: MultilineInput,
     multiselect: MultiSelectInput,
     radio: RadioInput,
+    reference: ReferenceInput,
     select: SelectInput,
     tel: TelInput,
     text: TextInput,
     time: TimeInput,
-    url: UrlInput,
+    url: UrlInput
 };

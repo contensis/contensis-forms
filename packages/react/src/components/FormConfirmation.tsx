@@ -33,12 +33,12 @@ export function FormConfirmation(props: FormConfirmationProps) {
 }
 
 async function getConfirmationHtml({ rule, formResponse }: FormConfirmationProps) {
-    if (Rules.isConfirmationRuleReturnContent(rule?.return)) {
+    if (Rules.isConfirmationRuleReturnContent(rule)) {
         try {
             const liquidRenderer = await createLiquidRenderer();
             // render canvas to html then execute liquid
             const htmlRenderer = await createConfirmationRenderer();
-            const content = rule.return.content;
+            const content = rule.content;
             const htmlTemplate = htmlRenderer({ data: content });
             const html: string = await liquidRenderer.parseAndRender(htmlTemplate, formResponse || {});
             return html;

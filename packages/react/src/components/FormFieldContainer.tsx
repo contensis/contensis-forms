@@ -15,8 +15,8 @@ type FormFieldContainerProps = { id: string, children?: ReactNode };
 
 export function FormFieldContainer({ id }: FormFieldContainerProps) {
     const field = useFormField(id);
-    const Field = DEFAULT_CONTAINERS[field.formFieldContainer]; // todo: override
-    const Input = DEFAULT_INPUTS[field.editor]; // todo: override
+    const Field = DEFAULT_CONTAINERS[field.formFieldContainer];
+    const Input = DEFAULT_INPUTS[field.editor];
     return field.hidden
         ? null
         : (

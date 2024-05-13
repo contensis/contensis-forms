@@ -14,6 +14,7 @@ const DEFAULT_DATA_TYPE_EDITOR_TYPES: Record<FieldDataType, FieldEditorType> = {
 const DEFAULT_DATA_FORMAT_EDITOR_TYPES: Record<FieldDataFormat, FieldEditorType> = {
     email: 'email',
     phone: 'tel',
+    reference: 'reference',
     time: 'time',
     url: 'url'
 };

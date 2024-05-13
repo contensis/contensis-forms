@@ -89,21 +89,21 @@ function getPagesRecord(form: Nullable<FormContentType>) {
 
 function getFieldsRecord(formHtmlId: string, form: Nullable<FormContentType>) {
     return reduceFields(form, (field) => {
-        const { id, name, editor } = field;
-        const htmlId = `${formHtmlId}-${id}`;
+        const htmlId = `${formHtmlId}-${field.id}`;
+        const editor = getFieldEditorType(field);
         return {
             htmlId,
-            id,
-            label: editor?.label || name,
-            instructions: editor?.instructions,
+            id: field.id,
+            label: field?.editor?.label || field.name,
+            instructions: field?.editor?.instructions,
             autoFill: field?.editor?.properties?.autoFill,
             size: field?.editor?.properties?.size,
             labelPosition: field?.editor?.properties?.labelPosition,
             cssClass: field?.editor?.properties?.cssClass,
-            hidden: !!field?.editor?.properties?.readOnly || !!field?.editor?.properties?.hidden,
+            hidden: !!field?.editor?.properties?.readOnly || !!field?.editor?.properties?.hidden || (editor === 'reference'),
             options: getOptions(field, htmlId),
             field,
-            editor: getFieldEditorType(field)
+            editor
         }
     });
 }

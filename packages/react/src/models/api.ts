@@ -2,11 +2,8 @@ import { Dictionary, Nullable } from './shared';
 
 // todo: considerations
 // localise name / messages etc in the UI
-// are we having labels for fields or just using names
 // add all form properties to the UI:
 // captcha
-// localizations
-// confirmationRules
 // autoSaveProgress
 // mode
 // do form descriptions / field descriptions need canvas?
@@ -43,12 +40,16 @@ export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
 export type FormResponse = Dictionary<unknown>;
 
 export type FormContentType = {
-    entryTitleField?: string; // todo: this is only needed for validation of entry title if entry title is not required this can be removed    
     id: string;
     fields: Field[];
     groups?: Group[];
     properties?: Nullable<FormProperties>;
     language: string;
+};
+
+export type SaveFormResponse = {
+    form: FormResponse;
+    confirmation?: ConfirmationRuleReturn; // todo: this doesn't return anything at the moment, also when it does return does it return the rule or the rule.return
 };
 
 export type Field = {
@@ -100,6 +101,7 @@ export type FieldDataType =
 export type FieldDataFormat =
     | 'email'
     | 'phone'
+    | 'reference'
     | 'time'
     | 'url';
 
@@ -115,7 +117,7 @@ export type FieldEditorId =
 
 export type AllowedValues = {
     values?: Nullable<string[]>;
-    keyValues?: Nullable<{ key: string, value: string }[]>; // todo: this defintion needs checking when the api is ready
+    keyValues?: Nullable<{ key: string, value: string }[]>; // todo: this definition needs checking when the api is ready, I think this will be { value: "", text: "" }
 };
 
 
@@ -158,14 +160,8 @@ type FieldEditorProperties = {
 };
 
 
-export type FormRule<TReturn> = {
-    when?: FormRuleWhen[];
+export type FormRule<TReturn> = {    
     return: TReturn;
-};
-
-export type FormRuleWhen = {
-    field: string;
-    equalTo: unknown;
 };
 
 export type ConfirmationRuleReturnUri = {

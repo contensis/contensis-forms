@@ -108,11 +108,6 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         return value;
     };
 
-    const getConfirmationRules = () => {
-        const { form } = getState();
-        return form?.properties?.confirmationRules;
-    };
-
     const getFormParams = (): GetFormParams => {
         const { apiUrl, projectId, formId, language, versionStatus } = getState();
         return {
@@ -144,7 +139,6 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
         setFocussed,
         getForm,
         getFormResponse,
-        getConfirmationRules,
         getFormParams,
         getSaveFormResponseParams,
         submit,
@@ -184,7 +178,7 @@ function onSetForm(state: FormState, form: FormContentType): FormState {
 
     const errors = form?.fields.reduce((prev, f) => ({
         ...prev,
-        [f.id]: validate(value[f.id], f, f.id === form.entryTitleField)
+        [f.id]: validate(value[f.id], f)
     }), {} as Dictionary<Nullable<Dictionary<ValidationError>>>);
 
     addToHistory(firstPageId, 'push');
@@ -216,7 +210,7 @@ function onSetValue(state: FormState, fieldId: string, fieldValue: unknown): For
     const { form, errors, value } = state;
     const field = form?.fields.find(f => f.id === fieldId);
     if (field) {
-        const fieldErrors = validate(fieldValue, field, field.id === form?.entryTitleField);
+        const fieldErrors = validate(fieldValue, field);
         state = {
             ...state,
             value: {

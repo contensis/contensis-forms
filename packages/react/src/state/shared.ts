@@ -133,7 +133,6 @@ export function moveToNextPage(form: Nullable<FormContentType>, currentSteps: st
         };
     }
     const currentIndex = getPageIndex(form, currentPageId);
-    // todo: this should be based on page rules
     const nextPage = getPageIdAt(form, currentIndex + 1);
     return {
         isLastPage: false,

@@ -20,11 +20,11 @@ const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {
     url: localisations.fieldDataFormatUrlValidationMessage
 };
 
-const createFieldValidator = memo((field: Field, isEntryTitle: boolean) => {
+const createFieldValidator = memo((field: Field) => {
     const validators: [string, Validator<Dictionary<any>>, message: string][] = [
         ['dataType', createDataTypeValidator(field.dataType), DATA_TYPE_MESSAGES[field.dataType]],
         ['dataFormat', createDataFormatValidator(field.dataFormat), field.dataFormat ? DATA_FORMAT_MESSAGES[field.dataFormat] : ''],
-        ['required', createRequiredValidator(field.validations?.required, isEntryTitle), field.validations?.required?.message || localisations.fieldRequiredValidationMessage],
+        ['required', createRequiredValidator(field.validations?.required), field.validations?.required?.message || localisations.fieldRequiredValidationMessage],
         ['allowedValue', createAllowedValueValidator(field.validations?.allowedValue), field.validations?.allowedValue?.message || localisations.fieldAllowedValueValidationMessage],
         ['min', createMinValidator(field.validations?.min), field.validations?.min?.message || format(localisations.fieldMinValidationMessage, field.validations?.min?.value)],
         ['max', createMaxValidator(field.validations?.max), field.validations?.max?.message || format(localisations.fieldMaxValidationMessage, field.validations?.max?.value)],
@@ -119,14 +119,15 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
             if (isEmpty(value) || !dataFormat) {
                 return true;
             }
-            // todo: these validations seem a bit crazy are there simpler / better regexs
-            // ie. email -> [any string]@[any string].[somehting with 2 or more chars]
-            switch (dataFormat) {
+            switch (dataFormat) {                
                 case 'email': {
                     const emailRegex = new RegExp("^(([^<>()\\[\\]\\.,;:\\s@\\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$", 'i')
                     return typeof value === 'string' && emailRegex.test(value);
                 }
                 case 'phone': {
+                    return true;
+                }
+                case 'reference': {
                     return true;
                 }
                 case 'time': {
@@ -144,9 +145,8 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
 
 }
 
-function createRequiredValidator(required: Nullable<FieldValidation>, isEntryTitle: boolean): Validator<{}> {
-    // todo: entry title field is automatically required in the API but should it be?????    
-    return !!(isEntryTitle || required)
+function createRequiredValidator(required: Nullable<FieldValidation>): Validator<{}> {
+    return !!required
         ? fromValid(
             (value: unknown) => !isEmpty(value),
             () => ({})
@@ -290,7 +290,7 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
         : noopValidator;
 }
 
-export function validate(value: unknown, field: Field, isEntryTitle: boolean) {
-    const validator = createFieldValidator(field, isEntryTitle);
+export function validate(value: unknown, field: Field) {
+    const validator = createFieldValidator(field);
     return validator(value);
 }

@@ -6,7 +6,7 @@ import { FormContextProvider } from './FormContext';
 import { FormLoader } from './FormLoader';
 
 export function Form(props: FormProps) {
-    const [confirmationRule, setConfirmationRule] = useState<Nullable<FormRule<ConfirmationRuleReturn>>>(null);
+    const [confirmationRule, setConfirmationRule] = useState<Nullable<ConfirmationRuleReturn>>(null);
     const [formResponse, setFormResponse] = useState<Nullable<FormResponse>>(null);
     const htmlId = useId();
     const form = createForm(props, htmlId);
@@ -29,7 +29,6 @@ export function Form(props: FormProps) {
             return;
         }
 
-        const confirmationRules = form.getConfirmationRules();
         try {
             const result = await Api.saveFormResponse({
                 ...form.getSaveFormResponseParams(),
@@ -37,14 +36,12 @@ export function Form(props: FormProps) {
             });
             const success = props?.onSubmitSuccess ? props.onSubmitSuccess(result) : true;
             if (success) {
-                const rule = Rules.findRule(confirmationRules, result);
-                // todo: what do we do when there is no confirmation rule??
-                if (Rules.isConfirmationRuleReturnUri(rule?.return)) {
+                if (Rules.isConfirmationRuleReturnUri(result?.confirmation)) {
                     // todo: redirect
                     console.log('redirect');
                 } else {
-                    setFormResponse(result);
-                    setConfirmationRule(rule);
+                    setFormResponse(result.form);
+                    setConfirmationRule(result.confirmation);
                     form.resetProgress();
                 }
             }

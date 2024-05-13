@@ -30,3 +30,4 @@ export async function createMarkdownRenderer(): Promise<{ render: (markdown: str
     const md = await import('markdown-it');
     return md.default();
 }
+

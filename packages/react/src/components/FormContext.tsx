@@ -59,6 +59,7 @@ const DEFAULT_CONTAINERS: Record<FieldEditorType, FormFieldContainer> = {
     multiline: 'control',
     multiselect: 'fieldset',
     radio: 'fieldset',
+    reference: 'control',
     select: 'control',
     tel: 'control',
     text: 'control',
