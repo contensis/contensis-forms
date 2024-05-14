@@ -1,5 +1,5 @@
 import { MutableRefObject, ReactNode } from 'react';
-import { ConfirmationRuleReturn, Field, FieldLabelPosition, FieldSize, FormApiInputParams, FormContentType, FormResponse, FormRule, GetFormParams, Group, StringOrCanvas } from './api';
+import { ConfirmationRuleReturn, Field, FieldLabelPosition, FieldSize, FormApiInputParams, FormContentType, FormResponse, GetFormParams, Group, StringOrCanvas } from './api';
 import { Dictionary, Nullable } from './shared';
 
 export type FormProps = FormApiInputParams & {

@@ -18,11 +18,6 @@ elements.forEach(element => {
                 formId={formId || ''}
                 language={language}
                 versionStatus={version === 'latest' ? 'latest' : undefined}
-            // onSubmit={(response) => ({ ...response, name: 'bob' })}
-            // onSubmitSuccess={(response) => {
-            //     console.log(response);
-            //     return false;
-            // }}
             />
         </React.StrictMode>
     );

@@ -1,11 +1,20 @@
 import { FormEvent, useEffect, useId, useState } from 'react';
-import { ConfirmationRuleReturn, FormContentType, FormProps, FormResponse, FormRule, Nullable } from '../models';
-import { createForm, Api, Rules, handleError } from '../state';
+import { ConfirmationRuleReturn, FormContentType, FormProps, FormResponse, Nullable } from '../models';
+import { Api, Rules, createForm, handleError } from '../state';
 import { FormConfirmation } from './FormConfirmation';
 import { FormContextProvider } from './FormContext';
 import { FormLoader } from './FormLoader';
 
+function isServer() {
+    return typeof window === `undefined`;
+}
+
 export function Form(props: FormProps) {
+    
+    if (isServer()) {
+        return null;
+    }
+
     const [confirmationRule, setConfirmationRule] = useState<Nullable<ConfirmationRuleReturn>>(null);
     const [formResponse, setFormResponse] = useState<Nullable<FormResponse>>(null);
     const htmlId = useId();

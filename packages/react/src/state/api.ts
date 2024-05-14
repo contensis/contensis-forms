@@ -7,15 +7,104 @@ import {
 import { Captcha } from './captcha';
 import { isPublishedVersion } from './version';
 
-// TODO: HOW DO WE GET THE BEARER TOKEN
-const BEARER_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InhWTVN1M21xQnZadHJxQ3k5TG81RlJwZVF2NCIsImtpZCI6InhWTVN1M21xQnZadHJxQ3k5TG81RlJwZVF2NCJ9.eyJpc3MiOiJodHRwczovL2Ntcy1mb3Jtcy5jbG91ZC5jb250ZW5zaXMuY29tL2F1dGhlbnRpY2F0ZSIsImF1ZCI6Imh0dHBzOi8vY21zLWZvcm1zLmNsb3VkLmNvbnRlbnNpcy5jb20vYXV0aGVudGljYXRlL3Jlc291cmNlcyIsImV4cCI6MTcxNTYxNTY1NiwibmJmIjoxNzE1NjEyMDU2LCJjbGllbnRfaWQiOiIwYTM3M2JlZC0wODM5LTRkZjktODcyOC0wNjZkZGQ2NDE5MzkiLCJzY29wZSI6WyJDb250ZW50VHlwZV9EZWxldGUiLCJDb250ZW50VHlwZV9SZWFkIiwiQ29udGVudFR5cGVfV3JpdGUiLCJEaWFnbm9zdGljc0FkbWluaXN0cmF0b3IiLCJEaWFnbm9zdGljc0FsbFVzZXJzIiwiRW50cnlfRGVsZXRlIiwiRW50cnlfUmVhZCIsIkVudHJ5X1dyaXRlIiwib2ZmbGluZV9hY2Nlc3MiLCJvcGVuaWQiLCJQcm9qZWN0X0RlbGV0ZSIsIlByb2plY3RfUmVhZCIsIlByb2plY3RfV3JpdGUiLCJTZWN1cml0eV9BZG1pbmlzdHJhdG9yIiwiV29ya2Zsb3dfQWRtaW5pc3RyYXRvciJdLCJzdWIiOiJkYjhiNzhlNS05ZjdmLTQ0MjktOGQ3Ni05MTlhODA4YTM0YWQiLCJhdXRoX3RpbWUiOjE3MTU2MTIwNTYsImlkcCI6Imlkc3J2IiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZGFuZm9ybXMiLCJhbXIiOlsiYmVhcmVyIl19.V9umO4M4Frlte-hrOn_jfMBQYTEuqdh9vNM36mPDS9meIv73OQr2B_Tng8UygKOAIVViBJ6nZOAxqPSU15Jn4TU68nJnoComHC2CD1L_WX5HgCXf9r7JNMFrfoNlhDcqlhWQP8vXV1rRuHIUtnskgrEM2DZHde9v-jlE3Nkx1Kc-mYFbTeHkkl2HETLNwIO8uqBSL8tRxP_iH9FXNYNg5q-7YxtrYclyjTGdN1DxiiRpbNwqzNYsTzviV7M2aT9lWu6Eeoct9qvXrJQ6WVNBvtNWlZOHJ2YzfbjZBzDC2Y23NWr4b9AOtY_AtRtIb_dELLmAeiXYO3yso4pGN3h9ww';
+function getAllCookies(): { [key: string]: string } {
+    return (document.cookie || '').split('; ').reduce(
+        (cookies, cookieString) => {
+            const parts = cookieString.split('=');
+            const name = decode(parts[0]);
+            if (name) {
+                cookies[name] = decode(parts.slice(1).join('='));
+            }
+            return cookies;
+        },
+        {} as { [key: string]: string }
+    );
+}
+
+function decode(s: string): string {
+    try {
+        return decodeURIComponent(s);
+    } catch (e) {
+        return s;
+    }
+}
+
+function setCookie(key: string, value: string, expiry: Date) {
+    document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}; expires=${expiry.toUTCString()}; path=/;`;
+}
+
+const CmsBearerTokenCookie = 'ContensisSecurityBearerToken';
+const CmsRefreshTokenCookie = 'ContensisSecurityRefreshToken';
+const RefreshTokenCookie = 'RefreshToken';
+const RefreshTokenExpiryTime = 15 * 24 * 3600 * 1000; // 15 days
+
+const SCOPE = 'Security_Administrator ContentType_Read ContentType_Write ContentType_Delete Entry_Read Entry_Write Entry_Delete Project_Read Project_Write Project_Delete Workflow_Administrator';
+const GRANT_TYPE = 'contensis_classic_refresh_token';
+const PUBLIC_USER_BEARER_TOKEN = ''; // TODO: what should this be
+
+type RequestOptions = {
+    apiUrl: string;
+};
+
+type AuthenticateResponse = {
+    access_token: string;
+    expires_in: number;
+    refresh_token: string;
+    token_type: string;
+};
+
+async function getBearerToken(options: RequestOptions) {
+    const cookies = getAllCookies();
+    if (cookies[CmsBearerTokenCookie]) {
+        return cookies[CmsBearerTokenCookie];
+    }
+    const refreshToken = cookies[CmsRefreshTokenCookie] || cookies[RefreshTokenCookie];
+    if (!refreshToken) {
+        return PUBLIC_USER_BEARER_TOKEN;
+    }
+
+    try {
+        const currentDate = new Date();
+
+        const response = await fetch(`${options.apiUrl}/authenticate/connect/token`, {
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: `scope=${encodeURIComponent(SCOPE)}&grant_type=${encodeURIComponent(GRANT_TYPE)}&refresh_token=${encodeURIComponent(refreshToken)}`,
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'omit'
+        });
+
+        if (!response.ok) {
+            return PUBLIC_USER_BEARER_TOKEN;
+        }
+        const data: AuthenticateResponse = await response.json();
+
+        const bearerToken = data.access_token;
+        const bearerTokenExpiryDate = new Date(currentDate.getTime() + data.expires_in * 1000);
+        const newRefreshToken: string = data.refresh_token;
+        const refreshTokenExpiryDate = new Date(currentDate.getTime() + RefreshTokenExpiryTime);
+
+        setCookie(CmsBearerTokenCookie, bearerToken, bearerTokenExpiryDate);
+        if (newRefreshToken) {
+            setCookie(RefreshTokenCookie, newRefreshToken, refreshTokenExpiryDate);
+        }
+        return bearerToken;
+    } catch (e) {
+        return PUBLIC_USER_BEARER_TOKEN;
+    }
+}
 
 async function getForm({ apiUrl, projectId, formId, language, versionStatus }: GetFormParams) {
+    const bearerToken = await getBearerToken({ apiUrl });
 
-    const response = await fetch(`${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}?versionStatus=${versionStatus || 'published'}`, {
+    const query = (versionStatus === 'latest') ? `?versionStatus=${versionStatus}` : '';
+
+    const response = await fetch(`${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}${query}`, {
         headers: {
             'content-type': 'application/json',
-            authorization: `Bearer ${BEARER_TOKEN}`
+            authorization: `Bearer ${bearerToken}`
         },
         method: 'GET',
         mode: 'cors'
@@ -53,10 +142,11 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, versionSt
         }
     };
 
+    const bearerToken = await getBearerToken({ apiUrl });
     const response = await fetch(`${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}/entries`, {
         headers: {
             'content-type': 'application/json',
-            authorization: `Bearer ${BEARER_TOKEN}`,
+            authorization: `Bearer ${bearerToken}`,
             ...(!!captchaResponse ? { 'Recaptha-Token': captchaResponse } : {})
         },
         method: 'POST',

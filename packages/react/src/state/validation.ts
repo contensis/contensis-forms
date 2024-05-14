@@ -13,9 +13,10 @@ const DATA_TYPE_MESSAGES: Record<FieldDataType, string> = {
     stringArray: localisations.fieldDataTypeStringArrayValidationMessage
 };
 
-const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {
+const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {    
     email: localisations.fieldDataFormatEmailValidationMessage,
     phone: localisations.fieldDataFormatPhoneValidationMessage,
+    reference: '',
     time: localisations.fieldDataFormatTimeValidationMessage,
     url: localisations.fieldDataFormatUrlValidationMessage
 };
