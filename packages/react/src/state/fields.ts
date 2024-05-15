@@ -35,7 +35,7 @@ export function getFieldEditorType(field: Field) {
     if (!editorType && field.dataFormat) {
         editorType = DEFAULT_DATA_FORMAT_EDITOR_TYPES[field.dataFormat];
     }
-    if (!editorType && (field.validations?.allowedValues?.values || field.validations?.allowedValues?.keyValues)) {
+    if (!editorType && (field.validations?.allowedValues?.values || field.validations?.allowedValues?.textValues)) {
         editorType = (field.dataType === 'stringArray')
             ? 'multiselect'
             : 'radio';
@@ -58,17 +58,17 @@ export function getEmptyFieldValue(field: Field) {
 }
 
 export function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[] {
-    const pairs = field?.validations?.allowedValues?.keyValues
-        ? field?.validations?.allowedValues?.keyValues?.map(value => value)
-        : field?.validations?.allowedValues?.values?.map(value => ({ key: value, value }));
+    const pairs = field?.validations?.allowedValues?.textValues
+        ? field?.validations?.allowedValues?.textValues?.map(value => value)
+        : field?.validations?.allowedValues?.values?.map(value => ({ value, text: value }));
 
     
     let options = pairs?.map((pair, index) => {
         return {
             key: `${index}`,
             htmlId: `${htmlId}-option-${index}`,
-            value: pair.key,
-            label: pair.value,
+            value: pair.value,
+            label: pair.text,
         };
     });
 

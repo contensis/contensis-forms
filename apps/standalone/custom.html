@@ -8,15 +8,14 @@
     </head>
 
     <body>
-        <div
-            data-contensis-form-api="https://cms-forms.cloud.contensis.com"
-            data-contensis-form-project-id="website"
-            data-contensis-form-id="enquiryFormCopy"
-        ></div>
+        <div id="app"></div>
 
-        <script type="module" src="/src/main.tsx"></script>
-
+        <script type="module" src="/src/custom.tsx"></script>
         <script>
+            var context = window;
+            context.PROJECT = 'website';
+            context.SERVERS = { forms: 'http://localhost:3000/ui' };
+
             document.cookie = 'RefreshToken=4747c0cac8145b8d6881433e8286f2f5; path=/;';
         </script>
     </body>

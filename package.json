@@ -9,7 +9,8 @@
     },
     "workspaces": [
         "packages\\react",
-        "apps\\react"
+        "apps\\react",
+        "app\\standalone"
     ],
     "devDependencies": {
         "tsup": "^8.0.1",

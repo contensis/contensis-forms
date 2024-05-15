@@ -117,7 +117,7 @@ export type FieldEditorId =
 
 export type AllowedValues = {
     values?: Nullable<string[]>;
-    keyValues?: Nullable<{ key: string, value: string }[]>; // todo: this definition needs checking when the api is ready, I think this will be { value: "", text: "" }
+    textValues?: Nullable<{ value: string, text: string }[]>;
 };
 
 

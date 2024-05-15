@@ -254,8 +254,8 @@ function createAllowedValueValidator(allowedValue: Nullable<FieldValidations['al
 }
 
 function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['allowedValues']>): Validator<{ allowed: string[] }> {
-    const allowed = allowedValues?.keyValues
-        ? allowedValues.keyValues.map(value => value.key)
+    const allowed = allowedValues?.textValues
+        ? allowedValues.textValues.map(value => value.value)
         : allowedValues?.values;
     if (!allowed?.length) {
         return noopValidator;
