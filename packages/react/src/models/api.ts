@@ -1,9 +1,6 @@
 import { Dictionary, Nullable } from './shared';
 
 // todo: considerations
-// localise name / messages etc in the UI
-// add all form properties to the UI:
-// captcha
 // autoSaveProgress
 // mode
 // do form descriptions / field descriptions need canvas?
@@ -32,6 +29,7 @@ export type GetFormParams = ApiParams;
 export type SaveFormResponseParams = ApiParams & {
     formResponse: FormResponse;
     captcha: Nullable<CaptchaSettings>;
+    formVersionNo: string;
 };
 
 
@@ -45,11 +43,14 @@ export type FormContentType = {
     groups?: Group[];
     properties?: Nullable<FormProperties>;
     language: string;
+    version?: {
+        versionNo?: string
+    }
 };
 
 export type SaveFormResponse = {
     form: FormResponse;
-    confirmation?: ConfirmationRuleReturn; // todo: this doesn't return anything at the moment, also when it does return does it return the rule or the rule.return
+    confirmation?: ConfirmationRuleReturn;
 };
 
 export type Field = {

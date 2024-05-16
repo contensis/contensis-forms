@@ -124,14 +124,9 @@ async function getForm({ apiUrl, projectId, formId, language, versionStatus }: G
     }
 }
 
-async function saveFormResponse({ apiUrl, projectId, formId, language, versionStatus, formResponse, captcha }: SaveFormResponseParams): Promise<SaveFormResponse> {
+async function saveFormResponse({ apiUrl, projectId, formId, language, formVersionNo, versionStatus, formResponse, captcha }: SaveFormResponseParams): Promise<SaveFormResponse> {
 
-    if (!isPublishedVersion(versionStatus)) {
-        // todo: should this return a confirmation
-        return { form: formResponse };
-    }
-
-    const captchaResponse = await Captcha.submit(formId, captcha);
+    const captchaResponse = isPublishedVersion(versionStatus) ? await Captcha.submit(formId, captcha) : '';
 
     formResponse = {
         ...formResponse,
@@ -143,7 +138,14 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, versionSt
     };
 
     const bearerToken = await getBearerToken({ apiUrl });
-    const response = await fetch(`${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}/entries`, {
+
+    // todo: there is an issue with the api when saving responses with versionNumber
+    let url = `${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}/entries`;
+    url = (isPublishedVersion(versionStatus) && (formVersionNo))
+        ? url
+        : `${url}?contentTypeVersionNumber=${formVersionNo}`;
+
+    const response = await fetch(url, {
         headers: {
             'content-type': 'application/json',
             authorization: `Bearer ${bearerToken}`,

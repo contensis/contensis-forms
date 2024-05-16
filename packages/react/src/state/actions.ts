@@ -127,6 +127,7 @@ export function createActions({ set, getState }: CreateStoreArgs<FormState>) {
             formId,
             language,
             versionStatus,
+            formVersionNo: form?.version?.versionNo || '',
             captcha: form?.properties?.captcha
         };
     };

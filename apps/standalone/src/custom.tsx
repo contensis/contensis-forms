@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component, ReactNode, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
 type FormResponse = Record<string, unknown>;
@@ -114,8 +114,14 @@ class AsyncForm extends Component<FormProps, AsyncFormState> {
     }
 }
 
+function Header() {
+    const [label, setLabel] = useState('I am a header');
+    return <div>{label}</div>;
+}
+
 ReactDOM.createRoot(document.getElementById('app')!).render(
     <React.StrictMode>
+        <Header />
         <AsyncForm formId='enquiryFormCopy' />
     </React.StrictMode>
 );
