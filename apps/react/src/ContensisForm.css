@@ -2,6 +2,8 @@
 
   /* --------------------------------------------------------*/
   /* Base styles                                             */
+  /* The following variables are used to define the base     */
+  /* styles for the form.
   /* --------------------------------------------------------*/
 
   --global-font-family: system-ui, sans-serif;
@@ -36,6 +38,8 @@
 
   /* --------------------------------------------------------*/
   /* Form core styles                                        */
+  /* The following variables are used to define the core     */
+  /* component of the form.                                  */ 
   /* --------------------------------------------------------*/
   --form-bg-color: var(--color-bg-subtle);
   --form-border-radius: var(--size-border-radius);
@@ -44,18 +48,25 @@
   --form-text-size-subtitle: calc(var(--global-font-size) * 1.5); 
   --form-text-size-description: var(--global-font-size); 
 
-  /* Page header */
+  /* --------------------------------------------------------*/
+  /* Page header                                             */
+  /* --------------------------------------------------------*/
+
   --form-current-page-title-font-size: var(--form-text-size-subtitle);
   --form-current-page-description-font-size: var(--form-text-size-description);
 
-  /* Progress indicator */
+  /* --------------------------------------------------------*/
+  /* Progress indicator                                      */
+  /* --------------------------------------------------------*/
   --form-progress-label-color: var(--color-text-label);
   --form-progress-label-font-size: var(--global-font-size);
   --form-progress-bar-bg-color: #fff;
   --form-progress-value-bg-color: var(--color-progress);
   --form-progress-border-radius: var(--size-dimension-8);
-
-  /* Form fields */
+  
+  /* --------------------------------------------------------*/
+  /* Form fields                                             */
+  /* --------------------------------------------------------*/
   --form-field-text-color: var(--color-text);
   --form-field-bg-color:  var(--color-bg-light);
   --form-field-hover-bg-color: #effefc;
@@ -67,9 +78,11 @@
   --form-field-border-width: var(--size-border-small);
   --form-field-border-radius: var(--size-border-radius);
   --form-field-padding: var(--size-space-8);
-  --form-field-border-width-error: var(--size-dimension-4); 
+  --form-field-border-width-error: var(--size-dimension-4);
 
-  /* Buttons */
+  /* --------------------------------------------------------*/
+  /* Buttons                                                 */
+  /* --------------------------------------------------------*/
   --btn-background: var(--color-bg-light);
   --btn-text-color: var(--color-text);
   --btn-font-size:  var(--global-font-size);
@@ -283,7 +296,8 @@ legend {
     padding-inline-start: var(--size-space-16);
   }
 
-.form-field-label {
+.form-field-label,
+.form-field-legend {
   font-size: var(--global-font-size-label);
   color: var(--color-text-label);
   font-weight: var(--global-font-weight-bold);
@@ -329,6 +343,7 @@ legend {
   & a {
     color: var(--color-text-error);
   }
+
 }
 
 /* --------------------------------------------------------*/

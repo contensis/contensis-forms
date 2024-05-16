@@ -13,7 +13,7 @@ export function FormFieldset(props: FormFieldProps) {
             className={formFieldCss(field, 'fieldset')}
             aria-describedby={instructionsId(field)}
         >
-            <legend>{field.label}</legend>
+            <legend className="form-field-legend">{field.label}</legend>
             <FormFieldInstructions id={props.id} />
             <FormFieldErrors id={props.id} />
             <div className="form-fieldset-input-container">
