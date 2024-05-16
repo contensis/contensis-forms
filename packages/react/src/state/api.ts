@@ -143,7 +143,7 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, formVersi
     let url = `${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}/entries`;
     url = (isPublishedVersion(versionStatus) && (formVersionNo))
         ? url
-        : `${url}?contentTypeVersionNumber=${formVersionNo}`;
+        : `${url}?contentTypePreviewVersion=${formVersionNo}`;
 
     const response = await fetch(url, {
         headers: {
