@@ -1,5 +1,4 @@
 :root {
-
   /* --------------------------------------------------------*/
   /* Base styles                                             */
   /* The following variables are used to define the base     */
@@ -39,14 +38,14 @@
   /* --------------------------------------------------------*/
   /* Form core styles                                        */
   /* The following variables are used to define the core     */
-  /* component of the form.                                  */ 
+  /* component of the form.                                  */
   /* --------------------------------------------------------*/
   --form-bg-color: var(--color-bg-subtle);
   --form-border-radius: var(--size-border-radius);
   --form-width: calc(68ch + 2ch + 0.125em);
-  --form-text-size-title: calc(var(--global-font-size) * 2); 
-  --form-text-size-subtitle: calc(var(--global-font-size) * 1.5); 
-  --form-text-size-description: var(--global-font-size); 
+  --form-text-size-title: calc(var(--global-font-size) * 2);
+  --form-text-size-subtitle: calc(var(--global-font-size) * 1.5);
+  --form-text-size-description: var(--global-font-size);
 
   /* --------------------------------------------------------*/
   /* Page header                                             */
@@ -63,12 +62,12 @@
   --form-progress-bar-bg-color: #fff;
   --form-progress-value-bg-color: var(--color-progress);
   --form-progress-border-radius: var(--size-dimension-8);
-  
+
   /* --------------------------------------------------------*/
   /* Form fields                                             */
   /* --------------------------------------------------------*/
   --form-field-text-color: var(--color-text);
-  --form-field-bg-color:  var(--color-bg-light);
+  --form-field-bg-color: var(--color-bg-light);
   --form-field-hover-bg-color: #effefc;
   --form-field-error-bg-color: #f9d7d7;
   --form-field-border-color: var(--color-border);
@@ -85,10 +84,10 @@
   /* --------------------------------------------------------*/
   --btn-background: var(--color-bg-light);
   --btn-text-color: var(--color-text);
-  --btn-font-size:  var(--global-font-size);
-  --btn-font-weight:  var(--global-font-weight-bold);
+  --btn-font-size: var(--global-font-size);
+  --btn-font-weight: var(--global-font-weight-bold);
   --btn-padding-block: var(--size-space-8);
-  --btn-padding-inline:  var(--size-space-12);
+  --btn-padding-inline: var(--size-space-12);
   --btn-border-color: var(--color-border);
   --btn-border-radius: var(--size-border-radius);
   --btn-border-width: var(--size-border);
@@ -145,7 +144,7 @@
   --size-width-75: 75%;
   --size-width-100: 100%;
 
-  --size-width-ch-2: calc(2ch + 2ch + var(--size-border)); 
+  --size-width-ch-2: calc(2ch + 2ch + var(--size-border));
   --size-width-ch-3: calc(3ch + 2ch + var(--size-border));
   --size-width-ch-4: calc(4ch + 2ch + var(--size-border));
   --size-width-ch-5: calc(5ch + 2ch + var(--size-border));
@@ -154,7 +153,6 @@
   --size-width-ch-30: calc(30ch + 2ch + var(--size-border));
 
   /* --------------------------------------------------------*/
-
 }
 
 *,
@@ -291,26 +289,38 @@ legend {
   gap: var(--size-space-4);
 }
 
-  .form-field-has-error {
-    border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
-    padding-inline-start: var(--size-space-16);
-  }
+.form-field-has-error {
+  border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
+  padding-inline-start: var(--size-space-16);
+}
 
 .form-field-label,
 .form-field-legend {
   font-size: var(--global-font-size-label);
   color: var(--color-text-label);
   font-weight: var(--global-font-weight-bold);
+  display: block;
+  text-wrap: pretty; /* Reduces orphans in form labels and legends */
 }
-  .form-field-error {
-    color: var(--color-text-error); 
-    font-weight: var(--global-font-weight-bold);
-  }
+
+.form-field-legend {
+  margin-block-end: var(--size-space-4);
+}
+
+.form-field-error {
+  color: var(--color-text-error);
+  font-weight: var(--global-font-weight-bold);
+}
 
 .form-field-instructions {
   color: var(--color-text-subtle);
   line-height: 1.5;
   margin-block-end: var(--size-space-8);
+  text-wrap: pretty; /* Reduces orphans */
+
+  & p {
+    margin: 0;
+  }
 }
 
 /* --------------------------------------------------------*/
@@ -343,7 +353,6 @@ legend {
   & a {
     color: var(--color-text-error);
   }
-
 }
 
 /* --------------------------------------------------------*/
@@ -666,16 +675,43 @@ progress[value]::-moz-progress-bar {
 /* --------------------------------------------------------*/
 
 [dir='rtl'] {
-
   /* Ensures that email address and telephone number inputs are left-aligned */
   & .form-tel-input,
   & .form-email-input {
     text-align: end;
   }
 
-   /* Places the dropdown caret to the left hand side of the dropdown */
+  /* Places the dropdown caret to the left hand side of the dropdown */
   & .form-select-input {
     background-position: left 0.7em top 50%, 0 0;
   }
+}
 
+/* --------------------------------------------------------*/
+/*
+/* Preview toolbar
+/*
+/* --------------------------------------------------------*/
+
+.form-preview-toolbar {
+  background: red;
+  color: white;
+  padding: 1em;
+  border-block-end: 1px solid black;
+}
+
+.form-preview-toolbar__name {
+  border: 1px solid black;
+  padding: 0.25 0.5em;
+}
+
+.form-preview-notice {
+  border: 1px solid black;
+  border-inline-start: 4px solid blue;
+  background: lightblue;
+  color: #444;
+
+  p {
+    margin: 0;
+  }
 }
