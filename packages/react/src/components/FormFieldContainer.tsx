@@ -1,12 +1,14 @@
 import { ReactNode } from 'react';
+import { FormFieldContainer as FormFieldContainerType } from '../models';
+import { FormCheckbox } from './FormCheckbox';
 import { useFormField } from './FormContext';
 import { FormField } from './FormField';
-import { DEFAULT_INPUTS } from './inputs';
 import { FormFieldset } from './FormFieldset';
-import { FormFieldContainer as FormFieldContainerType } from '../models';
+import { DEFAULT_INPUTS } from './inputs';
 import { FormContainer } from './inputs/models';
 
 export const DEFAULT_CONTAINERS: Record<FormFieldContainerType, FormContainer> = {
+    checkbox: FormCheckbox,
     control: FormField,
     fieldset: FormFieldset
 };

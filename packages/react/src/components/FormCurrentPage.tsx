@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useFormSelector } from './FormContext';
-import { FormCurrentPageDescription } from './FormCurrentPageDescription';
 import { FormFieldContainer } from './FormFieldContainer';
 import { FormValidationSummary } from './FormValidationSummary';
+import { Description } from './html';
 
 export function FormCurrentPage() {
     const currentPage = useFormSelector(f => f.selectCurrentPage);
@@ -12,8 +12,8 @@ export function FormCurrentPage() {
     return (
         <div className="form-current-page">
             <div className="form-current-page-header">
-                <h2 className="form-current-page-title">{currentPage?.title}</h2>            
-                <FormCurrentPageDescription />
+                <h3 className="form-current-page-title">{currentPage?.title}</h3>
+                <Description className="form-current-page-description" description={currentPage.description} />
             </div>
             <FormValidationSummary />
             <div className="form-fields-container">

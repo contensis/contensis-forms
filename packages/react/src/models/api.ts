@@ -39,6 +39,8 @@ export type FormResponse = Dictionary<unknown>;
 
 export type FormContentType = {
     id: string;
+    name: string;
+    description: string;
     fields: Field[];
     groups?: Group[];
     properties?: Nullable<FormProperties>;

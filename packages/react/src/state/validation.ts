@@ -1,5 +1,5 @@
 import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldValidation, FieldValidationWithValue, FieldValidations, Nullable, ValidationError } from '../models';
-import { format, localisations } from './localisations';
+import { format, localisations, plural } from './localisations';
 import { memo } from './store';
 
 type Validator<TError extends Dictionary<any>> = (value: unknown) => null | TError;
@@ -13,7 +13,7 @@ const DATA_TYPE_MESSAGES: Record<FieldDataType, string> = {
     stringArray: localisations.fieldDataTypeStringArrayValidationMessage
 };
 
-const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {    
+const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {
     email: localisations.fieldDataFormatEmailValidationMessage,
     phone: localisations.fieldDataFormatPhoneValidationMessage,
     reference: '',
@@ -23,19 +23,71 @@ const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {
 
 const createFieldValidator = memo((field: Field) => {
     const validators: [string, Validator<Dictionary<any>>, message: string][] = [
-        ['dataType', createDataTypeValidator(field.dataType), DATA_TYPE_MESSAGES[field.dataType]],
-        ['dataFormat', createDataFormatValidator(field.dataFormat), field.dataFormat ? DATA_FORMAT_MESSAGES[field.dataFormat] : ''],
-        ['required', createRequiredValidator(field.validations?.required), field.validations?.required?.message || localisations.fieldRequiredValidationMessage],
-        ['allowedValue', createAllowedValueValidator(field.validations?.allowedValue), field.validations?.allowedValue?.message || localisations.fieldAllowedValueValidationMessage],
-        ['min', createMinValidator(field.validations?.min), field.validations?.min?.message || format(localisations.fieldMinValidationMessage, field.validations?.min?.value)],
-        ['max', createMaxValidator(field.validations?.max), field.validations?.max?.message || format(localisations.fieldMaxValidationMessage, field.validations?.max?.value)],
-        ['minLength', createMinLengthValidator(field.validations?.minLength), field.validations?.minLength?.message || format(localisations.fieldMinLengthValidationMessage, field.validations?.minLength?.value)],
-        ['maxLength', createMaxLengthValidator(field.validations?.maxLength), field.validations?.maxLength?.message || format(localisations.fieldMaxLengthValidationMessage, field.validations?.maxLength?.value)],
-        ['minCount', createMinCountValidator(field.validations?.minCount), field.validations?.minCount?.message || format(localisations.fieldMinCountValidationMessage, field.validations?.minCount?.value)],
-        ['maxCount', createMaxCountValidator(field.validations?.maxCount), field.validations?.maxCount?.message || format(localisations.fieldMaxCountValidationMessage, field.validations?.maxCount?.value)],
-        ['regex', createRegExValidator(field.validations?.regex), field.validations?.regex?.message || localisations.fieldRegExValidationMessage],
-        ['allowedValues', createAllowedValuesValidator(field.validations?.allowedValues), field.validations?.allowedValues?.message || localisations.fieldAllowedValuesValidationMessage],
-        ['pastDateTime', createPastDateTimeValidator(field.dataType, field.validations?.pastDateTime), field.validations?.pastDateTime?.message || localisations.fieldPastDateTimeValidationMessage]
+        [
+            'dataType',
+            createDataTypeValidator(field.dataType),
+            format(DATA_TYPE_MESSAGES[field.dataType], field.name)
+        ],
+        [
+            'dataFormat',
+            createDataFormatValidator(field.dataFormat), 
+            field.dataFormat ? format(DATA_FORMAT_MESSAGES[field.dataFormat], field.name) : ''
+        ],
+        [
+            'required',
+            createRequiredValidator(field.validations?.required),
+            field.validations?.required?.message || format(localisations.fieldRequiredValidationMessage, field.name)
+        ],
+        [
+            'allowedValue',
+            createAllowedValueValidator(field.validations?.allowedValue),
+            field.validations?.allowedValue?.message || format(localisations.fieldAllowedValueValidationMessage, field.name)
+        ],
+        [
+            'min',
+            createMinValidator(field.validations?.min),
+            field.validations?.min?.message || format(localisations.fieldMinValidationMessage, field.name, field.validations?.min?.value)
+        ],
+        [
+            'max',
+            createMaxValidator(field.validations?.max),
+            field.validations?.max?.message || format(localisations.fieldMaxValidationMessage, field.name, field.validations?.max?.value)
+        ],
+        [
+            'minLength',
+            createMinLengthValidator(field.validations?.minLength),
+            field.validations?.minLength?.message || format(localisations.fieldMinLengthValidationMessage, field.name, field.validations?.minLength?.value)
+        ],
+        [
+            'maxLength',
+            createMaxLengthValidator(field.validations?.maxLength),
+            field.validations?.maxLength?.message || format(localisations.fieldMaxLengthValidationMessage, field.name, field.validations?.maxLength?.value)
+        ],
+        [
+            'minCount',
+            createMinCountValidator(field.validations?.minCount),
+            field.validations?.minCount?.message || minCountMessage(field.validations?.minCount?.value, field)
+        ],
+        [
+            'maxCount',
+            createMaxCountValidator(field.validations?.maxCount),
+            field.validations?.maxCount?.message || maxCountMessage(field.validations?.maxCount?.value, field)
+        ],
+        [
+            'regex',
+            createRegExValidator(field.validations?.regex),
+            field.validations?.regex?.message || format(localisations.fieldRegExValidationMessage, field.name)
+        ],
+        [
+            'allowedValues',
+            createAllowedValuesValidator(field.validations?.allowedValues),
+            field.validations?.allowedValues?.message || format(localisations.fieldAllowedValuesValidationMessage, field.name)
+        ],
+        [
+            'pastDateTime',
+            createPastDateTimeValidator(field.dataType, field.validations?.pastDateTime),
+            field.validations?.pastDateTime?.message || format(localisations.fieldPastDateTimeValidationMessage, field.name)
+        ]
     ];
 
     return function (value: unknown) {
@@ -120,7 +172,7 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
             if (isEmpty(value) || !dataFormat) {
                 return true;
             }
-            switch (dataFormat) {                
+            switch (dataFormat) {
                 case 'email': {
                     const emailRegex = new RegExp("^(([^<>()\\[\\]\\.,;:\\s@\\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$", 'i')
                     return typeof value === 'string' && emailRegex.test(value);
@@ -294,4 +346,28 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
 export function validate(value: unknown, field: Field) {
     const validator = createFieldValidator(field);
     return validator(value);
+}
+
+function minCountMessage(value: Nullable<number>, field: Field) {
+    value = value || 0;
+    return plural(value, {
+        zero: () => format(localisations.fieldMinCountValidationMessageZero, field.name, value),
+        one: () => format(localisations.fieldMinCountValidationMessageOne, field.name, value),
+        two: () => format(localisations.fieldMinCountValidationMessageTwo, field.name, value),
+        few: () => format(localisations.fieldMinCountValidationMessageFew, field.name, value),
+        many: () => format(localisations.fieldMinCountValidationMessageMany, field.name, value),
+        other: () => format(localisations.fieldMinCountValidationMessageOther, field.name, value)
+    });
+}
+
+function maxCountMessage(value: Nullable<number>, field: Field) {
+    value = value || 0;
+    return plural(value, {
+        zero: () => format(localisations.fieldMaxCountValidationMessageZero, field.name, value),
+        one: () => format(localisations.fieldMaxCountValidationMessageOne, field.name, value),
+        two: () => format(localisations.fieldMaxCountValidationMessageTwo, field.name, value),
+        few: () => format(localisations.fieldMaxCountValidationMessageFew, field.name, value),
+        many: () => format(localisations.fieldMaxCountValidationMessageMany, field.name, value),
+        other: () => format(localisations.fieldMaxCountValidationMessageOther, field.name, value)
+    });
 }

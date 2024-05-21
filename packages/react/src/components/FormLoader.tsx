@@ -1,10 +1,11 @@
 import { FormEventHandler } from 'react';
 import { FormProps } from '../models';
-import { localisations, Captcha, isPublishedVersion } from '../state';
+import { Captcha, isPublishedVersion, localisations } from '../state';
 import { FormButtons } from './FormButtons';
 import { FormContents } from './FormContents';
 import { useFormSelector } from './FormContext';
 import { FormProgress } from './FormProgress';
+import { FormTitle } from './FormTitle';
 
 type FormLoaderProps = FormProps & { onFormSubmit: FormEventHandler<HTMLFormElement> };
 
@@ -28,6 +29,7 @@ export function FormLoader(props: FormLoaderProps) {
 
     return (
         <form noValidate={true} onSubmit={props.onFormSubmit}>
+            <FormTitle />
             <FormProgress />
             <FormContents />
             <FormButtons />

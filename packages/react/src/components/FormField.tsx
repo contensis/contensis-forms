@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useFormField } from './FormContext';
 import { FormFieldErrors } from './FormFieldErrors';
+import { FormFieldFooter } from './FormFieldFooter';
 import { FormFieldInstructions } from './FormFieldInstructions';
 import { FormFieldLabel } from './FormFieldLabel';
 import { formFieldCss } from './utils';
@@ -17,6 +18,7 @@ export function FormField(props: FormFieldProps) {
             <div className="form-field-input-container">
                 {props.children}
             </div>
+            <FormFieldFooter id={props.id} />
         </div>
     );
 }

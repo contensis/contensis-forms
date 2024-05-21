@@ -3,31 +3,44 @@ export const localisations = {
     nextButtonText: 'Next',
     submitButtonText: 'Submit',
     pagingMessage: 'Page {0} of {1}',
-    
-    fieldDataTypeBooleanValidationMessage: 'Field is not a boolean',
-    fieldDataTypeDateTimeValidationMessage: 'Field is not a date',
-    fieldDataTypeDecimalValidationMessage: 'Field is not a number',
-    fieldDataTypeIntegerValidationMessage: 'Field is not an integer',
-    fieldDataTypeStringValidationMessage: 'Field is not a string',
-    fieldDataTypeStringArrayValidationMessage: 'Field is not an array',
-    
-    fieldDataFormatEmailValidationMessage: 'Field is not a valid email',
-    fieldDataFormatPhoneValidationMessage: 'Field is not a valid telephone number',
-    fieldDataFormatTimeValidationMessage: 'Field is not a valid time',
-    fieldDataFormatUrlValidationMessage: 'Field is not a valid URL',
 
-    fieldRequiredValidationMessage: 'Field is required',
-    fieldAllowedValueValidationMessage: 'Field is required',
-    fieldMinValidationMessage: 'Minimum of {0}',
-    fieldMaxValidationMessage: 'Maximum of {0}',
-    fieldMinLengthValidationMessage: 'Minimum length of {0}',
-    fieldMaxLengthValidationMessage: 'Maximum length of {0}',
-    fieldMinCountValidationMessage: 'Minimum of {0} items',
-    fieldMaxCountValidationMessage: 'Minimum of {0} items',
-    fieldRegExValidationMessage: 'Field format is invalid',
-    fieldAllowedValuesValidationMessage: 'Field value is not allowed',
-    fieldPastDateTimeValidationMessage: 'Field must be in the past',
-    
+    fieldDataTypeBooleanValidationMessage: '{0} is not a boolean',
+    fieldDataTypeDateTimeValidationMessage: '{0} is not a date',
+    fieldDataTypeDecimalValidationMessage: '{0} is not a number',
+    fieldDataTypeIntegerValidationMessage: '{0} is not an integer',
+    fieldDataTypeStringValidationMessage: '{0} is not a string',
+    fieldDataTypeStringArrayValidationMessage: '{0} is not an array',
+
+    fieldDataFormatEmailValidationMessage: '{0} is not a valid email',
+    fieldDataFormatPhoneValidationMessage: '{0} is not a valid telephone number',
+    fieldDataFormatTimeValidationMessage: '{0} is not a valid time',
+    fieldDataFormatUrlValidationMessage: '{0} is not a valid URL',
+
+    fieldRequiredValidationMessage: '{0} is required',
+    fieldAllowedValueValidationMessage: '{0} is required',
+    fieldMinValidationMessage: '{0} must be minimum of {1}',
+    fieldMaxValidationMessage: '{0} must be a maximum of {1}',
+    fieldMinLengthValidationMessage: '{0} must have a minimum length of {1}',
+    fieldMaxLengthValidationMessage: '{0} must have a maximum length of {1}',
+
+    fieldMinCountValidationMessageZero: '{0} requires a minimum of {1} items',
+    fieldMinCountValidationMessageOne: '{0} requires a minimum of {1} item',
+    fieldMinCountValidationMessageTwo: '{0} requires a minimum of {1} items',
+    fieldMinCountValidationMessageFew: '{0} requires a minimum of {1} items',
+    fieldMinCountValidationMessageMany: '{0} requires a minimum of {1} items',
+    fieldMinCountValidationMessageOther: '{0} requires a minimum of {1} items',
+
+    fieldMaxCountValidationMessageZero: '{0} requires a maximum of {1} items',
+    fieldMaxCountValidationMessageOne: '{0} requires a maximum of {1} item',
+    fieldMaxCountValidationMessageTwo: '{0} requires a maximum of {1} items',
+    fieldMaxCountValidationMessageFew: '{0} requires a maximum of {1} items',
+    fieldMaxCountValidationMessageMany: '{0} requires a maximum of {1} items',
+    fieldMaxCountValidationMessageOther: '{0} requires a maximum of {1} items',
+
+    fieldRegExValidationMessage: '{0} has an invalid format',
+    fieldAllowedValuesValidationMessage: '{0} has an invalid value',
+    fieldPastDateTimeValidationMessage: '{0} must be in the past',
+
     errorLabel: 'Error',
     errorSummaryTitle: 'There is a problem',
     dateInputDayLabel: 'Day',
@@ -40,8 +53,22 @@ export const localisations = {
     formDisabled: 'Form is disabled',
     confirmationMessage: 'Form submitted successfully',
     errorPageTitle: 'Error',
+    pleaseSelect: 'Please select',
+    requiredLabel: 'required',
 
-    pleaseSelect: 'Please select'
+    characterCountMessageRemainingZero: 'You have {0} characters remaining',
+    characterCountMessageRemainingOne: 'You have {0} character remaining',
+    characterCountMessageRemainingTwo: 'You have {0} characters remaining',
+    characterCountMessageRemainingFew: 'You have {0} characters remaining',
+    characterCountMessageRemainingMany: 'You have {0} characters remaining',
+    characterCountMessageRemainingOther: 'You have {0} characters remaining',
+
+    characterCountMessageExceededZero: 'You have {0} characters too many',
+    characterCountMessageExceededOne: 'You have {0} character too many',
+    characterCountMessageExceededTwo: 'You have {0} characters too many',
+    characterCountMessageExceededFew: 'You have {0} characters too many',
+    characterCountMessageExceededMany: 'You have {0} characters too many',
+    characterCountMessageExceededOther: 'You have {0} characters too many',
 };
 
 export function format(s: string, ...args: any[]): string {
@@ -56,4 +83,21 @@ export function format(s: string, ...args: any[]): string {
         }
         return '';
     });
+}
+
+type PluralMap<T> = {
+    zero: T;
+    one: T;
+    two: T;
+    few: T;
+    many: T;
+    other: T
+};
+
+const pluralRules = new Intl.PluralRules();
+
+export function plural<T>(value: number, fns: PluralMap<() => T>) {
+    const rule = pluralRules.select(value);
+    const fn = fns[rule];
+    return fn();
 }

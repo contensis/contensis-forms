@@ -9,6 +9,8 @@ function isServer() {
     return typeof window === `undefined`;
 }
 
+// todo: latest response preview / confirmation
+// todo: custom stlying 
 export function Form(props: FormProps) {
     
     if (isServer()) {

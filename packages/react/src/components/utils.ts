@@ -20,6 +20,10 @@ export function attr(...args: AttrArg[]) {
     return keys.length ? keys.join(' ') : undefined;
 }
 
+export function progressId(htmlId: string) {
+    return `${htmlId}-progress`;
+}
+
 export function inputId(field: FormField) {
     return field.htmlId;
 }
@@ -30,6 +34,10 @@ export function instructionsId(field: FormField) {
 
 export function errorsId(field: FormField) {
     return `${field.htmlId}-errors`;
+}
+
+export function charCountId(field: FormField) {
+    return `${field.htmlId}-char-count`;
 }
 
 function inputClassname(field: FormField, fieldType: string, additionalCss: Nullable<string[]>) {
@@ -58,7 +66,8 @@ export function inputAttrs(field: FormField, fieldType: string, settings?: Input
         'aria-invalid': invalid,
         'aria-describedby': attr({
             [instructionsId(field)]: !!field.instructions,
-            [errorsId(field)]: invalid
+            [errorsId(field)]: invalid,
+            [charCountId(field)]: !!field.maxLength
         })
     };
 }
@@ -73,7 +82,7 @@ export function textValue(value: unknown): string {
     return '';
 }
 
-export function formFieldCss(field: FormField, formFieldType: 'field' | 'fieldset') {
+export function formFieldCss(field: FormField, formFieldType: 'field' | 'fieldset' | 'checkbox-field') {
     return attr(
         `form-${formFieldType}`, 
         [

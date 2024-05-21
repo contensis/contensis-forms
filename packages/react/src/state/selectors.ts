@@ -21,7 +21,7 @@ export function createSelectors({ select, selectById }: CreateStoreArgs<FormStat
     const selectDefaultPageTitle = select(s => s.defaultPageTitle);
     const selectSteps = select(s => s.steps);
     const selectVersionStatus = select(s => s.versionStatus);
-
+    
     const selectCurrentPageId = select(selectSteps, getCurrentPageId);
     const selectLocalizations = select(selectForm, getLocalizations);
     const selectIsFirstPage = select(selectForm, selectCurrentPageId, getIsFirstPage);
@@ -54,6 +54,8 @@ export function createSelectors({ select, selectById }: CreateStoreArgs<FormStat
         getField
     );
 
+
+
     return {
         selectState,
         selectForm,
@@ -71,7 +73,8 @@ export function createSelectors({ select, selectById }: CreateStoreArgs<FormStat
         selectShowErrors,
         selectIsLoading,
         selectApiError,
-        selectVersionStatus
+        selectVersionStatus,
+        selectHtmlId
     };
 }
 
@@ -103,7 +106,9 @@ function getFieldsRecord(formHtmlId: string, form: Nullable<FormContentType>) {
             hidden: !!field?.editor?.properties?.readOnly || !!field?.editor?.properties?.hidden || (editor === 'reference'),
             options: getOptions(field, htmlId),
             field,
-            editor
+            editor,
+            required: !!field?.validations?.required,
+            maxLength: field?.validations?.maxLength?.value
         }
     });
 }

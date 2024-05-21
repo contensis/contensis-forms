@@ -63,6 +63,9 @@ export type FormFieldState = {
     errorMessage: Nullable<string>;
     errorMessages: Nullable<string[]>;
 
+    required: boolean;
+    maxLength: Nullable<number>;
+
     hidden: boolean;
     autoFill: Nullable<string>;
     options: Nullable<FormFieldOption[]>;
@@ -73,7 +76,7 @@ export type FormFieldState = {
     field: Field;
 };
 
-export type FormFieldContainer = 'control' | 'fieldset';
+export type FormFieldContainer = 'control' | 'fieldset' | 'checkbox';
 
 export type FormField = FormFieldState & {
     inputRef: MutableRefObject<any>;

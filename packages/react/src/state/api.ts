@@ -40,7 +40,6 @@ const RefreshTokenExpiryTime = 15 * 24 * 3600 * 1000; // 15 days
 
 const SCOPE = 'Security_Administrator ContentType_Read ContentType_Write ContentType_Delete Entry_Read Entry_Write Entry_Delete Project_Read Project_Write Project_Delete Workflow_Administrator';
 const GRANT_TYPE = 'contensis_classic_refresh_token';
-const PUBLIC_USER_BEARER_TOKEN = ''; // TODO: what should this be
 
 type RequestOptions = {
     apiUrl: string;
@@ -60,7 +59,7 @@ async function getBearerToken(options: RequestOptions) {
     }
     const refreshToken = cookies[CmsRefreshTokenCookie] || cookies[RefreshTokenCookie];
     if (!refreshToken) {
-        return PUBLIC_USER_BEARER_TOKEN;
+        return null;
     }
 
     try {
@@ -77,7 +76,7 @@ async function getBearerToken(options: RequestOptions) {
         });
 
         if (!response.ok) {
-            return PUBLIC_USER_BEARER_TOKEN;
+            return null;
         }
         const data: AuthenticateResponse = await response.json();
 
@@ -92,20 +91,29 @@ async function getBearerToken(options: RequestOptions) {
         }
         return bearerToken;
     } catch (e) {
-        return PUBLIC_USER_BEARER_TOKEN;
+        return null;
     }
 }
 
+async function getDefaultHeaders(options: RequestOptions) {
+    const bearerToken = await getBearerToken(options);
+    const headers: Record<string, string> = {
+        'content-type': 'application/json'
+    };
+    if (bearerToken) {
+        headers.authorization = `Bearer ${bearerToken}`;
+    }
+    return headers;
+}
+
 async function getForm({ apiUrl, projectId, formId, language, versionStatus }: GetFormParams) {
-    const bearerToken = await getBearerToken({ apiUrl });
 
     const query = (versionStatus === 'latest') ? `?versionStatus=${versionStatus}` : '';
 
+    const headers = await getDefaultHeaders({ apiUrl });
+
     const response = await fetch(`${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}${query}`, {
-        headers: {
-            'content-type': 'application/json',
-            authorization: `Bearer ${bearerToken}`
-        },
+        headers,
         method: 'GET',
         mode: 'cors'
     });
@@ -137,9 +145,8 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, formVersi
         }
     };
 
-    const bearerToken = await getBearerToken({ apiUrl });
+    const headers = await getDefaultHeaders({ apiUrl });
 
-    // todo: there is an issue with the api when saving responses with versionNumber
     let url = `${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}/entries`;
     url = (isPublishedVersion(versionStatus) && (formVersionNo))
         ? url
@@ -147,8 +154,7 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, formVersi
 
     const response = await fetch(url, {
         headers: {
-            'content-type': 'application/json',
-            authorization: `Bearer ${bearerToken}`,
+            ...headers,
             ...(!!captchaResponse ? { 'Recaptha-Token': captchaResponse } : {})
         },
         method: 'POST',

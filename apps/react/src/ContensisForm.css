@@ -39,14 +39,14 @@
   /* --------------------------------------------------------*/
   /* Form core styles                                        */
   /* The following variables are used to define the core     */
-  /* component of the form.                                  */ 
+  /* component of the form.                                  */
   /* --------------------------------------------------------*/
   --form-bg-color: var(--color-bg-subtle);
   --form-border-radius: var(--size-border-radius);
   --form-width: calc(68ch + 2ch + 0.125em);
-  --form-text-size-title: calc(var(--global-font-size) * 2); 
-  --form-text-size-subtitle: calc(var(--global-font-size) * 1.5); 
-  --form-text-size-description: var(--global-font-size); 
+  --form-text-size-title: calc(var(--global-font-size) * 2);
+  --form-text-size-subtitle: calc(var(--global-font-size) * 1.5);
+  --form-text-size-description: var(--global-font-size);
 
   /* --------------------------------------------------------*/
   /* Page header                                             */
@@ -63,12 +63,12 @@
   --form-progress-bar-bg-color: #fff;
   --form-progress-value-bg-color: var(--color-progress);
   --form-progress-border-radius: var(--size-dimension-8);
-  
+
   /* --------------------------------------------------------*/
   /* Form fields                                             */
   /* --------------------------------------------------------*/
   --form-field-text-color: var(--color-text);
-  --form-field-bg-color:  var(--color-bg-light);
+  --form-field-bg-color: var(--color-bg-light);
   --form-field-hover-bg-color: #effefc;
   --form-field-error-bg-color: #f9d7d7;
   --form-field-border-color: var(--color-border);
@@ -85,10 +85,10 @@
   /* --------------------------------------------------------*/
   --btn-background: var(--color-bg-light);
   --btn-text-color: var(--color-text);
-  --btn-font-size:  var(--global-font-size);
-  --btn-font-weight:  var(--global-font-weight-bold);
+  --btn-font-size: var(--global-font-size);
+  --btn-font-weight: var(--global-font-weight-bold);
   --btn-padding-block: var(--size-space-8);
-  --btn-padding-inline:  var(--size-space-12);
+  --btn-padding-inline: var(--size-space-12);
   --btn-border-color: var(--color-border);
   --btn-border-radius: var(--size-border-radius);
   --btn-border-width: var(--size-border);
@@ -145,7 +145,7 @@
   --size-width-75: 75%;
   --size-width-100: 100%;
 
-  --size-width-ch-2: calc(2ch + 2ch + var(--size-border)); 
+  --size-width-ch-2: calc(2ch + 2ch + var(--size-border));
   --size-width-ch-3: calc(3ch + 2ch + var(--size-border));
   --size-width-ch-4: calc(4ch + 2ch + var(--size-border));
   --size-width-ch-5: calc(5ch + 2ch + var(--size-border));
@@ -174,7 +174,7 @@ html {
   font-size: var(--global-font-size);
 }
 
-form {
+.form {
   --background-color: var(--form-bg-color);
   --font-size: var(--global-font-size);
   --border-radius: var(--form-border-radius);
@@ -291,10 +291,10 @@ legend {
   gap: var(--size-space-4);
 }
 
-  .form-field-has-error {
-    border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
-    padding-inline-start: var(--size-space-16);
-  }
+.form-field-has-error {
+  border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
+  padding-inline-start: var(--size-space-16);
+}
 
 .form-field-label,
 .form-field-legend {
@@ -302,16 +302,62 @@ legend {
   color: var(--color-text-label);
   font-weight: var(--global-font-weight-bold);
 }
-  .form-field-error {
-    color: var(--color-text-error); 
-    font-weight: var(--global-font-weight-bold);
-  }
+
+.form-field-label-required, 
+.form-field-legend-required {
+  text-decoration: none;
+}
+
+.form-field-error {
+  color: var(--color-text-error);
+  font-weight: var(--global-font-weight-bold);
+}
 
 .form-field-instructions {
   color: var(--color-text-subtle);
   line-height: 1.5;
   margin-block-end: var(--size-space-8);
 }
+
+/* --------------------------------------------------------*/
+/* Checkbox                                                   */
+/* --------------------------------------------------------*/
+
+.form-checkbox-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-space-4);
+}
+
+.form-checkbox-field-has-error {
+  border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
+  padding-inline-start: var(--size-space-16);
+}
+
+.form-checkbox-field-label,
+.form-checkbox-field-legend {
+  font-size: var(--global-font-size-label);
+  color: var(--color-text-label);
+  font-weight: var(--global-font-weight-bold);
+  margin-inline-start: var(--size-space-12);
+  align-self: center;
+}
+
+.form-checkbox-field-label-required {
+  text-decoration: none;
+}
+
+.form-checkbox-field-error {
+  color: var(--color-text-error);
+  font-weight: var(--global-font-weight-bold);
+}
+
+.form-checkbox-field-instructions {
+  color: var(--color-text-subtle);
+  line-height: 1.5;
+  margin-block-end: var(--size-space-8);
+}
+
 
 /* --------------------------------------------------------*/
 /* Validation summary                                      */
@@ -349,6 +395,15 @@ legend {
 /* --------------------------------------------------------*/
 /* Buttons                                                 */
 /* --------------------------------------------------------*/
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-footer-page {  
+  align-self: center;
+}
 
 .form-actions {
   display: flex;
@@ -642,17 +697,31 @@ progress[value] {
   background: var(--form-progress-bar-bg-color);
   inline-size: var(--size-width-100);
 }
+
 progress[value]::-webkit-progress-bar {
   border-radius: var(--form-progress-border-radius);
   background: var(--form-progress-bar-bg-color);
 }
+
 progress[value]::-webkit-progress-value {
   border-radius: var(--form-progress-border-radius);
   background: var(--form-progress-value-bg-color);
 }
+
 progress[value]::-moz-progress-bar {
   border-radius: var(--form-progress-border-radius);
   background: var(--form-progress-value-bg-color);
+}
+
+/* --------------------------------------------------------*/
+/* Character count
+/* --------------------------------------------------------*/
+
+.field-char-count {}
+
+.field-char-count-error {
+  color: var(--color-text-error);
+  font-weight: var(--global-font-weight-bold);
 }
 
 /* --------------------------------------------------------*/
@@ -673,7 +742,7 @@ progress[value]::-moz-progress-bar {
     text-align: end;
   }
 
-   /* Places the dropdown caret to the left hand side of the dropdown */
+  /* Places the dropdown caret to the left hand side of the dropdown */
   & .form-select-input {
     background-position: left 0.7em top 50%, 0 0;
   }

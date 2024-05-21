@@ -16,7 +16,7 @@ export function DateInput({ id }: FormInputProps) {
         <>
             <input
                 type="text"
-                {...inputAttrs(field, 'date')}
+                {...inputAttrs(field, 'date', { autoComplete: 'bday' })}
                 value={textValue(field.inputValue)}
                 onChange={onChange}
                 onFocus={field.onFocus}

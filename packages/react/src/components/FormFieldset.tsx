@@ -3,6 +3,7 @@ import { useFormField } from './FormContext';
 import { FormFieldErrors } from './FormFieldErrors';
 import { FormFieldInstructions } from './FormFieldInstructions';
 import { formFieldCss, instructionsId } from './utils';
+import { RequiredLabelText } from './FormFieldLabel';
 
 type FormFieldProps = { id: string, children?: ReactNode };
 
@@ -13,7 +14,9 @@ export function FormFieldset(props: FormFieldProps) {
             className={formFieldCss(field, 'fieldset')}
             aria-describedby={instructionsId(field)}
         >
-            <legend className="form-field-legend">{field.label}</legend>
+            <legend className="form-field-legend">
+                <RequiredLabelText label={field.label} required={field.required} requiredClassName="form-field-legend-required"></RequiredLabelText>
+            </legend>
             <FormFieldInstructions id={props.id} />
             <FormFieldErrors id={props.id} />
             <div className="form-fieldset-input-container">

@@ -16,7 +16,7 @@ export function TimeInput({ id }: FormInputProps) {
         <>
             <input
                 type="text"
-                {...inputAttrs(field, 'time')}
+                {...inputAttrs(field, 'time', { autoComplete: 'off' })}
                 value={textValue(field.inputValue)}
                 onChange={onChange}
                 onFocus={field.onFocus}

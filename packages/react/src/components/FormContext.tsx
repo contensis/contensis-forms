@@ -50,7 +50,7 @@ export function useFormSelector<TResult>(getSelector: (form: Form) => (state: Fo
 }
 
 const DEFAULT_CONTAINERS: Record<FieldEditorType, FormFieldContainer> = {
-    checkbox: 'control',
+    checkbox: 'checkbox',
     date: 'control',
     datetime: 'control',
     decimal: 'control',
