@@ -172,6 +172,41 @@ html {
   font-size: var(--global-font-size);
 }
 
+* {
+  margin: 0;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-inline-size: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
 .form {
   --background-color: var(--form-bg-color);
   --font-size: var(--global-font-size);
@@ -207,14 +242,12 @@ legend {
 
 .form-title {
   font-size: var(--form-text-size-title);
-  margin: 0;
   padding-block-end: var(--size-space-8);
   color: var(--color-text-title);
 }
 
 .form-description {
   font-size: var(--form-text-size-description);
-  margin: 0;
   color: var(--color-text-description);
 }
 
@@ -277,6 +310,11 @@ legend {
 .form-fieldset-has-error {
   border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
   padding-inline-start: var(--size-space-16);
+
+  & .form-field-label-required,
+  & .form-field-legend-required {
+    color: var(--color-error);
+  }
 }
 
 /* --------------------------------------------------------*/
@@ -292,6 +330,11 @@ legend {
 .form-field-has-error {
   border-inline-start: var(--form-field-border-width-error) solid var(--color-error);
   padding-inline-start: var(--size-space-16);
+
+  & .form-field-label-required,
+  & .form-field-legend-required {
+    color: var(--color-error);
+  }
 }
 
 .form-field-label,
@@ -368,7 +411,6 @@ legend {
   line-height: 1.5;
   margin-block-end: var(--size-space-8);
 }
-
 
 /* --------------------------------------------------------*/
 /* Validation summary                                      */
@@ -732,7 +774,8 @@ progress[value]::-moz-progress-bar {
 /* Character count
 /* --------------------------------------------------------*/
 
-.field-char-count {}
+.field-char-count {
+}
 
 .field-char-count-error {
   color: var(--color-text-error);
