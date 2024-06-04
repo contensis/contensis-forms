@@ -77,7 +77,7 @@ export type FormDataFormat = 'form';
 
 export type CaptchaSettings = {
     enabled: boolean;
-    siteKey?: Nullable<string>;
+    siteKey?: Nullable<string>; // todo: notion says this property is "site_key" but this seems wrong need to check with James
 };
 
 export type FormProperties = {
@@ -120,7 +120,7 @@ export type FieldEditorId =
 
 export type AllowedValues = {
     values?: Nullable<string[]>;
-    textValues?: Nullable<{ value: string, text: string }[]>;
+    labeledValues?: Nullable<{ value: string, label: string }[]>;
 };
 
 
@@ -149,12 +149,11 @@ export type FieldEditor = {
     properties?: FieldEditorProperties;
 };
 
-export type FieldSize = 'small' | 'medium' | 'large' | 'auto';
 export type FieldLabelPosition = 'top' | 'leftAligned';
 
 type FieldEditorProperties = {
     autoFill?: string;
-    size?: FieldSize;
+    rows?: number;
     labelPosition?: FieldLabelPosition;
     cssClass?: string;
     hidden?: boolean;

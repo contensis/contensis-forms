@@ -63,6 +63,7 @@ export function inputAttrs(field: FormField, fieldType: string, settings?: Input
         id: field.htmlId,
         name: field.htmlId,
         autoComplete: field.autoFill || settings?.autoComplete,
+        rows: field.rows || undefined,
         'aria-invalid': invalid,
         'aria-describedby': attr({
             [instructionsId(field)]: !!field.instructions,

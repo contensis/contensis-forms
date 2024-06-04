@@ -1,5 +1,5 @@
 import { MutableRefObject, ReactNode } from 'react';
-import { ConfirmationRuleReturn, Field, FieldLabelPosition, FieldSize, FormApiInputParams, FormContentType, FormResponse, GetFormParams, Group, StringOrCanvas } from './api';
+import { ConfirmationRuleReturn, Field, FieldLabelPosition, FormApiInputParams, FormContentType, FormResponse, GetFormParams, Group, StringOrCanvas } from './api';
 import { Dictionary, Nullable } from './shared';
 
 export type FormProps = FormApiInputParams & {
@@ -69,9 +69,9 @@ export type FormFieldState = {
     hidden: boolean;
     autoFill: Nullable<string>;
     options: Nullable<FormFieldOption[]>;
-    size: Nullable<FieldSize>;
     labelPosition: Nullable<FieldLabelPosition>;
     cssClass: Nullable<string>;
+    rows: Nullable<number>;
 
     field: Field;
 };

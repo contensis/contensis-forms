@@ -49,6 +49,8 @@ export function Form(props: FormProps) {
             if (success) {
                 if (Rules.isConfirmationRuleReturnUri(result?.confirmation)) {
                     // todo: redirect
+                    // in the cms preview this could redirect to a url within the CMS
+                    // and then show the confirmation
                     console.log('redirect');
                 } else {
                     setFormResponse(result.form);

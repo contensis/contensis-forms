@@ -300,7 +300,8 @@ legend {
   color: var(--color-text-label);
   font-weight: var(--global-font-weight-bold);
   display: block;
-  text-wrap: pretty; /* Reduces orphans in form labels and legends */
+  text-wrap: pretty;
+  /* Reduces orphans in form labels and legends */
 }
 
 .form-field-legend {
@@ -312,7 +313,7 @@ legend {
   font-weight: var(--global-font-weight-bold);
 }
 
-.form-field-label-required, 
+.form-field-label-required,
 .form-field-legend-required {
   text-decoration: none;
 }
@@ -321,7 +322,8 @@ legend {
   color: var(--color-text-subtle);
   line-height: 1.5;
   margin-block-end: var(--size-space-8);
-  text-wrap: pretty; /* Reduces orphans */
+  text-wrap: pretty;
+  /* Reduces orphans */
 
   & p {
     margin: 0;
@@ -409,7 +411,7 @@ legend {
   justify-content: space-between;
 }
 
-.form-footer-page {  
+.form-footer-page {
   align-self: center;
 }
 
@@ -560,7 +562,12 @@ legend {
   background-color: var(--form-field-error-bg-color);
 }
 
-.form-multiline-input {
+/* todo these are not relevant any more now that we use rows */
+.form-multiline-input.form-multiline-input-no-rows {
+  block-size: 8rem;
+}
+
+/* .form-multiline-input {
   block-size: 8rem;
 }
 
@@ -578,7 +585,7 @@ legend {
 
 .form-multiline-input.form-multiline-input-large {
   block-size: 16rem;
-}
+} */
 
 /* --------------------------------------------------------*/
 /* Select dropdown                                         */
@@ -743,6 +750,7 @@ progress[value]::-moz-progress-bar {
 /* --------------------------------------------------------*/
 
 [dir='rtl'] {
+
   /* Ensures that email address and telephone number inputs are left-aligned */
   & .form-tel-input,
   & .form-email-input {

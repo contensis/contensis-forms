@@ -100,7 +100,7 @@ function getFieldsRecord(formHtmlId: string, form: Nullable<FormContentType>) {
             label: field?.editor?.label || field.name,
             instructions: field?.editor?.instructions,
             autoFill: field?.editor?.properties?.autoFill,
-            size: field?.editor?.properties?.size,
+            rows: field?.editor?.properties?.rows,
             labelPosition: field?.editor?.properties?.labelPosition,
             cssClass: field?.editor?.properties?.cssClass,
             hidden: !!field?.editor?.properties?.readOnly || !!field?.editor?.properties?.hidden || (editor === 'reference'),
