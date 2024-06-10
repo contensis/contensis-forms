@@ -77,7 +77,7 @@ export type FormDataFormat = 'form';
 
 export type CaptchaSettings = {
     enabled: boolean;
-    siteKey?: Nullable<string>; // todo: notion says this property is "site_key" but this seems wrong need to check with James
+    siteKey?: Nullable<string>; // todo: notion says this property is "site_key" but this seems wrong need to check with James, also this does not come back from the get content type call do we have to get this from anither call to project settings?
 };
 
 export type FormProperties = {
@@ -162,13 +162,15 @@ type FieldEditorProperties = {
 };
 
 
-export type FormRule<TReturn> = {    
+export type FormRule<TReturn> = {
     return: TReturn;
 };
 
 export type ConfirmationRuleReturnUri = {
     link: {
-        uri: string;
+        sys: {
+            uri: string;
+        }
     };
 };
 

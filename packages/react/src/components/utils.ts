@@ -52,7 +52,8 @@ function inputClassname(field: FormField, fieldType: string, additionalCss: Null
 
 type InputSettings = {
     autoComplete?: string;
-    cssSuffix?: string[]
+    cssSuffix?: string[];
+    rows?: number
 };
 
 export function inputAttrs(field: FormField, fieldType: string, settings?: InputSettings) {

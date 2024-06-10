@@ -20,8 +20,11 @@ export const localisations = {
     fieldAllowedValueValidationMessage: '{0} is required',
     fieldMinValidationMessage: '{0} must be minimum of {1}',
     fieldMaxValidationMessage: '{0} must be a maximum of {1}',
+    fieldMinMaxValidationMessage: '{0} must be between {1} and {2}',
+
     fieldMinLengthValidationMessage: '{0} must have a minimum length of {1}',
     fieldMaxLengthValidationMessage: '{0} must have a maximum length of {1}',
+    fieldMinMaxLengthValidationMessage: '{0} must have a length between {1} and {2}',
 
     fieldMinCountValidationMessageZero: '{0} requires a minimum of {1} items',
     fieldMinCountValidationMessageOne: '{0} requires a minimum of {1} item',
@@ -36,6 +39,8 @@ export const localisations = {
     fieldMaxCountValidationMessageFew: '{0} requires a maximum of {1} items',
     fieldMaxCountValidationMessageMany: '{0} requires a maximum of {1} items',
     fieldMaxCountValidationMessageOther: '{0} requires a maximum of {1} items',
+
+    fieldMinMaxCountValidationMessage: '{0} requires between {1} and {2}items',
 
     fieldRegExValidationMessage: '{0} has an invalid format',
     fieldAllowedValuesValidationMessage: '{0} has an invalid value',

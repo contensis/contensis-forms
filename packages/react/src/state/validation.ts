@@ -30,7 +30,7 @@ const createFieldValidator = memo((field: Field) => {
         ],
         [
             'dataFormat',
-            createDataFormatValidator(field.dataFormat), 
+            createDataFormatValidator(field.dataFormat),
             field.dataFormat ? format(DATA_FORMAT_MESSAGES[field.dataFormat], field.name) : ''
         ],
         [
@@ -44,34 +44,37 @@ const createFieldValidator = memo((field: Field) => {
             field.validations?.allowedValue?.message || format(localisations.fieldAllowedValueValidationMessage, field.name)
         ],
         [
-            'min',
-            createMinValidator(field.validations?.min),
-            field.validations?.min?.message || format(localisations.fieldMinValidationMessage, field.name, field.validations?.min?.value)
+            'size',
+            createSizeValidator(field.validations?.min, field.validations?.max),
+            getRangeErrorMessage(
+                field.validations?.min,
+                field.validations?.max,
+                format(localisations.fieldMinValidationMessage, field.name, field.validations?.min?.value),
+                format(localisations.fieldMaxValidationMessage, field.name, field.validations?.max?.value),
+                format(localisations.fieldMinMaxValidationMessage, field.name, field.validations?.min?.value, field.validations?.max?.value)
+            )
         ],
         [
-            'max',
-            createMaxValidator(field.validations?.max),
-            field.validations?.max?.message || format(localisations.fieldMaxValidationMessage, field.name, field.validations?.max?.value)
+            'length',
+            createLengthValidator(field.validations?.minLength, field.validations?.maxLength),
+            getRangeErrorMessage(
+                field.validations?.minLength,
+                field.validations?.maxLength,
+                format(localisations.fieldMinLengthValidationMessage, field.name, field.validations?.minLength?.value),
+                format(localisations.fieldMaxLengthValidationMessage, field.name, field.validations?.maxLength?.value),
+                format(localisations.fieldMinMaxLengthValidationMessage, field.name, field.validations?.minLength?.value, field.validations?.maxLength?.value)
+            )
         ],
         [
-            'minLength',
-            createMinLengthValidator(field.validations?.minLength),
-            field.validations?.minLength?.message || format(localisations.fieldMinLengthValidationMessage, field.name, field.validations?.minLength?.value)
-        ],
-        [
-            'maxLength',
-            createMaxLengthValidator(field.validations?.maxLength),
-            field.validations?.maxLength?.message || format(localisations.fieldMaxLengthValidationMessage, field.name, field.validations?.maxLength?.value)
-        ],
-        [
-            'minCount',
-            createMinCountValidator(field.validations?.minCount),
-            field.validations?.minCount?.message || minCountMessage(field.validations?.minCount?.value, field)
-        ],
-        [
-            'maxCount',
-            createMaxCountValidator(field.validations?.maxCount),
-            field.validations?.maxCount?.message || maxCountMessage(field.validations?.maxCount?.value, field)
+            'count',
+            createCountValidator(field.validations?.minCount, field.validations?.maxCount),
+            getRangeErrorMessage(
+                field.validations?.minCount,
+                field.validations?.maxCount,
+                minCountMessage(field.validations?.minCount?.value, field),
+                maxCountMessage(field.validations?.maxCount?.value, field),
+                format(localisations.fieldMinMaxCountValidationMessage, field.name, field.validations?.minCount?.value, field.validations?.maxCount?.value)
+            )
         ],
         [
             'regex',
@@ -207,62 +210,71 @@ function createRequiredValidator(required: Nullable<FieldValidation>): Validator
         : noopValidator
 }
 
-function createMinValidator(min: Nullable<FieldValidationWithValue<number>>): Validator<{ min: number }> {
-    return !!min
-        ? fromValid(
-            (value: unknown) => (typeof value === 'number') ? (value >= min.value) : true,
-            () => ({ min: min?.value })
-        )
-        : noopValidator;
-}
-
-function createMaxValidator(max: Nullable<FieldValidationWithValue<number>>): Validator<{ max: number }> {
-    return !!max
-        ? fromValid(
-            (value: unknown) => (typeof value === 'number') ? (value <= max.value) : true,
-            () => ({ max: max?.value })
-        )
-        : noopValidator;
-}
-
-function createMinLengthValidator(minLength: Nullable<FieldValidationWithValue<number>>): Validator<{ minLength: number }> {
-    return !!minLength
-        ? fromValid(
-            (value: unknown) => hasLength(value) ? (value.length >= minLength.value) : true,
-            () => ({ minLength: minLength?.value })
-        )
-        : noopValidator;
-}
-
-function createMaxLengthValidator(maxLength: Nullable<FieldValidationWithValue<number>>): Validator<{ maxLength: number }> {
-    return !!maxLength
-        ? fromValid(
-            (value: unknown) => hasLength(value) ? (value.length <= maxLength.value) : true,
-            () => ({ maxLength: maxLength?.value })
-        )
-        : noopValidator;
-}
-
-function createMinCountValidator(minCount: Nullable<FieldValidationWithValue<number>>): Validator<{ minCount: number }> {
-    return !!minCount
+function createSizeValidator(
+    min: Nullable<FieldValidationWithValue<number>>,
+    max: Nullable<FieldValidationWithValue<number>>,
+): Validator<{ min: Nullable<number>, max: Nullable<number> }> {
+    return (!!min || !!max)
         ? fromValid(
             (value: unknown) => {
-                const length = hasLength(value) ? value.length : 0;
-                return (length >= minCount.value);
+                let valid = true;
+                if (typeof value === 'number') {
+                    if (min) {
+                        valid = (value >= min.value);
+                    }
+                    if (valid && max) {
+                        valid = (value <= max.value);
+                    }
+                }
+                return valid;
             },
-            () => ({ minCount: minCount?.value })
+            () => ({ min: min?.value, max: max?.value })
         )
         : noopValidator;
 }
 
-function createMaxCountValidator(maxCount: Nullable<FieldValidationWithValue<number>>): Validator<{ maxCount: number }> {
-    return !!maxCount
+function createLengthValidator(
+    minLength: Nullable<FieldValidationWithValue<number>>,
+    maxLength: Nullable<FieldValidationWithValue<number>>,
+): Validator<{ minLength: Nullable<number>, maxLength: Nullable<number> }> {
+    return (!!minLength || !!maxLength)
         ? fromValid(
             (value: unknown) => {
-                const length = hasLength(value) ? value.length : 0;
-                return (length <= maxCount.value);
+                let valid = true;
+                if (hasLength(value)) {
+                    if (minLength) {
+                        valid = (value.length >= minLength.value);
+                    }
+                    if (valid && maxLength) {
+                        valid = (value.length <= maxLength.value);
+                    }
+                }
+                return valid;
             },
-            () => ({ maxCount: maxCount?.value })
+            () => ({ minLength: minLength?.value, maxLength: maxLength?.value })
+        )
+        : noopValidator;
+}
+
+function createCountValidator(
+    minCount: Nullable<FieldValidationWithValue<number>>,
+    maxCount: Nullable<FieldValidationWithValue<number>>,
+): Validator<{ minCount: Nullable<number>, maxCount: Nullable<number> }> {
+    return (!!minCount || !!maxCount)
+        ? fromValid(
+            (value: unknown) => {
+                let valid = true;
+                if (hasLength(value)) {
+                    if (minCount) {
+                        valid = (value.length >= minCount.value);
+                    }
+                    if (valid && maxCount) {
+                        valid = (value.length <= maxCount.value);
+                    }
+                }
+                return valid;
+            },
+            () => ({ minCount: minCount?.value, maxCount: maxCount?.value })
         )
         : noopValidator;
 }
@@ -370,4 +382,29 @@ function maxCountMessage(value: Nullable<number>, field: Field) {
         many: () => format(localisations.fieldMaxCountValidationMessageMany, field.name, value),
         other: () => format(localisations.fieldMaxCountValidationMessageOther, field.name, value)
     });
+}
+
+function getRangeErrorMessage(
+    min: Nullable<FieldValidationWithValue<number>>,
+    max: Nullable<FieldValidationWithValue<number>>,
+    defaultMinMessage: string,
+    defaultMaxMessage: string,
+    defaultRangeMessage: string,
+) {
+    if (min?.message) {
+        return min.message;
+    }
+    if (max?.message) {
+        return max.message;
+    }
+    if (min && max) {
+        return defaultRangeMessage;
+    }
+    if (min) {
+        return defaultMinMessage;
+    }
+    if (min && max) {
+        return defaultMaxMessage;
+    }
+    return '';
 }

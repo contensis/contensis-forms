@@ -48,10 +48,7 @@ export function Form(props: FormProps) {
             const success = props?.onSubmitSuccess ? props.onSubmitSuccess(result) : true;
             if (success) {
                 if (Rules.isConfirmationRuleReturnUri(result?.confirmation)) {
-                    // todo: redirect
-                    // in the cms preview this could redirect to a url within the CMS
-                    // and then show the confirmation
-                    console.log('redirect');
+                    window.location.assign(result.confirmation.link.sys.uri)
                 } else {
                     setFormResponse(result.form);
                     setConfirmationRule(result.confirmation);

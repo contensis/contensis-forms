@@ -605,10 +605,6 @@ legend {
 }
 
 /* todo these are not relevant any more now that we use rows */
-.form-multiline-input.form-multiline-input-no-rows {
-  block-size: 8rem;
-}
-
 /* .form-multiline-input {
   block-size: 8rem;
 }

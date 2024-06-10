@@ -10,7 +10,7 @@ export function MultilineInput({ id }: FormInputProps) {
     };
     return (
         <textarea
-            {...inputAttrs(field, 'multiline', { cssSuffix: [field.rows ? 'rows' : 'no-rows'] })}
+            {...inputAttrs(field, 'multiline', { rows: 4 })}
             value={textValue(field.inputValue)}
             onChange={onChange}
             onFocus={field.onFocus}

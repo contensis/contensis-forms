@@ -1,7 +1,7 @@
 import { ConfirmationRuleReturn, ConfirmationRuleReturnContent, ConfirmationRuleReturnUri, Nullable } from '../models';
 
 function isConfirmationRuleReturnUri(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnUri {
-    return !!(r as ConfirmationRuleReturnUri)?.link?.uri;
+    return !!(r as ConfirmationRuleReturnUri)?.link?.sys?.uri;
 }
 
 function isConfirmationRuleReturnContent(r: Nullable<ConfirmationRuleReturn>): r is ConfirmationRuleReturnContent {
