@@ -301,16 +301,13 @@ function createRegExValidator(regex: Nullable<FieldValidation & { pattern: strin
 }
 
 function createAllowedValueValidator(allowedValue: Nullable<FieldValidations['allowedValue']>): Validator<{ allowed: any }> {
-    const allowed = allowedValue?.value;
+    const allowed = allowedValue?.value;    
     if (isNull(allowed)) {
         return noopValidator;
     }
-
     return fromValid(
         (value: unknown) => {
-            if (isEmpty(value)) {
-                return true;
-            }
+            // don't automatically allow empty values
             return (value === allowed);
         },
         () => ({ allowed })
