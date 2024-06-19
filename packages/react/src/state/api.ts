@@ -52,6 +52,11 @@ type AuthenticateResponse = {
     token_type: string;
 };
 
+function isLoggedIn() {
+    const cookies = getAllCookies();
+    return !!cookies[CmsBearerTokenCookie];
+}
+
 async function getBearerToken(options: RequestOptions) {
     const cookies = getAllCookies();
     if (cookies[CmsBearerTokenCookie]) {
@@ -133,8 +138,8 @@ async function getForm({ apiUrl, projectId, formId, language, versionStatus }: G
 }
 
 async function saveFormResponse({ apiUrl, projectId, formId, language, formVersionNo, versionStatus, formResponse, captcha }: SaveFormResponseParams): Promise<SaveFormResponse> {
-
-    const captchaResponse = isPublishedVersion(versionStatus) ? await Captcha.submit(formId, captcha) : '';
+    const headers = await getDefaultHeaders({ apiUrl });
+    const captchaResponse = (isPublishedVersion(versionStatus) && !isLoggedIn()) ? await Captcha.submit(formId, captcha) : '';
 
     formResponse = {
         ...formResponse,
@@ -143,9 +148,7 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, formVersi
             dataFormat: 'form' as const,
             language
         }
-    };
-
-    const headers = await getDefaultHeaders({ apiUrl });
+    };    
 
     let url = `${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}/entries`;
     url = (isPublishedVersion(versionStatus) && (formVersionNo))
@@ -177,6 +180,7 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, formVersi
 }
 
 export const Api = {
+    isLoggedIn,
     getForm,
     saveFormResponse
 };

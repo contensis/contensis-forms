@@ -1,6 +1,6 @@
 import { FormEventHandler } from 'react';
 import { FormProps } from '../models';
-import { Captcha, isPublishedVersion, localisations } from '../state';
+import { Captcha, isPublishedVersion, localisations, Api } from '../state';
 import { FormButtons } from './FormButtons';
 import { FormContents } from './FormContents';
 import { useFormSelector } from './FormContext';
@@ -23,7 +23,7 @@ export function FormLoader(props: FormLoaderProps) {
         return props.error ? props.error(apiError) : (<FormLoadError error={apiError} />);
     }
 
-    if (formDefinition?.properties?.captcha && isPublishedVersion(versionStatus)) {
+    if (formDefinition?.properties?.captcha && isPublishedVersion(versionStatus) && !Api.isLoggedIn()) {
         Captcha.load(formDefinition.properties.captcha);
     }
 

@@ -604,27 +604,6 @@ legend {
   background-color: var(--form-field-error-bg-color);
 }
 
-/* todo these are not relevant any more now that we use rows */
-/* .form-multiline-input {
-  block-size: 8rem;
-}
-
-.form-multiline-input.form-multiline-input-auto {
-  block-size: auto;
-}
-
-.form-multiline-input.form-multiline-input-small {
-  block-size: 8rem;
-}
-
-.form-multiline-input.form-multiline-input-medium {
-  block-size: 8rem;
-}
-
-.form-multiline-input.form-multiline-input-large {
-  block-size: 16rem;
-} */
-
 /* --------------------------------------------------------*/
 /* Select dropdown                                         */
 /* --------------------------------------------------------*/

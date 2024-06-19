@@ -1,7 +1,4 @@
 export {
-    createConfirmationRenderer,
-    createLiquidRenderer,
-    createMarkdownRenderer,
-    createSimpleRenderer
+    Renderers
 } from './renderer';
 export { Description } from './Description';

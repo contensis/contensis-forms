@@ -1,25 +1,10 @@
-import { useEffect, useState } from 'react';
-import { FormConfirmationProps } from '../models';
+import { useMemo } from 'react';
+import { ConfirmationRuleReturn, FormConfirmationProps } from '../models';
 import { Rules, localisations } from '../state';
-import { createConfirmationRenderer, createLiquidRenderer } from './html';
+import { Renderers } from './html';
 
 export function FormConfirmation(props: FormConfirmationProps) {
-    const [confirmation, setConfirmation] = useState<null | string>();
-
-    useEffect(() => {
-        let ignore = false;
-        getConfirmationHtml(props).then(
-            (c) => {
-                if (!ignore) {
-                    setConfirmation(c);
-                }
-            }
-        );
-        return () => {
-            ignore = true;
-        };
-    }, [props.rule, props.formResponse]);
-
+    const confirmation = useMemo(() => getConfirmationHtml(props.rule), [props.rule]);
     return !!confirmation
         ? (
             <div className="form-confirmation-message" dangerouslySetInnerHTML={{ __html: confirmation }}>
@@ -32,16 +17,10 @@ export function FormConfirmation(props: FormConfirmationProps) {
         )
 }
 
-async function getConfirmationHtml({ rule, formResponse }: FormConfirmationProps) {
+function getConfirmationHtml(rule: ConfirmationRuleReturn) {
     if (Rules.isConfirmationRuleReturnContent(rule)) {
         try {
-            const liquidRenderer = await createLiquidRenderer();
-            // render canvas to html then execute liquid
-            const htmlRenderer = await createConfirmationRenderer();
-            const content = rule.content;
-            const htmlTemplate = htmlRenderer({ data: content });
-            const html: string = await liquidRenderer.parseAndRender(htmlTemplate, formResponse || {});
-            return html;
+            return Renderers.canvas({ data: rule.content });
         } catch {
             return null;
         }
