@@ -1,8 +1,9 @@
-import { useFormSelector } from './FormContext';
+import { FormContentType, Nullable } from '../models';
 import { Description } from './html';
 
-export function FormTitle() {
-    const form = useFormSelector(f => f.selectForm);
+type FormTitleProps = { form: Nullable<FormContentType> };
+
+export function FormTitle({ form }: FormTitleProps) {
     return (
         <div className="form-header">
             <h3 className="form-title">{form?.name}</h3>

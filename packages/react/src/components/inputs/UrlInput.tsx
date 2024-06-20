@@ -1,22 +1,20 @@
 import { ChangeEvent } from 'react';
-import { useFormField } from '../FormContext';
 import { inputAttrs, textValue } from '../utils';
-import { FormInputProps } from './models';
+import { FormInputProps } from '../models';
 
-export function UrlInput({ id }: FormInputProps) {
-    const field = useFormField(id);
-    const onChange = ($event: ChangeEvent<HTMLInputElement>) => {
-        field.onChange($event.target.value);
+export function UrlInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
+    const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
+        onChange($event.target.value);
     };
     return (
         <input
             type="url"
-            {...inputAttrs(field, 'url', { autoComplete: 'url' })}
+            {...inputAttrs(attrs, 'url', { autoComplete: 'url' })}
             spellCheck="false"
-            value={textValue(field.inputValue)}
-            onChange={onChange}
-            onFocus={field.onFocus}
-            onBlur={field.onBlur}
+            value={textValue(inputValue)}
+            onChange={onInputChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
         />
     );
 }

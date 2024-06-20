@@ -1,26 +1,23 @@
 import { ChangeEvent } from 'react';
 import { parseTime } from '../../dates';
-import { useFormField } from '../FormContext';
 import { inputAttrs, textValue } from '../utils';
-import { FormInputProps } from './models';
+import { FormInputProps } from '../models';
 
-export function TimeInput({ id }: FormInputProps) {
-    const field = useFormField(id);
-
-    const onChange = ($event: ChangeEvent<HTMLInputElement>) => {
+export function TimeInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
+    const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
         const time = parseTime($event.target.value);
-        field.onChange($event.target.value, time);
+        onChange($event.target.value, time);
     };  
 
     return (
         <>
             <input
                 type="text"
-                {...inputAttrs(field, 'time', { autoComplete: 'off' })}
-                value={textValue(field.inputValue)}
-                onChange={onChange}
-                onFocus={field.onFocus}
-                onBlur={field.onBlur}
+                {...inputAttrs(attrs, 'time', { autoComplete: 'off' })}
+                value={textValue(inputValue)}
+                onChange={onInputChange}
+                onFocus={onFocus}
+                onBlur={onBlur}
             />
         </>
     );

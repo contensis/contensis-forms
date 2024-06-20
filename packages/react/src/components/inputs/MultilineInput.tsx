@@ -1,20 +1,18 @@
 import { ChangeEvent } from 'react';
-import { useFormField } from '../FormContext';
 import { inputAttrs, textValue } from '../utils';
-import { FormInputProps } from './models';
+import { FormInputProps } from '../models';
 
-export function MultilineInput({ id }: FormInputProps) {
-    const field = useFormField(id);
-    const onChange = ($event: ChangeEvent<HTMLTextAreaElement>) => {
-        field.onChange($event.target.value);
+export function MultilineInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
+    const onInputChange = ($event: ChangeEvent<HTMLTextAreaElement>) => {
+        onChange($event.target.value);
     };
     return (
         <textarea
-            {...inputAttrs(field, 'multiline', { rows: 4 })}
-            value={textValue(field.inputValue)}
-            onChange={onChange}
-            onFocus={field.onFocus}
-            onBlur={field.onBlur}
+            {...inputAttrs(attrs, 'multiline', { rows: 4 })}
+            value={textValue(inputValue)}
+            onChange={onInputChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
         />
     );
 }

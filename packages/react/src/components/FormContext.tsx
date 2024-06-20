@@ -1,6 +1,6 @@
-import { MutableRefObject, ReactNode, createContext, useContext, useMemo } from 'react';
-import { Dictionary, FieldEditorType, FormField, FormFieldContainer, FormState } from '../models';
-import { Form, useStoreSelector, reduceFields } from '../state';
+import { MutableRefObject, ReactNode, createContext, useContext } from 'react';
+import { Dictionary, FieldEditorType, FormFieldContainer, FormState } from '../models';
+import { Form, reduceFields, useStoreSelector } from '../state';
 
 const FormContext = createContext<null | Form>(null);
 
@@ -49,7 +49,7 @@ export function useFormSelector<TResult>(getSelector: (form: Form) => (state: Fo
     return useStoreSelector(form, getSelector(form));
 }
 
-const DEFAULT_CONTAINERS: Record<FieldEditorType, FormFieldContainer> = {
+export const DEFAULT_CONTAINERS_TYPES: Record<FieldEditorType, FormFieldContainer> = {
     checkbox: 'checkbox',
     date: 'control',
     datetime: 'control',
@@ -66,31 +66,3 @@ const DEFAULT_CONTAINERS: Record<FieldEditorType, FormFieldContainer> = {
     time: 'control',
     url: 'control'
 };
-
-export function useFormField(id: string): FormField {
-    const form = useForm();
-    const field = useStoreSelector(form, form.selectField(id));
-    const refs = useFieldRefs();
-    return useMemo(() => {
-        const onChange = (inputValue: unknown, value?: unknown) => {
-            value = (typeof value === 'undefined') ? inputValue : value;
-            form.setInputValue(field.id, inputValue);
-            form.setValue(field.id, value);
-        };
-        const onFocus = () => {
-            form.setFocussed(field.id, true);
-        };
-        const onBlur = () => {
-            form.setFocussed(field.id, false);            
-        };
-
-        return {
-            ...field,
-            inputRef: refs[field.id],
-            formFieldContainer: DEFAULT_CONTAINERS[field.editor],
-            onChange,
-            onFocus,
-            onBlur
-        };
-    }, [form, field, refs]);
-}

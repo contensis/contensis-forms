@@ -1,6 +1,9 @@
-import { FormField, Nullable } from '../models';
+import { Nullable } from '../models';
+import { FormInputProps } from './models';
 
 type AttrArg = undefined | null | string | string[] | Record<string, boolean>;
+
+type FieldInputProps = Pick<FormInputProps, 'htmlId' | 'showErrors' | 'errors' | 'inputRef' | 'autoFill' | 'rows' | 'instructions' | 'maxLength' | 'cssClass' | 'labelPosition'>;
 
 export function attr(...args: AttrArg[]) {
     const keys = args.reduce<string[]>((prev, arg) => {
@@ -24,28 +27,28 @@ export function progressId(htmlId: string) {
     return `${htmlId}-progress`;
 }
 
-export function inputId(field: FormField) {
-    return field.htmlId;
+export function inputId(inputs: Pick<FormInputProps, 'htmlId'>) {
+    return inputs.htmlId;
 }
 
-export function instructionsId(field: FormField) {
-    return `${field.htmlId}-instructions`;
+export function instructionsId(inputs: Pick<FormInputProps, 'htmlId'>) {
+    return `${inputs.htmlId}-instructions`;
 }
 
-export function errorsId(field: FormField) {
-    return `${field.htmlId}-errors`;
+export function errorsId(inputs: Pick<FormInputProps, 'htmlId'>) {
+    return `${inputs.htmlId}-errors`;
 }
 
-export function charCountId(field: FormField) {
-    return `${field.htmlId}-char-count`;
+export function charCountId(inputs: Pick<FormInputProps, 'htmlId'>) {
+    return `${inputs.htmlId}-char-count`;
 }
 
-function inputClassname(field: FormField, fieldType: string, additionalCss: Nullable<string[]>) {
+function inputClassname(inputs: FieldInputProps, fieldType: string, additionalCss: Nullable<string[]>) {
     return attr(
         `form-${fieldType}-input`,
         additionalCss?.filter(suffix => !!suffix).map(suffix => `form-${fieldType}-input-${suffix}`),
         {
-            [`form-${fieldType}-input-has-error`]: field.showErrors && !!field.errors
+            [`form-${fieldType}-input-has-error`]: inputs.showErrors && !!inputs.errors
         }
     );
 }
@@ -56,20 +59,20 @@ type InputSettings = {
     rows?: number
 };
 
-export function inputAttrs(field: FormField, fieldType: string, settings?: InputSettings) {
-    const invalid = field.showErrors && !!field.errors;
+export function inputAttrs(inputs: FieldInputProps, fieldType: string, settings?: InputSettings) {
+    const invalid = inputs.showErrors && !!inputs.errors;
     return {
-        ref: field.inputRef,
-        className: !!fieldType ? inputClassname(field, fieldType, settings?.cssSuffix) : undefined,
-        id: field.htmlId,
-        name: field.htmlId,
-        autoComplete: field.autoFill || settings?.autoComplete,
-        rows: field.rows || undefined,
+        ref: inputs.inputRef,
+        className: !!fieldType ? inputClassname(inputs, fieldType, settings?.cssSuffix) : undefined,
+        id: inputs.htmlId,
+        name: inputs.htmlId,
+        autoComplete: inputs.autoFill || settings?.autoComplete,
+        rows: inputs.rows || undefined,
         'aria-invalid': invalid,
         'aria-describedby': attr({
-            [instructionsId(field)]: !!field.instructions,
-            [errorsId(field)]: invalid,
-            [charCountId(field)]: !!field.maxLength
+            [instructionsId(inputs)]: !!inputs.instructions,
+            [errorsId(inputs)]: invalid,
+            [charCountId(inputs)]: !!inputs.maxLength
         })
     };
 }
@@ -84,16 +87,16 @@ export function textValue(value: unknown): string {
     return '';
 }
 
-export function formFieldCss(field: FormField, formFieldType: 'field' | 'fieldset' | 'checkbox-field') {
+export function formFieldCss(inputs: FieldInputProps, formFieldType: 'field' | 'fieldset' | 'checkbox-field') {
     return attr(
         `form-${formFieldType}`, 
         [
-            field.cssClass || '',
-            (field.labelPosition === 'top') ? `form-${formFieldType}-label-top` : '',
-            (field.labelPosition === 'leftAligned') ? `form-${formFieldType}-label-left` : ''
+            inputs.cssClass || '',
+            (inputs.labelPosition === 'top') ? `form-${formFieldType}-label-top` : '',
+            (inputs.labelPosition === 'leftAligned') ? `form-${formFieldType}-label-left` : ''
         ],
         { 
-            [`form-${formFieldType}-has-error`]: field.showErrors && !!field.errors 
+            [`form-${formFieldType}-has-error`]: inputs.showErrors && !!inputs.errors 
         }
     );
 }

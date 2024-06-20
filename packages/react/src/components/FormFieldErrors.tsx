@@ -1,15 +1,12 @@
 import { localisations } from '../state';
-import { useFormField } from './FormContext';
+import { FormInputProps } from './models';
 import { errorsId } from './utils';
 
-type FormFieldErrorsProps = { id: string };
-
-export function FormFieldErrors(props: FormFieldErrorsProps) {
-    const field = useFormField(props.id);
-    return (field.showErrors && field.errors)
+export function FormFieldErrors({ showErrors, errors, errorMessage, ...attrs}: FormInputProps) {
+    return (showErrors && errors)
         ? (
-            <div id={errorsId(field)} className="form-field-error">
-                <span className="visually-hidden">{localisations.errorLabel}:</span> {field.errorMessage}
+            <div id={errorsId(attrs)} className="form-field-error">
+                <span className="visually-hidden">{localisations.errorLabel}:</span> {errorMessage}
             </div>
         ): null;
 }

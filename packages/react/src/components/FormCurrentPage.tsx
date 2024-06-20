@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
-import { useFormSelector } from './FormContext';
+import { FormContentType, FormPage, Nullable } from '../models';
 import { FormFieldContainer } from './FormFieldContainer';
 import { FormValidationSummary } from './FormValidationSummary';
 import { Description } from './html';
 
-export function FormCurrentPage() {
-    const currentPage = useFormSelector(f => f.selectCurrentPage);
+type FormCurrentPageProps = {
+    currentPage: FormPage;
+    form: Nullable<FormContentType>;
+};
+
+export function FormCurrentPage({ currentPage, form }: FormCurrentPageProps) {
     useEffect(() => {
         document.title = currentPage.pageTitle;
     }, [currentPage.pageTitle]);
@@ -15,9 +19,11 @@ export function FormCurrentPage() {
                 <h3 className="form-current-page-title">{currentPage?.title}</h3>
                 <Description className="form-current-page-description" description={currentPage.description} />
             </div>
-            <FormValidationSummary />
+            <FormValidationSummary currentPage={currentPage} form={form} />
             <div className="form-fields-container">
-                {currentPage?.fields ? currentPage.fields.map(id => (<FormFieldContainer key={id} id={id} />)) : null}
+                {currentPage?.fields ? currentPage.fields.map(id => (<FormFieldContainer
+                    key={id}
+                />)) : null}
             </div>
         </div>
     );

@@ -1,38 +1,58 @@
 import { FormEventHandler } from 'react';
-import { FormProps } from '../models';
-import { Captcha, isPublishedVersion, localisations, Api } from '../state';
+import { FormContentType, FormPage, FormProps, Nullable, VersionStatus } from '../models';
+import { Api, Captcha, isPublishedVersion, localisations } from '../state';
 import { FormButtons } from './FormButtons';
-import { FormContents } from './FormContents';
-import { useFormSelector } from './FormContext';
+import { FormCurrentPage } from './FormCurrentPage';
 import { FormProgress } from './FormProgress';
 import { FormTitle } from './FormTitle';
 
-type FormLoaderProps = FormProps & { onFormSubmit: FormEventHandler<HTMLFormElement> };
+type FormLoaderProps = FormProps & {
+    formHtmlId: string;
+    isLoading: boolean;
+    apiError: unknown;
+    form: Nullable<FormContentType>;
+    versionStatus: VersionStatus;
+    onFormSubmit: FormEventHandler<HTMLFormElement>;
 
-export function FormLoader(props: FormLoaderProps) {
-    const isLoading = useFormSelector(f => f.selectIsLoading);
-    const apiError = useFormSelector(f => f.selectApiError);
-    const formDefinition = useFormSelector(f => f.selectForm);
-    const versionStatus = useFormSelector(f => f.selectVersionStatus);
+    pageIndex: number;
+    pageCount: number;
+    currentPage: FormPage;
+    previousPage: () => void;
+};
+
+export function FormLoader({ loading, error, onFormSubmit, isLoading, apiError, form, versionStatus, formHtmlId, pageIndex, pageCount, currentPage, previousPage }: FormLoaderProps) {
 
     if (isLoading) {
-        return props.loading || (<FormLoading />)
+        return loading || (<FormLoading />)
     }
 
     if (apiError) {
-        return props.error ? props.error(apiError) : (<FormLoadError error={apiError} />);
+        return error ? error(apiError) : (<FormLoadError error={apiError} />);
     }
 
-    if (formDefinition?.properties?.captcha && isPublishedVersion(versionStatus) && !Api.isLoggedIn()) {
-        Captcha.load(formDefinition.properties.captcha);
+    if (form?.properties?.captcha && isPublishedVersion(versionStatus) && !Api.isLoggedIn()) {
+        Captcha.load(form.properties.captcha);
     }
 
     return (
-        <form noValidate={true} onSubmit={props.onFormSubmit}>
-            <FormTitle />
-            <FormProgress />
-            <FormContents />
-            <FormButtons />
+        <form noValidate={true} onSubmit={onFormSubmit}>
+            <FormTitle form={form} />
+            <FormProgress
+                formHtmlId={formHtmlId}
+                pageCount={pageCount}
+                currentPage={currentPage}
+            />
+            <FormCurrentPage
+                form={form}
+                currentPage={currentPage}
+            />
+            <FormButtons
+                pageIndex={pageIndex}
+                pageCount={pageCount}
+                form={form}
+                currentPage={currentPage}
+                previousPage={previousPage}
+            />
         </form>
     );
 }

@@ -1,21 +1,19 @@
 import { ChangeEvent } from 'react';
-import { useFormField } from '../FormContext';
 import { inputAttrs, textValue } from '../utils';
-import { FormInputProps } from './models';
+import { FormInputProps } from '../models';
 
-export function TextInput({ id }: FormInputProps) {
-    const field = useFormField(id);
-    const onChange = ($event: ChangeEvent<HTMLInputElement>) => {
-        field.onChange($event.target.value);
-    };    
+export function TextInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
+    const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
+        onChange($event.target.value);
+    };
     return (
         <input
             type="text"
-            {...inputAttrs(field, 'text')}
-            value={textValue(field.inputValue)}
-            onChange={onChange}
-            onFocus={field.onFocus}
-            onBlur={field.onBlur}
+            {...inputAttrs(attrs, 'text')}
+            value={textValue(inputValue)}
+            onChange={onInputChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
         />
     );
 }

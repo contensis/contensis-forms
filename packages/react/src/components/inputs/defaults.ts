@@ -14,7 +14,7 @@ import { TelInput } from './TelInput';
 import { TextInput } from './TextInput';
 import { TimeInput } from './TimeInput';
 import { UrlInput } from './UrlInput';
-import { FormInput } from './models';
+import { FormInput } from '../models';
 
 export const DEFAULT_INPUTS: Record<FieldEditorType, FormInput> = {
     checkbox: CheckboxInput,

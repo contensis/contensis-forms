@@ -1,10 +1,16 @@
 import { UIEvent, useEffect, useRef, } from 'react';
-import { useFieldRefs, useFormSelector } from './FormContext';
+import { FormContentType, FormPage, Nullable } from '../models';
+import { getLocalizations } from '../state';
+import { useFieldRefs } from './FormContext';
 
-export function FormValidationSummary() {
+type FormValidationSummaryProps = {
+    currentPage: FormPage;
+    form: Nullable<FormContentType>;
+};
+
+export function FormValidationSummary({ currentPage, form }: FormValidationSummaryProps) {
     const summaryRef = useRef<HTMLDivElement>(null);
-    const currentPage = useFormSelector(f => f.selectCurrentPage);
-    const localizations = useFormSelector(f => f.selectLocalizations);
+    const localizations = getLocalizations(form);
     const refs = useFieldRefs();
     const invalid = currentPage.showErrors && currentPage.invalid;
 

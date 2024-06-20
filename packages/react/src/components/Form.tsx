@@ -9,8 +9,6 @@ function isServer() {
     return typeof window === `undefined`;
 }
 
-// todo: latest response preview / confirmation
-// todo: custom stlying 
 export function Form(props: FormProps) {
     
     if (isServer()) {
@@ -21,13 +19,10 @@ export function Form(props: FormProps) {
     const [formResponse, setFormResponse] = useState<Nullable<FormResponse>>(null);
     const htmlId = useId();
     const form = createForm(props, htmlId);
-    // todo: do we need a hook to populate form values??
-    // it could then be used to populate fields before the form is shown
 
     const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const canSave = form.submit();
-        // todo: hook for on next page???
         if (!canSave) {
             return;
         }

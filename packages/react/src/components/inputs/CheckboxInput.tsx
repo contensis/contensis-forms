@@ -1,21 +1,19 @@
 import { ChangeEvent } from 'react';
-import { useFormField } from '../FormContext';
 import { inputAttrs } from '../utils';
-import { FormInputProps } from './models';
+import { FormInputProps } from '../models';
 
-export function CheckboxInput({ id }: FormInputProps) {
-    const field = useFormField(id);
-    const onChange = ($event: ChangeEvent<HTMLInputElement>) => {
-        field.onChange($event.target.checked);
+export function CheckboxInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
+    const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
+        onChange($event.target.checked);
     };
     return (
         <input
             type="checkbox"
-            {...inputAttrs(field, 'checkbox')}
-            checked={!!field.inputValue}
-            onChange={onChange}
-            onFocus={field.onFocus}
-            onBlur={field.onBlur}
+            {...inputAttrs(attrs, 'checkbox')}
+            checked={!!inputValue}
+            onChange={onInputChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
         />
     );
 }

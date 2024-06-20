@@ -1,10 +1,7 @@
-import { useFormField } from './FormContext';
 import { Description } from './html';
+import { FormInputProps } from './models';
 import { instructionsId } from './utils';
 
-type FormFieldInstructionsProps = { id: string };
-
-export function FormFieldInstructions(props: FormFieldInstructionsProps) {
-    const field = useFormField(props.id);
-    return (<Description id={instructionsId(field)} className="form-field-instructions" description={field.instructions} />);
+export function FormFieldInstructions(props: FormInputProps) {
+    return (<Description id={instructionsId(props)} className="form-field-instructions" description={props.instructions} />);
 }

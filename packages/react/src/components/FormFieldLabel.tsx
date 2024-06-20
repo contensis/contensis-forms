@@ -1,17 +1,14 @@
 import { localisations } from '../state';
-import { useFormField } from './FormContext';
+import { FormInputProps } from './models';
 import { inputId } from './utils';
 
-type FormFieldLabelProps = { id: string };
-
-export function FormFieldLabel(props: FormFieldLabelProps) {
-    const field = useFormField(props.id);
+export function FormFieldLabel(props: FormInputProps) {
     return (
         <div className="form-field-label-container">
             <label
                 className="form-field-label"
-                htmlFor={inputId(field)}>
-                <RequiredLabelText label={field.label} required={field.required} requiredClassName="form-field-label-required"></RequiredLabelText>
+                htmlFor={inputId(props)}>
+                <RequiredLabelText label={props.label} required={props.required} requiredClassName="form-field-label-required"></RequiredLabelText>
             </label>
         </div>
     );

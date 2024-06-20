@@ -82,7 +82,7 @@ function isNotNullable<T>(n: Nullable<T>): n is T {
     return (n !== null) && (typeof n !== 'undefined');
 }
 
-function getErrorMessages(errors: Nullable<Dictionary<ValidationError>>) {
+export function getErrorMessages(errors: Nullable<Dictionary<ValidationError>>) {
     return !!errors ? Object.values(errors).map((e) => e.message) : null;
 }
 
@@ -184,7 +184,7 @@ function getField(
 }
 
 
-function getLocalizations(form: Nullable<FormContentType>) {
+export function getLocalizations(form: Nullable<FormContentType>) {
     const l = form?.properties?.localizations;
     return {
         next: l?.next || localisations.nextButtonText,

@@ -1,13 +1,18 @@
-import { format, localisations } from '../state';
-import { useForm, useFormSelector } from './FormContext';
+import { FormContentType, FormPage, Nullable } from '../models';
+import { format, getLocalizations, localisations } from '../state';
 
-export function FormButtons() {
-    const form = useForm();
-    const isFirstPage = useFormSelector(f => f.selectIsFirstPage);
-    const isLastPage = useFormSelector(f => f.selectIsLastPage);
-    const localizations = useFormSelector(f => f.selectLocalizations);
-    const pageCount = useFormSelector(f => f.selectPageCount);
-    const currentPage = useFormSelector(f => f.selectCurrentPage);
+type FormButtonsProps = {
+    pageIndex: number;
+    pageCount: number;
+    currentPage: FormPage;
+    form: Nullable<FormContentType>;
+    previousPage: () => void;
+};
+
+export function FormButtons({ pageIndex, pageCount, currentPage, form, previousPage }: FormButtonsProps) {
+    const isFirstPage = (pageIndex === 0)
+    const isLastPage = !!pageCount && (pageIndex === (pageCount - 1));
+    const localizations = getLocalizations(form);
     const pageProgress = (pageCount > 1) ? format(localisations.pagingMessage, currentPage.pageNo, pageCount) : '';
     return (
         <div className="form-footer">
@@ -15,7 +20,7 @@ export function FormButtons() {
                 {pageProgress}
             </div>
             <div className="form-actions">
-                {isFirstPage ? null : (<button type="button" className="form-button form-button--secondary form-button--previous" onClick={() => form.previousPage()}>{localizations.previous}</button>)}
+                {isFirstPage ? null : (<button type="button" className="form-button form-button--secondary form-button--previous" onClick={previousPage}>{localizations.previous}</button>)}
                 <button type="submit" className={isLastPage ? 'form-button form-button--primary form-button--submit' : 'form-button form-button--secondary form-button--next'}>
                     {isLastPage ? localizations.submit : localizations.next}
                 </button>

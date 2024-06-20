@@ -1,23 +1,20 @@
-import { useFormField } from './FormContext';
-import { attr, charCountId, } from './utils';
 import { format, localisations, plural } from '../state';
+import { FormInputProps } from './models';
+import { attr, charCountId, } from './utils';
 
-type FormFieldFooterProps = { id: string };
-
-export function FormFieldFooter(props: FormFieldFooterProps) {
-    const field = useFormField(props.id);
-
+export function FormFieldFooter({ value, maxLength, ...attrs}: FormInputProps) {
+    
     let message = '';
     let remaining = 0;
-    if (field.maxLength) {
-        const value = !!field.value ? `${field.value}` : '';
-        remaining = field.maxLength - value.length;
+    if (maxLength) {
+        const v = !!value ? `${value}` : '';
+        remaining = maxLength - v.length;
         message = getCharCountMessage(remaining);
     }
 
     return (message)
         ? (
-            <div id={charCountId(field)} className={attr('form-field-char-count', { 'field-char-count-error': remaining < 0 })}>
+            <div id={charCountId(attrs)} className={attr('form-field-char-count', { 'field-char-count-error': remaining < 0 })}>
                 {message}
             </div>
         ) : null;

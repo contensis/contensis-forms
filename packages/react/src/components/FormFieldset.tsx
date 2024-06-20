@@ -1,24 +1,20 @@
-import { ReactNode } from 'react';
-import { useFormField } from './FormContext';
 import { FormFieldErrors } from './FormFieldErrors';
 import { FormFieldInstructions } from './FormFieldInstructions';
-import { formFieldCss, instructionsId } from './utils';
 import { RequiredLabelText } from './FormFieldLabel';
+import { FormContainerProps } from './models';
+import { formFieldCss, instructionsId } from './utils';
 
-type FormFieldProps = { id: string, children?: ReactNode };
-
-export function FormFieldset(props: FormFieldProps) {
-    const field = useFormField(props.id);
+export function FormFieldset(props: FormContainerProps) {
     return (
-        <fieldset 
-            className={formFieldCss(field, 'fieldset')}
-            aria-describedby={instructionsId(field)}
+        <fieldset
+            className={formFieldCss(props, 'fieldset')}
+            aria-describedby={instructionsId(props)}
         >
             <legend className="form-field-legend">
-                <RequiredLabelText label={field.label} required={field.required} requiredClassName="form-field-legend-required"></RequiredLabelText>
+                <RequiredLabelText label={props.label} required={props.required} requiredClassName="form-field-legend-required"></RequiredLabelText>
             </legend>
-            <FormFieldInstructions id={props.id} />
-            <FormFieldErrors id={props.id} />
+            <FormFieldInstructions {...props} />
+            <FormFieldErrors {...props} />
             <div className="form-fieldset-input-container">
                 {props.children}
             </div>
