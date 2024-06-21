@@ -50,8 +50,10 @@ function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loadin
                 setErrors(initialErrors);
             },
             (error) => {
-                setIsLoading(false);
-                setApiError(error);
+                if (!signal.aborted) {
+                    setIsLoading(false);
+                    setApiError(error);
+                }
             }
         );
         return () => {

@@ -1,4 +1,4 @@
-import { Form, FormProps } from '@contensis/forms';
+import { ContensisForm, FormProps } from '@contensis/forms';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './ContensisForm.css';
@@ -16,7 +16,7 @@ window.CONTENSIS_FORMS = window.CONTENSIS_FORMS || {};
 window.CONTENSIS_FORMS.render = function (element, props) {
     ReactDOM.createRoot(element).render(
         <React.StrictMode>
-            <Form {...props} />
+            <ContensisForm {...props} />
         </React.StrictMode>
     );
 };
