@@ -73,7 +73,7 @@ export const localisations = {
     characterCountMessageExceededTwo: 'You have {0} characters too many',
     characterCountMessageExceededFew: 'You have {0} characters too many',
     characterCountMessageExceededMany: 'You have {0} characters too many',
-    characterCountMessageExceededOther: 'You have {0} characters too many',
+    characterCountMessageExceededOther: 'You have {0} characters too many'
 };
 
 export function format(s: string, ...args: any[]): string {
@@ -96,7 +96,7 @@ type PluralMap<T> = {
     two: T;
     few: T;
     many: T;
-    other: T
+    other: T;
 };
 
 const pluralRules = new Intl.PluralRules();
@@ -107,13 +107,7 @@ export function plural<T>(value: number, fns: PluralMap<() => T>) {
     return fn();
 }
 
-export function getPageTitle(
-    defaultPageTitle: string,
-    pageTitle: string,
-    pageNo: number,
-    pageCount: number,
-    hasError: boolean
-) {
+export function getPageTitle(defaultPageTitle: string, pageTitle: string, pageNo: number, pageCount: number, hasError: boolean) {
     let result = defaultPageTitle;
     if (pageCount > 1) {
         const pageProgress = format(localisations.pagingMessage, pageNo, pageCount);
@@ -125,5 +119,5 @@ export function getPageTitle(
     if (hasError) {
         result = `${localisations.errorPageTitle}: ${result}`;
     }
-    return result
+    return result;
 }

@@ -30,7 +30,18 @@ export const DEFAULT_CONTAINERS: Record<FormFieldContainerType, FormContainer> =
     fieldset: FormFieldset
 };
 
-export function FormFieldContainer({ field, formHtmlId, formValue, formInputValue, formErrors, showErrors, inputRefs, setValue, setInputValue, setFocussed }: FormFieldContainerProps) {
+export function FormFieldContainer({
+    field,
+    formHtmlId,
+    formValue,
+    formInputValue,
+    formErrors,
+    showErrors,
+    inputRefs,
+    setValue,
+    setInputValue,
+    setFocussed
+}: FormFieldContainerProps) {
     const htmlId = `${formHtmlId}-${field.id}`;
     const editor = Fields.getEditorType(field);
     const errors = formErrors?.[field.id];
@@ -46,7 +57,7 @@ export function FormFieldContainer({ field, formHtmlId, formValue, formInputValu
         rows: field?.editor?.properties?.rows,
         labelPosition: field?.editor?.properties?.labelPosition,
         cssClass: field?.editor?.properties?.cssClass,
-        hidden: !!field?.editor?.properties?.readOnly || !!field?.editor?.properties?.hidden || (editor === 'reference'),
+        hidden: !!field?.editor?.properties?.readOnly || !!field?.editor?.properties?.hidden || editor === 'reference',
         options: Fields.getOptions(field, htmlId),
         field,
         editor,
@@ -61,7 +72,7 @@ export function FormFieldContainer({ field, formHtmlId, formValue, formInputValu
         inputRef: inputRefs?.[field.id],
 
         onChange: (inputValue: unknown, value?: unknown) => {
-            value = (typeof value === 'undefined') ? inputValue : value;
+            value = typeof value === 'undefined' ? inputValue : value;
             setInputValue(field.id, inputValue);
             setValue(field.id, value);
         },
@@ -75,11 +86,9 @@ export function FormFieldContainer({ field, formHtmlId, formValue, formInputValu
 
     const Field = DEFAULT_CONTAINERS[formFieldContainer];
     const Input = DEFAULT_INPUTS[inputProps.editor];
-    return inputProps.hidden
-        ? null
-        : (
-            <Field {...inputProps}>
-                <Input {...inputProps} />
-            </Field>
-        );
+    return inputProps.hidden ? null : (
+        <Field {...inputProps}>
+            <Input {...inputProps} />
+        </Field>
+    );
 }

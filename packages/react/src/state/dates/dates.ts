@@ -1,4 +1,3 @@
-
 export function getNowDate() {
     return toLocalIsoDate(new Date());
 }
@@ -24,6 +23,8 @@ function toLocalIsoTime(dt: Date) {
 }
 
 function pad(n: number, length: number = 2) {
-    const padding = Array.from({ length }).map(() => '0').join('');
-    return `${padding}${n}`.slice(-1 * length)
+    const padding = Array.from({ length })
+        .map(() => '0')
+        .join('');
+    return `${padding}${n}`.slice(-1 * length);
 }

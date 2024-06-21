@@ -1,5 +1,16 @@
 import { ClassType, Component, ComponentClass, FunctionComponent, MutableRefObject, ReactNode } from 'react';
-import { Dictionary, Field, FieldEditorType, FieldLabelPosition, FormContentType, FormFieldOption, FormResponse, Nullable, ValidationError, VersionStatus } from '../models';
+import {
+    Dictionary,
+    Field,
+    FieldEditorType,
+    FieldLabelPosition,
+    FormContentType,
+    FormFieldOption,
+    FormResponse,
+    Nullable,
+    ValidationError,
+    VersionStatus
+} from '../models';
 
 type BaseComponent<TProps> = FunctionComponent<TProps> | ClassType<TProps, Component<TProps>, ComponentClass<TProps>>;
 
@@ -52,7 +63,7 @@ export type FormFieldContainerProps = {
 
     setValue: SetValue;
     setInputValue: SetValue;
-    setFocussed: SetFocussed
+    setFocussed: SetFocussed;
 };
 
 export type FormProps = {

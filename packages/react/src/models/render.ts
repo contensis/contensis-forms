@@ -9,7 +9,7 @@ export type FormPage = {
     fields: Field[];
 };
 
-export type FormFieldOption = { key: string, htmlId: string; value: string; label: string; };
+export type FormFieldOption = { key: string; htmlId: string; value: string; label: string };
 
 export type FormFieldContainer = 'control' | 'fieldset' | 'checkbox';
 

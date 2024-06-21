@@ -11,7 +11,7 @@ export function DecimalInput({ inputValue, onChange, onBlur, onFocus, ...attrs }
     };
     return (
         <input
-            type="text"            
+            type="text"
             {...inputAttrs(attrs, 'decimal')}
             spellCheck="false"
             value={textValue(inputValue)}

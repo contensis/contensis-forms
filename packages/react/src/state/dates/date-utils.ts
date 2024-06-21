@@ -1,4 +1,3 @@
-
 export type DateParts = {
     year?: string;
     month?: string;
@@ -27,8 +26,10 @@ export type DateTimeValidation = {
 };
 
 export function pad(n: number, length: number = 2) {
-    const padding = Array.from({ length }).map(() => '0').join('');
-    return `${padding}${n}`.slice(-1 * length)
+    const padding = Array.from({ length })
+        .map(() => '0')
+        .join('');
+    return `${padding}${n}`.slice(-1 * length);
 }
 
 function padYear(year: number) {
@@ -37,18 +38,16 @@ function padYear(year: number) {
     }
     // 2 digit year
     year = 1900 + year;
-    const currentYear = (new Date()).getUTCFullYear();
+    const currentYear = new Date().getUTCFullYear();
     // if more than 80 years ago add 100 to put it in the future
-    return ((currentYear - year) > 80)
-        ? year + 100
-        : year;
+    return currentYear - year > 80 ? year + 100 : year;
 }
 
 function toNumber(n: unknown): null | number {
     if (typeof n === 'number') {
         return n;
     }
-    if ((typeof n === 'string') && !!n) {
+    if (typeof n === 'string' && !!n) {
         const num = Number(n);
         if (!Number.isNaN(num)) {
             return num;
@@ -59,7 +58,7 @@ function toNumber(n: unknown): null | number {
 
 function isWithinRange(n: null | number, min: number, max: number): n is number {
     if (typeof n === 'number') {
-        return (n >= min) && (n <= max);
+        return n >= min && n <= max;
     }
     return false;
 }

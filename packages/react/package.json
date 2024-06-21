@@ -14,7 +14,10 @@
         "prebuild": "npm run tsc",
         "build": "tsup --dts-resolve",
         "tsc": "tsc --noEmit",
-        "dev": "tsup --dts-resolve --watch"
+        "dev": "tsup --dts-resolve --watch",
+        "lint": "eslint",
+        "lint:fix": "npx eslint --fix \"src/**/*.{ts,tsx,js,json}\" > lintresults.txt",
+        "prettify": "npx prettier --write \"src/**/*.{ts,tsx,js,json}\""
     },
     "dependencies": {
         "@contensis/canvas-html": "^1.0.0",
@@ -26,6 +29,9 @@
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.11",
         "@vitejs/plugin-react": "^4.2.1",
+        "eslint": "^8.57.0",
+        "eslint-config-react-app": "^7.0.1",
+        "prettier": "^3.3.2",
         "vite": "^5.1.4"
     },
     "exports": {

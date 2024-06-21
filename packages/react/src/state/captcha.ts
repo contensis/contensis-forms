@@ -11,7 +11,7 @@ type ReCaptchaAction = {
 type ReCaptcha = {
     ready(fn: () => void): void;
     execute(siteKey: string, action: ReCaptchaAction): Promise<string>;
-}
+};
 
 declare global {
     interface Window {
@@ -30,10 +30,10 @@ function load(captcha: Nullable<CaptchaSettings>) {
     if (captcha?.enabled && captcha?.siteKey) {
         ensureLoadCallback();
 
-        const captchaUrl = getCaptchaUrl(captcha.siteKey)
+        const captchaUrl = getCaptchaUrl(captcha.siteKey);
         const head = document.getElementsByTagName('head')[0];
         const scripts = [...head.getElementsByTagName('script')];
-        const scriptSrcs = scripts.map(s => s.src);
+        const scriptSrcs = scripts.map((s) => s.src);
         const hasCaptcha = scriptSrcs.includes(captchaUrl);
 
         if (!hasCaptcha) {
@@ -48,17 +48,17 @@ async function submit(formId: string, captcha: Nullable<CaptchaSettings>): Promi
     if (captcha?.enabled && captcha?.siteKey) {
         load(captcha);
         await window[CAPTCHA_LOAD_CALLBACK].loaded;
-        await new Promise(resolve => grecaptcha.ready(() => resolve(true)));
+        await new Promise((resolve) => grecaptcha.ready(() => resolve(true)));
         return grecaptcha.execute(captcha.siteKey, { action: `${formId}_submit` });
     } else {
-        return Promise.resolve('')
+        return Promise.resolve('');
     }
 }
 
 function ensureLoadCallback() {
     if (!window[CAPTCHA_LOAD_CALLBACK]) {
         let loadedResolve: (v: unknown) => void;
-        const loaded = new Promise(resolve => {
+        const loaded = new Promise((resolve) => {
             loadedResolve = resolve;
         });
         const callback = function () {

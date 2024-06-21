@@ -11,7 +11,7 @@ export function RadioInput({ onChange, options, htmlId, inputRef, value, onBlur,
                 <div className="form-radio" key={option.key}>
                     <input
                         type="radio"
-                        ref={(index === 0) ? inputRef : undefined}
+                        ref={index === 0 ? inputRef : undefined}
                         className="form-radio-input"
                         id={option.htmlId}
                         name={htmlId}
@@ -21,10 +21,7 @@ export function RadioInput({ onChange, options, htmlId, inputRef, value, onBlur,
                         onFocus={onFocus}
                         onBlur={onBlur}
                     />
-                    <label
-                        className="form-radio-label"
-                        htmlFor={option.htmlId}
-                    >
+                    <label className="form-radio-label" htmlFor={option.htmlId}>
                         {option.label}
                     </label>
                 </div>

@@ -1,4 +1,14 @@
-import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldValidation, FieldValidationWithValue, FieldValidations, Nullable, ValidationError } from '../models';
+import {
+    Dictionary,
+    Field,
+    FieldDataFormat,
+    FieldDataType,
+    FieldValidation,
+    FieldValidationWithValue,
+    FieldValidations,
+    Nullable,
+    ValidationError
+} from '../models';
 import { format, localisations, plural } from './localisations';
 import { memo } from './store';
 
@@ -23,16 +33,8 @@ const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {
 
 const createFieldValidator = memo((field: Field) => {
     const validators: [string, Validator<Dictionary<any>>, message: string][] = [
-        [
-            'dataType',
-            createDataTypeValidator(field.dataType),
-            format(DATA_TYPE_MESSAGES[field.dataType], field.name)
-        ],
-        [
-            'dataFormat',
-            createDataFormatValidator(field.dataFormat),
-            field.dataFormat ? format(DATA_FORMAT_MESSAGES[field.dataFormat], field.name) : ''
-        ],
+        ['dataType', createDataTypeValidator(field.dataType), format(DATA_TYPE_MESSAGES[field.dataType], field.name)],
+        ['dataFormat', createDataFormatValidator(field.dataFormat), field.dataFormat ? format(DATA_FORMAT_MESSAGES[field.dataFormat], field.name) : ''],
         [
             'required',
             createRequiredValidator(field.validations?.required),
@@ -94,20 +96,23 @@ const createFieldValidator = memo((field: Field) => {
     ];
 
     return function (value: unknown) {
-        return validators.reduce((prev, [key, validator, message]) => {
-            const error = validator(value);
-            if (error) {
-                prev = prev || {};
-                prev = {
-                    ...prev,
-                    [key]: {
-                        ...error,
-                        message
-                    }
-                };
-            }
-            return prev;
-        }, null as Nullable<Dictionary<ValidationError>>)
+        return validators.reduce(
+            (prev, [key, validator, message]) => {
+                const error = validator(value);
+                if (error) {
+                    prev = prev || {};
+                    prev = {
+                        ...prev,
+                        [key]: {
+                            ...error,
+                            message
+                        }
+                    };
+                }
+                return prev;
+            },
+            null as Nullable<Dictionary<ValidationError>>
+        );
     };
 });
 
@@ -124,7 +129,7 @@ function isEmpty(value: unknown): boolean {
 }
 
 function hasLength(value: unknown): value is string | any[] {
-    return (typeof value === 'string') || Array.isArray(value);
+    return typeof value === 'string' || Array.isArray(value);
 }
 
 function fromValid<TError extends Dictionary<any>>(fn: (value: unknown) => boolean, getResult: () => TError): Validator<TError> {
@@ -155,7 +160,7 @@ function createDataTypeValidator(dataType: FieldDataType): Validator<{}> {
                     return typeof value === 'number';
                 }
                 case 'integer': {
-                    return (typeof value === 'number') && Number.isSafeInteger(value);
+                    return typeof value === 'number' && Number.isSafeInteger(value);
                 }
                 case 'string': {
                     return typeof value === 'string';
@@ -177,7 +182,10 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
             }
             switch (dataFormat) {
                 case 'email': {
-                    const emailRegex = new RegExp("^(([^<>()\\[\\]\\.,;:\\s@\\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$", 'i')
+                    const emailRegex = new RegExp(
+                        '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(\\".+\\"))@(([^<>()[\\]\\.,;:\\s@\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\"]{2,})$',
+                        'i'
+                    );
                     return typeof value === 'string' && emailRegex.test(value);
                 }
                 case 'phone': {
@@ -187,99 +195,100 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
                     return true;
                 }
                 case 'time': {
-                    const timeRegex = new RegExp("^([01]?[0-9]|2[0-3])([:. ])([0-5]\\d)(\\2[0-5]\\d)?$");
+                    const timeRegex = new RegExp('^([01]?[0-9]|2[0-3])([:. ])([0-5]\\d)(\\2[0-5]\\d)?$');
                     return typeof value === 'string' && timeRegex.test(value);
                 }
                 case 'url': {
-                    const urlRegex = new RegExp("^(?:(?:(?:https?|ftp):)?\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z0-9\\u00a1-\\uffff][a-z0-9\\u00a1-\\uffff-]{0,62})?[a-z0-9\\u00a1-\\uffff]\\.)+(?:[a-z\\u00a1-\\uffff]{2,}\\.?))(?::\\d{2,5})?(?:[/?#]\\S*)?$");
+                    const urlRegex = new RegExp(
+                        '^(?:(?:(?:https?|ftp):)?\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z0-9\\u00a1-\\uffff][a-z0-9\\u00a1-\\uffff-]{0,62})?[a-z0-9\\u00a1-\\uffff]\\.)+(?:[a-z\\u00a1-\\uffff]{2,}\\.?))(?::\\d{2,5})?(?:[/?#]\\S*)?$'
+                    );
                     return typeof value === 'string' && urlRegex.test(value);
                 }
             }
         },
         () => ({})
     );
-
 }
 
 function createRequiredValidator(required: Nullable<FieldValidation>): Validator<{}> {
     return !!required
         ? fromValid(
-            (value: unknown) => !isEmpty(value),
-            () => ({})
-        )
-        : noopValidator
+              (value: unknown) => !isEmpty(value),
+              () => ({})
+          )
+        : noopValidator;
 }
 
 function createSizeValidator(
     min: Nullable<FieldValidationWithValue<number>>,
-    max: Nullable<FieldValidationWithValue<number>>,
-): Validator<{ min: Nullable<number>, max: Nullable<number> }> {
-    return (!!min || !!max)
+    max: Nullable<FieldValidationWithValue<number>>
+): Validator<{ min: Nullable<number>; max: Nullable<number> }> {
+    return !!min || !!max
         ? fromValid(
-            (value: unknown) => {
-                let valid = true;
-                if (typeof value === 'number') {
-                    if (min) {
-                        valid = (value >= min.value);
-                    }
-                    if (valid && max) {
-                        valid = (value <= max.value);
-                    }
-                }
-                return valid;
-            },
-            () => ({ min: min?.value, max: max?.value })
-        )
+              (value: unknown) => {
+                  let valid = true;
+                  if (typeof value === 'number') {
+                      if (min) {
+                          valid = value >= min.value;
+                      }
+                      if (valid && max) {
+                          valid = value <= max.value;
+                      }
+                  }
+                  return valid;
+              },
+              () => ({ min: min?.value, max: max?.value })
+          )
         : noopValidator;
 }
 
 function createLengthValidator(
     minLength: Nullable<FieldValidationWithValue<number>>,
-    maxLength: Nullable<FieldValidationWithValue<number>>,
-): Validator<{ minLength: Nullable<number>, maxLength: Nullable<number> }> {
-    return (!!minLength || !!maxLength)
+    maxLength: Nullable<FieldValidationWithValue<number>>
+): Validator<{ minLength: Nullable<number>; maxLength: Nullable<number> }> {
+    return !!minLength || !!maxLength
         ? fromValid(
-            (value: unknown) => {
-                let valid = true;
-                if (hasLength(value)) {
-                    if (minLength) {
-                        valid = (value.length >= minLength.value);
-                    }
-                    if (valid && maxLength) {
-                        valid = (value.length <= maxLength.value);
-                    }
-                }
-                return valid;
-            },
-            () => ({ minLength: minLength?.value, maxLength: maxLength?.value })
-        )
+              (value: unknown) => {
+                  let valid = true;
+                  if (hasLength(value)) {
+                      if (minLength) {
+                          valid = value.length >= minLength.value;
+                      }
+                      if (valid && maxLength) {
+                          valid = value.length <= maxLength.value;
+                      }
+                  }
+                  return valid;
+              },
+              () => ({ minLength: minLength?.value, maxLength: maxLength?.value })
+          )
         : noopValidator;
 }
 
 function createCountValidator(
     minCount: Nullable<FieldValidationWithValue<number>>,
-    maxCount: Nullable<FieldValidationWithValue<number>>,
-): Validator<{ minCount: Nullable<number>, maxCount: Nullable<number> }> {
-    return (!!minCount || !!maxCount)
+    maxCount: Nullable<FieldValidationWithValue<number>>
+): Validator<{ minCount: Nullable<number>; maxCount: Nullable<number> }> {
+    return !!minCount || !!maxCount
         ? fromValid(
-            (value: unknown) => {
-                let valid = true;
-                if (hasLength(value)) {
-                    if (minCount) {
-                        valid = (value.length >= minCount.value);
-                    }
-                    if (valid && maxCount) {
-                        valid = (value.length <= maxCount.value);
-                    }
-                }
-                return valid;
-            },
-            () => ({ minCount: minCount?.value, maxCount: maxCount?.value })
-        )
+              (value: unknown) => {
+                  let valid = true;
+                  if (hasLength(value)) {
+                      if (minCount) {
+                          valid = value.length >= minCount.value;
+                      }
+                      if (valid && maxCount) {
+                          valid = value.length <= maxCount.value;
+                      }
+                  }
+                  return valid;
+              },
+              () => ({ minCount: minCount?.value, maxCount: maxCount?.value })
+          )
         : noopValidator;
 }
 
-function createRegExValidator(regex: Nullable<FieldValidation & { pattern: string; }>): Validator<{ pattern: string }> {
+function createRegExValidator(regex: Nullable<FieldValidation & { pattern: string }>): Validator<{ pattern: string }> {
     if (!regex?.pattern) {
         return noopValidator;
     }
@@ -301,23 +310,21 @@ function createRegExValidator(regex: Nullable<FieldValidation & { pattern: strin
 }
 
 function createAllowedValueValidator(allowedValue: Nullable<FieldValidations['allowedValue']>): Validator<{ allowed: any }> {
-    const allowed = allowedValue?.value;    
+    const allowed = allowedValue?.value;
     if (isNull(allowed)) {
         return noopValidator;
     }
     return fromValid(
         (value: unknown) => {
             // don't automatically allow empty values
-            return (value === allowed);
+            return value === allowed;
         },
         () => ({ allowed })
     );
 }
 
 function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['allowedValues']>): Validator<{ allowed: string[] }> {
-    const allowed = allowedValues?.labeledValues
-        ? allowedValues.labeledValues.map(value => value.value)
-        : allowedValues?.values;
+    const allowed = allowedValues?.labeledValues ? allowedValues.labeledValues.map((value) => value.value) : allowedValues?.values;
     if (!allowed?.length) {
         return noopValidator;
     }
@@ -327,7 +334,7 @@ function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['
             if (isEmpty(value)) {
                 return true;
             }
-            return Array.isArray(value) ? value.every(v => allowed.includes(v)) : allowed.includes(value as any);
+            return Array.isArray(value) ? value.every((v) => allowed.includes(v)) : allowed.includes(value as any);
         },
         () => ({ allowed })
     );
@@ -336,19 +343,19 @@ function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['
 function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Nullable<FieldValidation>) {
     return !!pastDateTime
         ? fromValid(
-            (value: unknown) => {
-                if (isNull(value)) {
-                    return true;
-                }
-                if (dataType === 'dateTime') {
-                    const now = new Date();
-                    const dt = new Date(`${value}`);
-                    return dt.getTime() <= now.getTime();
-                }
-                return true;
-            },
-            () => ({})
-        )
+              (value: unknown) => {
+                  if (isNull(value)) {
+                      return true;
+                  }
+                  if (dataType === 'dateTime') {
+                      const now = new Date();
+                      const dt = new Date(`${value}`);
+                      return dt.getTime() <= now.getTime();
+                  }
+                  return true;
+              },
+              () => ({})
+          )
         : noopValidator;
 }
 
@@ -386,7 +393,7 @@ function getRangeErrorMessage(
     max: Nullable<FieldValidationWithValue<number>>,
     defaultMinMessage: string,
     defaultMaxMessage: string,
-    defaultRangeMessage: string,
+    defaultRangeMessage: string
 ) {
     if (min?.message) {
         return min.message;

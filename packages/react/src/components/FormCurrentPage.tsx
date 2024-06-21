@@ -19,37 +19,47 @@ type FormCurrentPageProps = {
 
     setValue: SetValue;
     setInputValue: SetValue;
-    setFocussed: SetFocussed
+    setFocussed: SetFocussed;
 };
 
-export function FormCurrentPage({ currentPage, form, formHtmlId, formValue, formInputValue, formErrors, showErrors, setFocussed, setInputValue, setValue, inputRefs }: FormCurrentPageProps) {
+export function FormCurrentPage({
+    currentPage,
+    form,
+    formHtmlId,
+    formValue,
+    formInputValue,
+    formErrors,
+    showErrors,
+    setFocussed,
+    setInputValue,
+    setValue,
+    inputRefs
+}: FormCurrentPageProps) {
     return (
         <div className="form-current-page">
             <div className="form-current-page-header">
                 <h3 className="form-current-page-title">{currentPage?.title}</h3>
                 <Description className="form-current-page-description" description={currentPage.description} />
             </div>
-            <FormValidationSummary
-                currentPage={currentPage}
-                form={form}
-                showErrors={showErrors}
-                formErrors={formErrors}
-                inputRefs={inputRefs}
-            />
+            <FormValidationSummary currentPage={currentPage} form={form} showErrors={showErrors} formErrors={formErrors} inputRefs={inputRefs} />
             <div className="form-fields-container">
-                {currentPage?.fields ? currentPage.fields.map((field) => (<FormFieldContainer
-                    key={field.id}
-                    field={field}
-                    formHtmlId={formHtmlId}
-                    formValue={formValue}
-                    formInputValue={formInputValue}
-                    formErrors={formErrors}
-                    showErrors={showErrors}
-                    inputRefs={inputRefs}
-                    setFocussed={setFocussed}
-                    setInputValue={setInputValue}
-                    setValue={setValue}
-                />)) : null}
+                {currentPage?.fields
+                    ? currentPage.fields.map((field) => (
+                          <FormFieldContainer
+                              key={field.id}
+                              field={field}
+                              formHtmlId={formHtmlId}
+                              formValue={formValue}
+                              formInputValue={formInputValue}
+                              formErrors={formErrors}
+                              showErrors={showErrors}
+                              inputRefs={inputRefs}
+                              setFocussed={setFocussed}
+                              setInputValue={setInputValue}
+                              setValue={setValue}
+                          />
+                      ))
+                    : null}
             </div>
         </div>
     );

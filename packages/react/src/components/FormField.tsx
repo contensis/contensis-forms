@@ -11,9 +11,7 @@ export function FormField(props: FormContainerProps) {
             <FormFieldLabel {...props} />
             <FormFieldInstructions {...props} />
             <FormFieldErrors {...props} />
-            <div className="form-field-input-container">
-                {props.children}
-            </div>
+            <div className="form-field-input-container">{props.children}</div>
             <FormFieldFooter {...props} />
         </div>
     );

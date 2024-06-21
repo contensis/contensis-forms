@@ -1,4 +1,2 @@
-export {
-    Renderers
-} from './renderer';
+export { Renderers } from './renderer';
 export { Description } from './Description';

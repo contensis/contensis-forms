@@ -4,9 +4,8 @@ import { localisations } from './localisations';
 import { Progress } from './progress';
 import { Validation } from './validation';
 
-
 function getInputValue(form: FormContentType, value: Dictionary<unknown>) {
-    return Fields.reduceFields(form, field => Fields.getInputValue(field, value?.[field.id]));
+    return Fields.reduceFields(form, (field) => Fields.getInputValue(field, value?.[field.id]));
 }
 
 function getLocalizations(form: Nullable<FormContentType>) {
@@ -15,7 +14,7 @@ function getLocalizations(form: Nullable<FormContentType>) {
         next: l?.next || localisations.nextButtonText,
         previous: l?.previous || localisations.previousButtonText,
         submit: l?.submit || localisations.submitButtonText,
-        errorSummaryTitle: l?.errorSummaryTitle || localisations.errorSummaryTitle,
+        errorSummaryTitle: l?.errorSummaryTitle || localisations.errorSummaryTitle
     };
 }
 
@@ -36,16 +35,18 @@ function getPages(form: Nullable<FormContentType>): FormPage[] {
                 title: name,
                 description,
                 fields: [field]
-            }
+            };
         });
     } else if (!form.groups) {
-        return [{
-            pageNo: 1,
-            id: 'page1',
-            title: '',
-            description: null,
-            fields: form.fields
-        }]
+        return [
+            {
+                pageNo: 1,
+                id: 'page1',
+                title: '',
+                description: null,
+                fields: form.fields
+            }
+        ];
     } else {
         return form.groups.map((group, index) => {
             const { id, name, description } = group;
@@ -54,8 +55,8 @@ function getPages(form: Nullable<FormContentType>): FormPage[] {
                 id,
                 title: name,
                 description,
-                fields: (form?.fields || []).filter(field => field.groupId === id)
-            }
+                fields: (form?.fields || []).filter((field) => field.groupId === id)
+            };
         });
     }
 }
@@ -63,7 +64,7 @@ function getPages(form: Nullable<FormContentType>): FormPage[] {
 function getInitialValue(form: FormContentType) {
     const query = Progress.loadQuery();
     const progress = Progress.load(form);
-    return Fields.reduceFields(form, field => Fields.getInitialValue(field, query?.[field.id], progress?.value?.[field.id]));
+    return Fields.reduceFields(form, (field) => Fields.getInitialValue(field, query?.[field.id], progress?.value?.[field.id]));
 }
 
 function pageHasErrors(page: FormPage, errors: Dictionary<Nullable<Dictionary<ValidationError>>>) {

@@ -37,9 +37,7 @@ function getEditorType(field: Field) {
         editorType = DEFAULT_DATA_FORMAT_EDITOR_TYPES[field.dataFormat];
     }
     if (!editorType && (field.validations?.allowedValues?.values || field.validations?.allowedValues?.labeledValues)) {
-        editorType = (field.dataType === 'stringArray')
-            ? 'multiselect'
-            : 'radio';
+        editorType = field.dataType === 'stringArray' ? 'multiselect' : 'radio';
     }
     editorType = editorType || DEFAULT_DATA_TYPE_EDITOR_TYPES[field.dataType];
     return editorType || 'text';
@@ -60,21 +58,20 @@ function getEmptyFieldValue(field: Field) {
 
 function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[] {
     const pairs = field?.validations?.allowedValues?.labeledValues
-        ? field?.validations?.allowedValues?.labeledValues?.map(value => value)
-        : field?.validations?.allowedValues?.values?.map(value => ({ value, label: value }));
-
+        ? field?.validations?.allowedValues?.labeledValues?.map((value) => value)
+        : field?.validations?.allowedValues?.values?.map((value) => ({ value, label: value }));
 
     let options = pairs?.map((pair, index) => {
         return {
             key: `${index}`,
             htmlId: `${htmlId}-option-${index}`,
             value: pair.value || '',
-            label: pair.label,
+            label: pair.label
         };
     });
 
     if (getEditorType(field) === 'select') {
-        const emptyOption = options?.find(o => o.value === '');
+        const emptyOption = options?.find((o) => o.value === '');
         if (!emptyOption) {
             options = [
                 {
@@ -92,12 +89,10 @@ function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[]
 }
 
 function getDefaultValue(field: Field) {
-    const defaultValue = (typeof field?.default !== 'undefined' && (field?.default !== null)) ? field.default : getEmptyFieldValue(field);
-    if ((field.dataType === 'dateTime') && (defaultValue === 'now()')) {
-        return (getEditorType(field) === 'datetime')
-            ? DateTime.getNowDateTime()
-            : DateTime.getNowDate();
-    } else if ((field.dataType === 'string') && (field.dataFormat === 'time') && (defaultValue === 'now()')) {
+    const defaultValue = typeof field?.default !== 'undefined' && field?.default !== null ? field.default : getEmptyFieldValue(field);
+    if (field.dataType === 'dateTime' && defaultValue === 'now()') {
+        return getEditorType(field) === 'datetime' ? DateTime.getNowDateTime() : DateTime.getNowDate();
+    } else if (field.dataType === 'string' && field.dataFormat === 'time' && defaultValue === 'now()') {
         return DateTime.getNowTime();
     }
     return defaultValue;
@@ -116,15 +111,12 @@ function getInputValue(field: Field, value: unknown) {
 }
 
 function reduceFields<T>(form: Nullable<FormContentType>, fn: (field: Field, index: number) => T): Dictionary<T> {
-    return form?.fields
-        ? form.fields.reduce((prev, field, index) => ({ ...prev, [field.id]: fn(field, index) }), {} as Dictionary<T>)
-        : {}
+    return form?.fields ? form.fields.reduce((prev, field, index) => ({ ...prev, [field.id]: fn(field, index) }), {} as Dictionary<T>) : {};
 }
 
 function validate(field: Field, value: unknown) {
     return Validation.validate(value, field);
 }
-
 
 function getInitialValue(field: Field, query: Nullable<string[]>, progressValue: unknown) {
     let value = null;
@@ -139,20 +131,18 @@ function getInitialValue(field: Field, query: Nullable<string[]>, progressValue:
         const firstQuery = query?.[0];
         switch (field.dataType) {
             case 'boolean': {
-                if ((firstQuery === 'true') || (firstQuery === 'checked') || (firstQuery === 'on')) {
-                    queryValue = true
-                } else if ((firstQuery === 'false') || (firstQuery === 'unchecked') || (firstQuery === 'off')) {
-                    queryValue = false
+                if (firstQuery === 'true' || firstQuery === 'checked' || firstQuery === 'on') {
+                    queryValue = true;
+                } else if (firstQuery === 'false' || firstQuery === 'unchecked' || firstQuery === 'off') {
+                    queryValue = false;
                 }
                 break;
             }
             case 'dateTime': {
                 if (firstQuery) {
                     if (field.dataType === 'dateTime') {
-                        return (getEditorType(field) === 'datetime')
-                            ? DateTime.parseDateTime(firstQuery)
-                            : DateTime.parseDate(firstQuery)
-                    } else if ((field.dataType === 'string') && (field.dataFormat === 'time')) {
+                        return getEditorType(field) === 'datetime' ? DateTime.parseDateTime(firstQuery) : DateTime.parseDate(firstQuery);
+                    } else if (field.dataType === 'string' && field.dataFormat === 'time') {
                         return DateTime.parseTime(firstQuery);
                     }
                 }
@@ -174,7 +164,7 @@ function getInitialValue(field: Field, query: Nullable<string[]>, progressValue:
                 if (query) {
                     if (field.validations?.allowedValues) {
                         const allowed = field.validations.allowedValues.labeledValues
-                            ? field.validations.allowedValues.labeledValues.map(value => value.value)
+                            ? field.validations.allowedValues.labeledValues.map((value) => value.value)
                             : field.validations.allowedValues.values;
                         if (allowed) {
                             queryValue = query.filter((item) => allowed.includes(item));
@@ -196,7 +186,7 @@ function getInitialValue(field: Field, query: Nullable<string[]>, progressValue:
     if (value === null) {
         value = getDefaultValue(field);
     }
-    return value
+    return value;
 }
 
 export const Fields = {

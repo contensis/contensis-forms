@@ -7,12 +7,6 @@ export function MultilineInput({ inputValue, onChange, onBlur, onFocus, ...attrs
         onChange($event.target.value);
     };
     return (
-        <textarea
-            {...inputAttrs(attrs, 'multiline', { rows: 4 })}
-            value={textValue(inputValue)}
-            onChange={onInputChange}
-            onFocus={onFocus}
-            onBlur={onBlur}
-        />
+        <textarea {...inputAttrs(attrs, 'multiline', { rows: 4 })} value={textValue(inputValue)} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />
     );
 }

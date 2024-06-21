@@ -12,7 +12,7 @@ type LocaleInfo = {
 };
 
 function isDatePartKey(key: string): key is DatePartKey {
-    return (key === 'day') || (key === 'month') || (key === 'year');
+    return key === 'day' || key === 'month' || key === 'year';
 }
 
 export function isDate(d: unknown): d is Date {
@@ -29,14 +29,12 @@ export const localeInfo = (function () {
     const createLocaleInfo = function (): LocaleInfo {
         const shortDateFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, { dateStyle: 'short' });
         const shortTimeFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, { timeStyle: 'short' });
-        const shortDatePartsOrder = shortDateFormatter.formatToParts().map(p => p.type).filter(isDatePartKey);
+        const shortDatePartsOrder = shortDateFormatter
+            .formatToParts()
+            .map((p) => p.type)
+            .filter(isDatePartKey);
 
-        const formatters = [
-            dateFormatter('short'),
-            dateFormatter('medium'),
-            dateFormatter('long'),
-            dateFormatter('full')
-        ];
+        const formatters = [dateFormatter('short'), dateFormatter('medium'), dateFormatter('long'), dateFormatter('full')];
 
         return {
             formatters,
@@ -44,7 +42,7 @@ export const localeInfo = (function () {
                 return {
                     [shortDatePartsOrder[0]]: match[0],
                     [shortDatePartsOrder[1]]: match[1],
-                    [shortDatePartsOrder[2]]: match[2],
+                    [shortDatePartsOrder[2]]: match[2]
                 };
             },
             shortDateTimeMatchToParts(match: [string, string, string, string, string]) {
@@ -68,9 +66,7 @@ export const localeInfo = (function () {
                     return '';
                 }
                 const dt = isDate(input) ? input : new Date(input);
-                return isValidDate(dt)
-                    ? `${shortDateFormatter.format(dt)} ${shortTimeFormatter.format(dt)}`
-                    : '';
+                return isValidDate(dt) ? `${shortDateFormatter.format(dt)} ${shortTimeFormatter.format(dt)}` : '';
             }
         };
     };
@@ -91,7 +87,7 @@ function dateFormatter(dateStyle: 'short' | 'medium' | 'long' | 'full'): DateFor
     const parts = dtf.formatToParts();
     const monthNames = Array.from({ length: 12 }).map((_, i) => {
         const parts = dtf.formatToParts(new Date(2000, i, 1));
-        const monthPart = parts.find(p => p.type === 'month');
+        const monthPart = parts.find((p) => p.type === 'month');
         return monthPart?.value || '';
     });
     return { parts, monthNames };
@@ -116,8 +112,8 @@ export function parseDateFromFormatter(input: string, formatter: DateFormatter) 
         // date time
         let month = Number(result.month);
         if (Number.isNaN(month)) {
-            const index = formatter.monthNames.findIndex(m => !!m && (m?.toUpperCase() === result.month?.toUpperCase()));
-            month = (index >= 0) ? index + 1 : month;
+            const index = formatter.monthNames.findIndex((m) => !!m && m?.toUpperCase() === result.month?.toUpperCase());
+            month = index >= 0 ? index + 1 : month;
         }
         const dt = validateDateParts({
             year: result.year,
@@ -128,10 +124,9 @@ export function parseDateFromFormatter(input: string, formatter: DateFormatter) 
             return dt;
         }
     }
-
 }
 
-type Pattern = { type: Intl.DateTimeFormatPartTypes, literal?: string };
+type Pattern = { type: Intl.DateTimeFormatPartTypes; literal?: string };
 
 function createDateParsePattern(parts: Intl.DateTimeFormatPart[]) {
     return parts.reduce((prev, part) => {
@@ -172,8 +167,8 @@ export function parseDateTimeFromFormatter(input: string, formatter: DateFormatt
         // date time
         let month = Number(result.month);
         if (Number.isNaN(month)) {
-            const index = formatter.monthNames.findIndex(m => !!m && (m?.toUpperCase() === result.month?.toUpperCase()));
-            month = (index >= 0) ? index + 1 : month;
+            const index = formatter.monthNames.findIndex((m) => !!m && m?.toUpperCase() === result.month?.toUpperCase());
+            month = index >= 0 ? index + 1 : month;
         }
         const hour = !!time ? time.split(':')[0] : undefined;
         const minute = !!time ? time.split(':')[1] : undefined;
@@ -188,7 +183,6 @@ export function parseDateTimeFromFormatter(input: string, formatter: DateFormatt
             return dt;
         }
     }
-
 }
 
 function createDateTimeParsePattern(parts: Intl.DateTimeFormatPart[]) {

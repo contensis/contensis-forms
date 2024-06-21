@@ -6,14 +6,5 @@ export function CheckboxInput({ inputValue, onChange, onBlur, onFocus, ...attrs 
     const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
         onChange($event.target.checked);
     };
-    return (
-        <input
-            type="checkbox"
-            {...inputAttrs(attrs, 'checkbox')}
-            checked={!!inputValue}
-            onChange={onInputChange}
-            onFocus={onFocus}
-            onBlur={onBlur}
-        />
-    );
+    return <input type="checkbox" {...inputAttrs(attrs, 'checkbox')} checked={!!inputValue} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />;
 }

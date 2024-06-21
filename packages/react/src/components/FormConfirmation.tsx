@@ -10,16 +10,11 @@ type FormConfirmationProps = {
 
 export function FormConfirmation(props: FormConfirmationProps) {
     const confirmation = useMemo(() => getConfirmationHtml(props.rule), [props.rule]);
-    return !!confirmation
-        ? (
-            <div className="form-confirmation-message" dangerouslySetInnerHTML={{ __html: confirmation }}>
-            </div>
-        )
-        : (
-            <div className="form-confirmation-message">
-                {localisations.confirmationMessage}
-            </div>
-        )
+    return !!confirmation ? (
+        <div className="form-confirmation-message" dangerouslySetInnerHTML={{ __html: confirmation }}></div>
+    ) : (
+        <div className="form-confirmation-message">{localisations.confirmationMessage}</div>
+    );
 }
 
 function getConfirmationHtml(rule: ConfirmationRuleReturn) {

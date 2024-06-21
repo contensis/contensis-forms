@@ -1,9 +1,9 @@
 import { DateTimeValidation, INVALID_DATE, validateDateTimeParts } from './date-utils';
 import { localeInfo, parseDateTimeFromFormatter } from './locale';
 
-const ISO_REG_EX = /^([0-9]{4})-([0-1][0-9])(?:-([0-3][0-9]))?(?:[T ]?([0-2][0-9])(?::([0-5][0-9]))?(?::([0-5][0-9]))?)?(?:\.([0-9]+))?(Z|(?:\+|\-)[0-9]{4})?$/;
+const ISO_REG_EX = /^([0-9]{4})-([0-1][0-9])(?:-([0-3][0-9]))?(?:[T ]?([0-2][0-9])(?::([0-5][0-9]))?(?::([0-5][0-9]))?)?(?:\.([0-9]+))?(Z|(?:\+|-)[0-9]{4})?$/;
 
-const SHORT_DATE_TIME_REG_EX = /^(\d{1,2})(\/|\-|\.)(\d{1,2})(\/|\-|\.)(\d{2,4}) (\d{1,2}):(\d{1,2})$/
+const SHORT_DATE_TIME_REG_EX = /^(\d{1,2})(\/|-|\.)(\d{1,2})(\/|-|\.)(\d{2,4}) (\d{1,2}):(\d{1,2})$/;
 
 export function parseDateTime(date: string) {
     if (!date) {

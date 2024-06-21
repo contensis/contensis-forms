@@ -5,7 +5,7 @@ import { Dictionary, Nullable } from './shared';
 // mode
 // do form descriptions / field descriptions need canvas?
 
-export type VersionStatus = null | 'latest' | 'published'
+export type VersionStatus = null | 'latest' | 'published';
 
 type ApiParams = {
     apiUrl: string;
@@ -23,7 +23,6 @@ export type SaveFormResponseParams = ApiParams & {
     formVersionNo: string;
 };
 
-
 export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
 
 export type FormResponse = Dictionary<unknown>;
@@ -37,8 +36,8 @@ export type FormContentType = {
     properties?: Nullable<FormProperties>;
     language: string;
     version?: {
-        versionNo?: string
-    }
+        versionNo?: string;
+    };
 };
 
 export type SaveFormResponse = {
@@ -66,7 +65,7 @@ export type Group = {
 
 export type CaptchaSettings = {
     enabled: boolean;
-    siteKey?: Nullable<string>; 
+    siteKey?: Nullable<string>;
 };
 
 export type FormProperties = {
@@ -82,34 +81,15 @@ export type FormProperties = {
     mode?: 'survey';
 };
 
-export type FieldDataType =
-    | 'boolean'
-    | 'dateTime'
-    | 'decimal'
-    | 'integer'
-    | 'string'
-    | 'stringArray';
+export type FieldDataType = 'boolean' | 'dateTime' | 'decimal' | 'integer' | 'string' | 'stringArray';
 
-export type FieldDataFormat =
-    | 'email'
-    | 'phone'
-    | 'reference'
-    | 'time'
-    | 'url';
+export type FieldDataFormat = 'email' | 'phone' | 'reference' | 'time' | 'url';
 
-export type FieldEditorId =
-    | 'datetime'
-    | 'date'
-    | 'decimal'
-    | 'integer'
-    | 'list-dropdown'
-    | 'list'
-    | 'multiline'
-    | 'text';
+export type FieldEditorId = 'datetime' | 'date' | 'decimal' | 'integer' | 'list-dropdown' | 'list' | 'multiline' | 'text';
 
 export type AllowedValues = {
     values?: Nullable<string[]>;
-    labeledValues?: Nullable<{ value: string, label: string }[]>;
+    labeledValues?: Nullable<{ value: string; label: string }[]>;
 };
 
 export type FieldValidations = {
@@ -149,7 +129,6 @@ type FieldEditorProperties = {
     placeholderText?: string;
 };
 
-
 export type FormRule<TReturn> = {
     return: TReturn;
 };
@@ -158,7 +137,7 @@ export type ConfirmationRuleReturnUri = {
     link: {
         sys: {
             uri: string;
-        }
+        };
     };
 };
 

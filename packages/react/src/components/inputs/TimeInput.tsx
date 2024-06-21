@@ -7,7 +7,7 @@ export function TimeInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: F
     const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
         const time = DateTime.parseTime($event.target.value);
         onChange($event.target.value, time);
-    };  
+    };
 
     return (
         <>

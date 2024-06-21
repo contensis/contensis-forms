@@ -3,7 +3,10 @@ import { FormInputProps } from './models';
 
 type AttrArg = undefined | null | string | string[] | Record<string, boolean>;
 
-type FieldInputProps = Pick<FormInputProps, 'htmlId' | 'showErrors' | 'errors' | 'inputRef' | 'autoFill' | 'rows' | 'instructions' | 'maxLength' | 'cssClass' | 'labelPosition'>;
+type FieldInputProps = Pick<
+    FormInputProps,
+    'htmlId' | 'showErrors' | 'errors' | 'inputRef' | 'autoFill' | 'rows' | 'instructions' | 'maxLength' | 'cssClass' | 'labelPosition'
+>;
 
 export function attr(...args: AttrArg[]) {
     const keys = args.reduce<string[]>((prev, arg) => {
@@ -11,11 +14,11 @@ export function attr(...args: AttrArg[]) {
             if (typeof arg === 'string') {
                 prev.push(arg);
             } else if (Array.isArray(arg)) {
-                prev.push(...arg.filter(a => !!a));
+                prev.push(...arg.filter((a) => !!a));
             } else {
                 Object.keys(arg)
-                    .filter(key => !!arg[key])
-                    .forEach(key => prev.push(key));
+                    .filter((key) => !!arg[key])
+                    .forEach((key) => prev.push(key));
             }
         }
         return prev;
@@ -46,7 +49,7 @@ export function charCountId(inputs: Pick<FormInputProps, 'htmlId'>) {
 function inputClassname(inputs: FieldInputProps, fieldType: string, additionalCss: Nullable<string[]>) {
     return attr(
         `form-${fieldType}-input`,
-        additionalCss?.filter(suffix => !!suffix).map(suffix => `form-${fieldType}-input-${suffix}`),
+        additionalCss?.filter((suffix) => !!suffix).map((suffix) => `form-${fieldType}-input-${suffix}`),
         {
             [`form-${fieldType}-input-has-error`]: inputs.showErrors && !!inputs.errors
         }
@@ -56,7 +59,7 @@ function inputClassname(inputs: FieldInputProps, fieldType: string, additionalCs
 type InputSettings = {
     autoComplete?: string;
     cssSuffix?: string[];
-    rows?: number
+    rows?: number;
 };
 
 export function inputAttrs(inputs: FieldInputProps, fieldType: string, settings?: InputSettings) {
@@ -89,14 +92,14 @@ export function textValue(value: unknown): string {
 
 export function formFieldCss(inputs: FieldInputProps, formFieldType: 'field' | 'fieldset' | 'checkbox-field') {
     return attr(
-        `form-${formFieldType}`, 
+        `form-${formFieldType}`,
         [
             inputs.cssClass || '',
-            (inputs.labelPosition === 'top') ? `form-${formFieldType}-label-top` : '',
-            (inputs.labelPosition === 'leftAligned') ? `form-${formFieldType}-label-left` : ''
+            inputs.labelPosition === 'top' ? `form-${formFieldType}-label-top` : '',
+            inputs.labelPosition === 'leftAligned' ? `form-${formFieldType}-label-left` : ''
         ],
-        { 
-            [`form-${formFieldType}-has-error`]: inputs.showErrors && !!inputs.errors 
+        {
+            [`form-${formFieldType}-has-error`]: inputs.showErrors && !!inputs.errors
         }
     );
 }

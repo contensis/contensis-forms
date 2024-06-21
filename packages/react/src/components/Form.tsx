@@ -1,6 +1,6 @@
 import { FormEvent, MutableRefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ConfirmationRuleReturn, Dictionary, FormContentType, FormPage, FormResponse, Nullable, ValidationError } from '../models';
-import { Api, Errors, Fields, Form as FormMethods, Progress, Rules } from '../state';
+import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
 import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
@@ -10,24 +10,11 @@ function isServer() {
     return typeof window === `undefined`;
 }
 
-export function Form({
-    apiUrl,
-    projectId,
-    formId,
-    language,
-    versionStatus,
-    loading,
-    disabled,
-    error,
-    onSubmit,
-    onSubmitError,
-    onSubmitSuccess
-}: FormProps) {
+export function ContensisForm(props: FormProps) {
+    return isServer() ? null : <ClientForm {...props} />;
+}
 
-    if (isServer()) {
-        return null;
-    }
-
+function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loading, disabled, error, onSubmit, onSubmitError, onSubmitSuccess }: FormProps) {
     const [defaultPageTitle] = useState(document.title);
     const [isLoading, setIsLoading] = useState(true);
     const [apiError, setApiError] = useState<unknown>(null);
@@ -37,7 +24,6 @@ export function Form({
     const [inputValue, setInputValue] = useState<Dictionary<unknown>>({});
     const [showErrors, setShowErrors] = useState(false);
     const [errors, setErrors] = useState<Dictionary<Nullable<Dictionary<ValidationError>>>>({});
-    const [_focussed, setFocussed] = useState('');
     const [isDirty, setIsDirty] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [confirmationRule, setConfirmationRule] = useState<Nullable<ConfirmationRuleReturn>>(null);
@@ -55,12 +41,12 @@ export function Form({
                 setApiError(null);
                 setPageIndex(0);
 
-                const initialValue = FormMethods.getInitialValue(form);
+                const initialValue = Form.getInitialValue(form);
                 setValue(initialValue);
-                setInputValue(FormMethods.getInputValue(form, initialValue));
+                setInputValue(Form.getInputValue(form, initialValue));
                 setShowErrors(false);
-                
-                const initialErrors = FormMethods.validate(form, initialValue);
+
+                const initialErrors = Form.validate(form, initialValue);
                 setErrors(initialErrors);
             },
             (error) => {
@@ -73,17 +59,17 @@ export function Form({
         };
     }, [apiUrl, projectId, formId, language, versionStatus]);
 
-    const pages: FormPage[] = useMemo(() => FormMethods.getPages(form), [form]);
+    const pages: FormPage[] = useMemo(() => Form.getPages(form), [form]);
     const pageCount = pages.length;
     const currentPage = pages[pageIndex];
-    const currentPageHasError = FormMethods.pageHasErrors(currentPage, errors);
+    const currentPageHasError = Form.pageHasErrors(currentPage, errors);
 
     const inputRefs = useMemo(() => Fields.reduceFields(form, (): MutableRefObject<any> => ({ current: undefined })), [form]);
 
     const pageTitle = getPageTitle(defaultPageTitle, currentPage?.title, currentPage?.pageNo, pageCount, showErrors && currentPageHasError);
 
     const updateValue = (id: string, value: unknown) => {
-        const field = form?.fields.find(f => f.id === id);
+        const field = form?.fields.find((f) => f.id === id);
         if (field) {
             setValue((prev) => ({ ...prev, [id]: value }));
             const fieldErrors = Fields.validate(field, value);
@@ -96,21 +82,21 @@ export function Form({
     };
 
     const updateInputValue = (id: string, value: unknown) => {
-        const field = form?.fields.find(f => f.id === id);
+        const field = form?.fields.find((f) => f.id === id);
         if (field) {
             setInputValue((prev) => ({ ...prev, [id]: value }));
         }
     };
 
-    const updateFocussed = (id: string, focussed: boolean) => {
-        setFocussed((prev) => {
-            if (focussed) {
-                return id;
-            } else if (prev === id) {
-                return '';
-            }
-            return prev;
-        });
+    const updateFocussed = (_id: string, _focussed: boolean) => {
+        // setFocussed((prev) => {
+        //     if (focussed) {
+        //         return id;
+        //     } else if (prev === id) {
+        //         return '';
+        //     }
+        //     return prev;
+        // });
     };
 
     const previousPage = () => {
@@ -129,7 +115,7 @@ export function Form({
         }
 
         setShowErrors(false);
-        const isLastPage = !!pageCount && (pageIndex === (pageCount - 1));
+        const isLastPage = !!pageCount && pageIndex === pageCount - 1;
         if (!isLastPage) {
             setPageIndex((prev) => prev + 1);
             return;
@@ -155,7 +141,7 @@ export function Form({
             if (success) {
                 setIsSubmitted(true);
                 if (Rules.isConfirmationRuleReturnUri(result?.confirmation)) {
-                    window.location.assign(result.confirmation.link.sys.uri)
+                    window.location.assign(result.confirmation.link.sys.uri);
                 } else {
                     setFormResponse(result.form);
                     setConfirmationRule(result.confirmation);
@@ -169,7 +155,6 @@ export function Form({
                 setApiError(e);
             }
         }
-
     };
 
     useEffect(() => {
@@ -187,13 +172,13 @@ export function Form({
         if (currentPage) {
             if (previousPageIndexRef.current === null) {
                 // initial load
-                history.pushState(currentPage.id, '', '');
+                window.history.pushState(currentPage.id, '', '');
             } else if (previousPageIndexRef.current < pageIndex) {
                 // submit
-                history.pushState(currentPage.id, '', '');
+                window.history.pushState(currentPage.id, '', '');
             } else if (previousPageIndexRef.current > pageIndex) {
                 // previous
-                history.replaceState(currentPage.id, '', '');
+                window.history.replaceState(currentPage.id, '', '');
             }
             previousPageIndexRef.current = pageIndex;
         }
@@ -216,34 +201,36 @@ export function Form({
 
     return (
         <div className="form">
-            {!confirmationRule ? (<FormLoader
-                apiUrl={apiUrl}
-                projectId={projectId}
-                formId={formId}
-                language={language}
-                versionStatus={versionStatus}
-                loading={loading}
-                disabled={disabled}
-                error={error}
-                formHtmlId={formHtmlId}
-                isLoading={isLoading}
-                apiError={apiError}
-                form={form}
-                pageIndex={pageIndex}
-                pageCount={pageCount}
-                currentPage={currentPage}
-                formValue={value}
-                formInputValue={inputValue}
-                showErrors={showErrors}
-                formErrors={errors}
-                inputRefs={inputRefs}
-                setValue={updateValue}
-                setInputValue={updateInputValue}
-                setFocussed={updateFocussed}
-                previousPage={previousPage}
-                onFormSubmit={onFormSubmit}
-            />) : null}
-            {(!!confirmationRule && !!formResponse) ? (<FormConfirmation rule={confirmationRule} formResponse={formResponse} />) : null}
+            {!confirmationRule ? (
+                <FormLoader
+                    apiUrl={apiUrl}
+                    projectId={projectId}
+                    formId={formId}
+                    language={language}
+                    versionStatus={versionStatus}
+                    loading={loading}
+                    disabled={disabled}
+                    error={error}
+                    formHtmlId={formHtmlId}
+                    isLoading={isLoading}
+                    apiError={apiError}
+                    form={form}
+                    pageIndex={pageIndex}
+                    pageCount={pageCount}
+                    currentPage={currentPage}
+                    formValue={value}
+                    formInputValue={inputValue}
+                    showErrors={showErrors}
+                    formErrors={errors}
+                    inputRefs={inputRefs}
+                    setValue={updateValue}
+                    setInputValue={updateInputValue}
+                    setFocussed={updateFocussed}
+                    previousPage={previousPage}
+                    onFormSubmit={onFormSubmit}
+                />
+            ) : null}
+            {!!confirmationRule && !!formResponse ? <FormConfirmation rule={confirmationRule} formResponse={formResponse} /> : null}
         </div>
     );
 }

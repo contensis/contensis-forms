@@ -6,14 +6,5 @@ export function TextInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: F
     const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
         onChange($event.target.value);
     };
-    return (
-        <input
-            type="text"
-            {...inputAttrs(attrs, 'text')}
-            value={textValue(inputValue)}
-            onChange={onInputChange}
-            onFocus={onFocus}
-            onBlur={onBlur}
-        />
-    );
+    return <input type="text" {...inputAttrs(attrs, 'text')} value={textValue(inputValue)} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />;
 }

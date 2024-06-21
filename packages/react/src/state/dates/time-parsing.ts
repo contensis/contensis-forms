@@ -5,9 +5,12 @@ export function parseTime(time: string) {
         return time;
     }
 
-    const match = [match3Digit, match4Digit].reduce((prev, fn) => {
-        return prev || fn(time);
-    }, null as null | TimeMatch);
+    const match = [match3Digit, match4Digit].reduce(
+        (prev, fn) => {
+            return prev || fn(time);
+        },
+        null as null | TimeMatch
+    );
 
     if (!match) {
         return INVALID_TIME;
@@ -25,18 +28,18 @@ export function parseTime(time: string) {
             return INVALID_TIME;
         }
     }
-    if ((hour === 0) && (period === 'pm')) {
+    if (hour === 0 && period === 'pm') {
         return INVALID_TIME;
     }
 
-    if ((period === 'am') && (hour > 12)) {
+    if (period === 'am' && hour > 12) {
         // 17:00am
         return INVALID_TIME;
     }
-    if ((period === 'am') && (hour === 12)) {
+    if (period === 'am' && hour === 12) {
         hour = 0;
     }
-    if ((period === 'pm') && (hour < 12)) {
+    if (period === 'pm' && hour < 12) {
         hour += 12;
     }
 
@@ -53,7 +56,7 @@ export function parseTime(time: string) {
 type TimeMatch = {
     hour: number;
     minute: number;
-    period: null | 'am' | 'pm'
+    period: null | 'am' | 'pm';
 };
 
 function match3Digit(time: string): null | TimeMatch {
@@ -83,7 +86,7 @@ function match3Digit(time: string): null | TimeMatch {
     return {
         hour,
         minute,
-        period: isAm ? 'am' : (isPm ? 'pm' : null)
+        period: isAm ? 'am' : isPm ? 'pm' : null
     };
 }
 
@@ -103,7 +106,7 @@ function match4Digit(time: string): null | TimeMatch {
     return {
         hour,
         minute,
-        period: isAm ? 'am' : (isPm ? 'pm' : null)
+        period: isAm ? 'am' : isPm ? 'pm' : null
     };
 }
 

@@ -26,20 +26,37 @@ type FormLoaderProps = FormProps & {
     inputRefs: Dictionary<MutableRefObject<any>>;
     setValue: SetValue;
     setInputValue: SetValue;
-    setFocussed: SetFocussed
+    setFocussed: SetFocussed;
 };
 
 export function FormLoader({
-    loading, error, onFormSubmit, isLoading, apiError, form, versionStatus, formHtmlId, pageIndex, pageCount,
-    currentPage, previousPage, formValue, formInputValue, formErrors, showErrors, inputRefs, setValue, setInputValue, setFocussed
+    loading,
+    error,
+    onFormSubmit,
+    isLoading,
+    apiError,
+    form,
+    versionStatus,
+    formHtmlId,
+    pageIndex,
+    pageCount,
+    currentPage,
+    previousPage,
+    formValue,
+    formInputValue,
+    formErrors,
+    showErrors,
+    inputRefs,
+    setValue,
+    setInputValue,
+    setFocussed
 }: FormLoaderProps) {
-
     if (isLoading) {
-        return loading || (<FormLoading />)
+        return loading || <FormLoading />;
     }
 
     if (apiError) {
-        return error ? error(apiError) : (<FormLoadError error={apiError} />);
+        return error ? error(apiError) : <FormLoadError error={apiError} />;
     }
 
     if (form?.properties?.captcha && Version.isPublishedVersion(versionStatus) && !Api.isLoggedIn()) {
@@ -49,11 +66,7 @@ export function FormLoader({
     return (
         <form noValidate={true} onSubmit={onFormSubmit}>
             <FormTitle form={form} />
-            <FormProgress
-                formHtmlId={formHtmlId}
-                pageCount={pageCount}
-                currentPage={currentPage}
-            />
+            <FormProgress formHtmlId={formHtmlId} pageCount={pageCount} currentPage={currentPage} />
             <FormCurrentPage
                 currentPage={currentPage}
                 form={form}
@@ -67,25 +80,15 @@ export function FormLoader({
                 setInputValue={setInputValue}
                 setValue={setValue}
             />
-            <FormButtons
-                pageIndex={pageIndex}
-                pageCount={pageCount}
-                form={form}
-                currentPage={currentPage}
-                previousPage={previousPage}
-            />
+            <FormButtons pageIndex={pageIndex} pageCount={pageCount} form={form} currentPage={currentPage} previousPage={previousPage} />
         </form>
     );
 }
 
 function FormLoading() {
-    return (
-        <div className="form-loading">{localisations.formLoading}</div>
-    )
+    return <div className="form-loading">{localisations.formLoading}</div>;
 }
 
 function FormLoadError(props: { error: any }) {
-    return (
-        <div className="form-load-error">{props?.error?.message || localisations.formLoadError}</div>
-    )
+    return <div className="form-load-error">{props?.error?.message || localisations.formLoadError}</div>;
 }

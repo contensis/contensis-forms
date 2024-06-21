@@ -1,9 +1,4 @@
-import {
-    FormContentType,
-    GetFormParams,
-    SaveFormResponse,
-    SaveFormResponseParams
-} from '../models';
+import { FormContentType, GetFormParams, SaveFormResponse, SaveFormResponseParams } from '../models';
 import { Captcha } from './captcha';
 import { Version } from './version';
 
@@ -38,7 +33,8 @@ const CmsRefreshTokenCookie = 'ContensisSecurityRefreshToken';
 const RefreshTokenCookie = 'RefreshToken';
 const RefreshTokenExpiryTime = 15 * 24 * 3600 * 1000; // 15 days
 
-const SCOPE = 'Security_Administrator ContentType_Read ContentType_Write ContentType_Delete Entry_Read Entry_Write Entry_Delete Project_Read Project_Write Project_Delete Workflow_Administrator';
+const SCOPE =
+    'Security_Administrator ContentType_Read ContentType_Write ContentType_Delete Entry_Read Entry_Write Entry_Delete Project_Read Project_Write Project_Delete Workflow_Administrator';
 const GRANT_TYPE = 'contensis_classic_refresh_token';
 
 type RequestOptions = {
@@ -112,8 +108,7 @@ async function getDefaultHeaders(options: RequestOptions) {
 }
 
 async function getForm({ apiUrl, projectId, formId, language, versionStatus }: GetFormParams, signal: AbortSignal) {
-
-    const query = (versionStatus === 'latest') ? `?versionStatus=${versionStatus}` : '';
+    const query = versionStatus === 'latest' ? `?versionStatus=${versionStatus}` : '';
 
     const headers = await getDefaultHeaders({ apiUrl });
 
@@ -138,9 +133,18 @@ async function getForm({ apiUrl, projectId, formId, language, versionStatus }: G
     }
 }
 
-async function saveFormResponse({ apiUrl, projectId, formId, language, formVersionNo, versionStatus, formResponse, captcha }: SaveFormResponseParams): Promise<SaveFormResponse> {
+async function saveFormResponse({
+    apiUrl,
+    projectId,
+    formId,
+    language,
+    formVersionNo,
+    versionStatus,
+    formResponse,
+    captcha
+}: SaveFormResponseParams): Promise<SaveFormResponse> {
     const headers = await getDefaultHeaders({ apiUrl });
-    const captchaResponse = (Version.isPublishedVersion(versionStatus) && !isLoggedIn()) ? await Captcha.submit(formId, captcha) : '';
+    const captchaResponse = Version.isPublishedVersion(versionStatus) && !isLoggedIn() ? await Captcha.submit(formId, captcha) : '';
 
     formResponse = {
         ...formResponse,
@@ -149,12 +153,10 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, formVersi
             dataFormat: 'form' as const,
             language
         }
-    };    
+    };
 
     let url = `${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}/entries`;
-    url = (Version.isPublishedVersion(versionStatus) && (formVersionNo))
-        ? url
-        : `${url}?contentTypePreviewVersion=${formVersionNo}`;
+    url = Version.isPublishedVersion(versionStatus) && formVersionNo ? url : `${url}?contentTypePreviewVersion=${formVersionNo}`;
 
     const response = await fetch(url, {
         headers: {
@@ -164,7 +166,7 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, formVersi
         method: 'POST',
         body: JSON.stringify(formResponse),
         mode: 'cors'
-    })
+    });
 
     if (response.ok) {
         const result: SaveFormResponse = await response.json();
