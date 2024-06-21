@@ -7,15 +7,6 @@ import { Dictionary, Nullable } from './shared';
 
 export type VersionStatus = null | 'latest' | 'published'
 
-export type FormApiInputParams = {
-    apiUrl?: null | string;
-    projectId: string;
-    formId: string;
-    language?: null | string;
-    versionStatus?: VersionStatus;
-};
-
-
 type ApiParams = {
     apiUrl: string;
     projectId: string;
@@ -73,8 +64,6 @@ export type Group = {
     description?: Nullable<StringOrCanvas>;
 };
 
-export type FormDataFormat = 'form';
-
 export type CaptchaSettings = {
     enabled: boolean;
     siteKey?: Nullable<string>; 
@@ -122,7 +111,6 @@ export type AllowedValues = {
     values?: Nullable<string[]>;
     labeledValues?: Nullable<{ value: string, label: string }[]>;
 };
-
 
 export type FieldValidations = {
     required?: Nullable<FieldValidation>;

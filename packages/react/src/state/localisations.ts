@@ -106,3 +106,24 @@ export function plural<T>(value: number, fns: PluralMap<() => T>) {
     const fn = fns[rule];
     return fn();
 }
+
+export function getPageTitle(
+    defaultPageTitle: string,
+    pageTitle: string,
+    pageNo: number,
+    pageCount: number,
+    hasError: boolean
+) {
+    let result = defaultPageTitle;
+    if (pageCount > 1) {
+        const pageProgress = format(localisations.pagingMessage, pageNo, pageCount);
+        result = `${defaultPageTitle} - ${pageProgress}`;
+        if (pageTitle) {
+            result = `${result} - ${pageTitle}`;
+        }
+    }
+    if (hasError) {
+        result = `${localisations.errorPageTitle}: ${result}`;
+    }
+    return result
+}

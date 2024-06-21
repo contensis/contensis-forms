@@ -1,22 +1,24 @@
-import { UIEvent, useEffect, useRef, } from 'react';
-import { FormContentType, FormPage, Nullable } from '../models';
-import { getLocalizations } from '../state';
-import { useFieldRefs } from './FormContext';
+import { useEffect, useRef, UIEvent, MutableRefObject } from 'react';
+import { Dictionary, FormContentType, FormPage, Nullable, ValidationError } from '../models';
+import { Errors, Form } from '../state';
 
 type FormValidationSummaryProps = {
     currentPage: FormPage;
     form: Nullable<FormContentType>;
+    showErrors: boolean;
+    formErrors: Dictionary<Nullable<Dictionary<ValidationError>>>;
+    inputRefs: Dictionary<MutableRefObject<any>>;
 };
 
-export function FormValidationSummary({ currentPage, form }: FormValidationSummaryProps) {
+
+export function FormValidationSummary({ currentPage, form, showErrors, formErrors, inputRefs }: FormValidationSummaryProps) {
+    const errors = getErrors({ currentPage, showErrors, formErrors });
     const summaryRef = useRef<HTMLDivElement>(null);
-    const localizations = getLocalizations(form);
-    const refs = useFieldRefs();
-    const invalid = currentPage.showErrors && currentPage.invalid;
+    const localizations = Form.getLocalizations(form);
 
     const onNavigateToError = (e: UIEvent, id: string) => {
         e.preventDefault();
-        refs[id]?.current?.focus();
+        inputRefs[id]?.current?.focus();
     };
 
     const onBlur = () => {
@@ -26,26 +28,68 @@ export function FormValidationSummary({ currentPage, form }: FormValidationSumma
     };
 
     useEffect(() => {
-        if (invalid && summaryRef.current) {
+        if (!errors.valid && summaryRef.current) {
             summaryRef.current.setAttribute('tabindex', '-1');
             summaryRef.current.focus();
         }
-    }, [invalid]);
+    }, [errors.valid]);
 
-    return invalid ? (
-        <div className="form-validation-summary" ref={summaryRef} onBlur={onBlur}>
-            <div role="alert">
-                <h3 className="form-validation-summary-title">{localizations.errorSummaryTitle}</h3>
-                <div className="form-validation-summary-body">
-                    <ul className="form-validation-summary-list">
-                        {currentPage.fieldErrors?.map((fieldError, index) => (
-                            <li key={index}>
-                                <a href="#" onClick={(e) => onNavigateToError(e, fieldError.id)}>{fieldError.message}</a>
-                            </li>
-                        ))}
-                    </ul>
+    return errors.valid
+        ? null
+        : (
+            <div className="form-validation-summary" ref={summaryRef} onBlur={onBlur}>
+                <div role="alert">
+                    <h3 className="form-validation-summary-title">{localizations.errorSummaryTitle}</h3>
+                    <div className="form-validation-summary-body">
+                        <ul className="form-validation-summary-list">
+                            {errors.errors.map((error, index) => (<li key={index}>
+                                <a href="#" onClick={(e) => onNavigateToError(e, error.id)}>
+                                    {error.message}
+                                </a>
+                            </li>))}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    ) : null;
+        );
+}
+
+type ErrorMessage = { id: string; message: string };
+
+type Errors = {
+    valid: boolean;
+    errors: ErrorMessage[];
+};
+
+function getErrors({ currentPage, showErrors, formErrors }: Pick<FormValidationSummaryProps, 'currentPage' | 'showErrors' | 'formErrors'>): Errors {
+    if (!showErrors || !formErrors) {
+        return {
+            valid: true,
+            errors: []
+        };
+    }
+
+    const errors = currentPage.fields
+        .map(({ id }) => ({ id, messages: Errors.getErrorMessages(formErrors[id]) }))
+        .reduce((prev, { id, messages }) => {
+            if (messages?.length) {
+                prev = [
+                    ...prev,
+                    ...(messages?.map((message) => ({ id, message })) || [])
+                ];
+            }
+            return prev;
+        }, [] as { id: string, message: string }[]);
+
+    if (!errors?.length) {
+        return {
+            valid: true,
+            errors: []
+        };
+    }
+
+    return {
+        valid: false,
+        errors
+    };
 }

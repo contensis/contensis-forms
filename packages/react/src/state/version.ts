@@ -1,5 +1,9 @@
-import { VersionStatus } from '../models';
+import { Nullable, VersionStatus } from '../models';
 
-export function isPublishedVersion(versionStatus: VersionStatus) {
+function isPublishedVersion(versionStatus: Nullable<VersionStatus>) {
     return !versionStatus || (versionStatus === 'published');
 }
+
+export const Version = {
+    isPublishedVersion
+};

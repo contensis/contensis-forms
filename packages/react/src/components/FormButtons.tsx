@@ -1,5 +1,5 @@
 import { FormContentType, FormPage, Nullable } from '../models';
-import { format, getLocalizations, localisations } from '../state';
+import { Form, format, localisations } from '../state';
 
 type FormButtonsProps = {
     pageIndex: number;
@@ -12,7 +12,7 @@ type FormButtonsProps = {
 export function FormButtons({ pageIndex, pageCount, currentPage, form, previousPage }: FormButtonsProps) {
     const isFirstPage = (pageIndex === 0)
     const isLastPage = !!pageCount && (pageIndex === (pageCount - 1));
-    const localizations = getLocalizations(form);
+    const localizations = Form.getLocalizations(form);
     const pageProgress = (pageCount > 1) ? format(localisations.pagingMessage, currentPage.pageNo, pageCount) : '';
     return (
         <div className="form-footer">

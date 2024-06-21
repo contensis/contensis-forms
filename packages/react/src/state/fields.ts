@@ -1,6 +1,7 @@
-import { localeInfo } from '../dates';
-import { Field, FieldDataFormat, FieldDataType, FieldEditorId, FieldEditorType, FormFieldOption, Nullable } from '../models';
+import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldEditorId, FieldEditorType, FormContentType, FormFieldOption, Nullable } from '../models';
+import { DateTime } from './dates';
 import { localisations } from './localisations';
+import { Validation } from './validation';
 
 const DEFAULT_DATA_TYPE_EDITOR_TYPES: Record<FieldDataType, FieldEditorType> = {
     boolean: 'checkbox',
@@ -30,7 +31,7 @@ const DEFAULT_EDITOR_ID_EDITOR_TYPES: Record<FieldEditorId, FieldEditorType> = {
     text: 'text'
 };
 
-export function getFieldEditorType(field: Field) {
+function getEditorType(field: Field) {
     let editorType: Nullable<FieldEditorType> = field.editor?.id ? DEFAULT_EDITOR_ID_EDITOR_TYPES[field.editor.id] : null;
     if (!editorType && field.dataFormat) {
         editorType = DEFAULT_DATA_FORMAT_EDITOR_TYPES[field.dataFormat];
@@ -46,41 +47,41 @@ export function getFieldEditorType(field: Field) {
 
 const EMPTY_FIELD_VALUES: Record<FieldDataType, any> = {
     boolean: false,
-    dateTime: null,
-    decimal: null,
-    integer: null,
+    dateTime: '',
+    decimal: '',
+    integer: '',
     string: '',
     stringArray: null
 };
 
-export function getEmptyFieldValue(field: Field) {
+function getEmptyFieldValue(field: Field) {
     return EMPTY_FIELD_VALUES[field.dataType];
 }
 
-export function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[] {
+function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[] {
     const pairs = field?.validations?.allowedValues?.labeledValues
         ? field?.validations?.allowedValues?.labeledValues?.map(value => value)
         : field?.validations?.allowedValues?.values?.map(value => ({ value, label: value }));
 
-    
+
     let options = pairs?.map((pair, index) => {
         return {
             key: `${index}`,
             htmlId: `${htmlId}-option-${index}`,
-            value: pair.value,
+            value: pair.value || '',
             label: pair.label,
         };
     });
 
-    if (getFieldEditorType(field) === 'select') {
+    if (getEditorType(field) === 'select') {
         const emptyOption = options?.find(o => o.value === '');
         if (!emptyOption) {
             options = [
                 {
-                    key:'',
+                    key: '',
                     htmlId: `${htmlId}-option--1`,
                     value: '',
-                    label: field?.editor?.properties?.placeholderText || localisations.pleaseSelect 
+                    label: field?.editor?.properties?.placeholderText || localisations.pleaseSelect
                 },
                 ...(options || [])
             ];
@@ -90,63 +91,119 @@ export function getOptions(field: Field, htmlId: string): undefined | FormFieldO
     return options;
 }
 
-export function getDefaultValue(field: Field) {
-    const defaultValue = typeof field?.default !== 'undefined' ? field.default : getEmptyFieldValue(field);
+function getDefaultValue(field: Field) {
+    const defaultValue = (typeof field?.default !== 'undefined' && (field?.default !== null)) ? field.default : getEmptyFieldValue(field);
     if ((field.dataType === 'dateTime') && (defaultValue === 'now()')) {
-        return (getFieldEditorType(field) === 'datetime')
-            ? getNowDateTime()
-            : getNowDate();
+        return (getEditorType(field) === 'datetime')
+            ? DateTime.getNowDateTime()
+            : DateTime.getNowDate();
     } else if ((field.dataType === 'string') && (field.dataFormat === 'time') && (defaultValue === 'now()')) {
-        return getNowTime();
+        return DateTime.getNowTime();
     }
     return defaultValue;
 }
 
-export function getInputValue(field: Field, value: unknown) {
+function getInputValue(field: Field, value: unknown) {
     if (field.dataType === 'dateTime') {
-        const editor = getFieldEditorType(field);
+        const editor = getEditorType(field);
         if (editor === 'datetime') {
-            return localeInfo().toShortDateTimeString(value as string | Date);
+            return DateTime.localeInfo().toShortDateTimeString(value as string | Date);
         } else {
-            return localeInfo().toShortDateString(value as string | Date);
+            return DateTime.localeInfo().toShortDateString(value as string | Date);
         }
     }
     return value;
 }
 
-function getNowDate() {
-    return toLocalIsoDate(new Date());
+function reduceFields<T>(form: Nullable<FormContentType>, fn: (field: Field, index: number) => T): Dictionary<T> {
+    return form?.fields
+        ? form.fields.reduce((prev, field, index) => ({ ...prev, [field.id]: fn(field, index) }), {} as Dictionary<T>)
+        : {}
 }
 
-export function getNowDateTime() {
-    return toLocalIsoDateTime(new Date());
+function validate(field: Field, value: unknown) {
+    return Validation.validate(value, field);
 }
 
-function getNowTime() {
-    return toLocalIsoTime(new Date());
+
+function getInitialValue(field: Field, query: Nullable<string[]>, progressValue: unknown) {
+    let value = null;
+    if (typeof progressValue !== 'undefined') {
+        const errors = validate(field, progressValue);
+        if (!errors?.dataType && !errors?.allowedValues) {
+            value = progressValue;
+        }
+    }
+    if (value === null) {
+        let queryValue = null;
+        const firstQuery = query?.[0];
+        switch (field.dataType) {
+            case 'boolean': {
+                if ((firstQuery === 'true') || (firstQuery === 'checked') || (firstQuery === 'on')) {
+                    queryValue = true
+                } else if ((firstQuery === 'false') || (firstQuery === 'unchecked') || (firstQuery === 'off')) {
+                    queryValue = false
+                }
+                break;
+            }
+            case 'dateTime': {
+                if (firstQuery) {
+                    if (field.dataType === 'dateTime') {
+                        return (getEditorType(field) === 'datetime')
+                            ? DateTime.parseDateTime(firstQuery)
+                            : DateTime.parseDate(firstQuery)
+                    } else if ((field.dataType === 'string') && (field.dataFormat === 'time')) {
+                        return DateTime.parseTime(firstQuery);
+                    }
+                }
+                break;
+            }
+            case 'decimal': {
+                queryValue = !!firstQuery ? parseFloat(firstQuery) : null;
+                break;
+            }
+            case 'integer': {
+                queryValue = !!firstQuery ? parseInt(firstQuery, 10) : null;
+                break;
+            }
+            case 'string': {
+                queryValue = firstQuery;
+                break;
+            }
+            case 'stringArray': {
+                if (query) {
+                    if (field.validations?.allowedValues) {
+                        const allowed = field.validations.allowedValues.labeledValues
+                            ? field.validations.allowedValues.labeledValues.map(value => value.value)
+                            : field.validations.allowedValues.values;
+                        if (allowed) {
+                            queryValue = query.filter((item) => allowed.includes(item));
+                        }
+                    } else {
+                        queryValue = query;
+                    }
+                }
+                break;
+            }
+        }
+        if (queryValue !== null) {
+            const errors = validate(field, queryValue);
+            if (!errors?.dataType && !errors?.allowedValues) {
+                value = queryValue;
+            }
+        }
+    }
+    if (value === null) {
+        value = getDefaultValue(field);
+    }
+    return value
 }
 
-function toLocalIsoDate(dt: Date) {
-    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T00:00`;
-}
-
-function toLocalIsoDateTime(dt: Date) {
-    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
-}
-
-function toLocalIsoTime(dt: Date) {
-    return `${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
-}
-
-const AUTO_SAVE_PROGRESS_EXPIRY_DAYS = 30;
-
-export function getProgressExpiry() {
-    const d = new Date();
-    d.setDate(d.getDate() + AUTO_SAVE_PROGRESS_EXPIRY_DAYS);
-    return toLocalIsoDateTime(d);
-}
-
-function pad(n: number, length: number = 2) {
-    const padding = Array.from({ length }).map(() => '0').join('');
-    return `${padding}${n}`.slice(-1 * length)
-}
+export const Fields = {
+    getEditorType,
+    getOptions,
+    getInitialValue,
+    getInputValue,
+    reduceFields,
+    validate
+};

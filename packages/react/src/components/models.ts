@@ -1,5 +1,5 @@
 import { ClassType, Component, ComponentClass, FunctionComponent, MutableRefObject, ReactNode } from 'react';
-import { Dictionary, Field, FieldEditorType, FieldLabelPosition, FormFieldOption, Nullable, ValidationError } from '../models';
+import { Dictionary, Field, FieldEditorType, FieldLabelPosition, FormContentType, FormFieldOption, FormResponse, Nullable, ValidationError, VersionStatus } from '../models';
 
 type BaseComponent<TProps> = FunctionComponent<TProps> | ClassType<TProps, Component<TProps>, ComponentClass<TProps>>;
 
@@ -38,12 +38,33 @@ export type FormInput = BaseComponent<FormInputProps>;
 export type FormContainerProps = FormInputProps & { children?: ReactNode };
 export type FormContainer = BaseComponent<FormContainerProps>;
 
+export type SetValue = (fieldId: string, value: unknown) => void;
+export type SetFocussed = (fieldId: string, focussed: boolean) => void;
+
 export type FormFieldContainerProps = {
     formHtmlId: string;
     field: Field;
-    value: unknown;
-    inputValue: unknown;
-    errors: Nullable<Dictionary<ValidationError>>;
+    formValue: Dictionary<unknown>;
+    formInputValue: Dictionary<unknown>;
+    formErrors: Dictionary<Nullable<Dictionary<ValidationError>>>;
     showErrors: boolean;
-    inputRef: MutableRefObject<any>;
+    inputRefs: Dictionary<MutableRefObject<any>>;
+
+    setValue: SetValue;
+    setInputValue: SetValue;
+    setFocussed: SetFocussed
+};
+
+export type FormProps = {
+    apiUrl?: null | string;
+    projectId: string;
+    formId: string;
+    language?: null | string;
+    versionStatus?: VersionStatus;
+    loading?: ReactNode;
+    disabled?: ReactNode;
+    error?: (error: unknown) => ReactNode;
+    onSubmit?: (response: FormResponse, form: FormContentType) => false | FormResponse;
+    onSubmitSuccess?: (response: FormResponse) => boolean;
+    onSubmitError?: (error: unknown) => boolean;
 };

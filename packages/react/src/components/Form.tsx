@@ -1,83 +1,249 @@
-import { FormEvent, useEffect, useId, useState } from 'react';
-import { ConfirmationRuleReturn, FormContentType, FormProps, FormResponse, Nullable } from '../models';
-import { Api, Rules, createForm, handleError } from '../state';
+import { FormEvent, MutableRefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { ConfirmationRuleReturn, Dictionary, FormContentType, FormPage, FormResponse, Nullable, ValidationError } from '../models';
+import { Api, Errors, Fields, Form as FormMethods, Progress, Rules } from '../state';
+import { getPageTitle } from '../state/localisations';
 import { FormConfirmation } from './FormConfirmation';
-import { FormContextProvider } from './FormContext';
 import { FormLoader } from './FormLoader';
+import { FormProps } from './models';
 
 function isServer() {
     return typeof window === `undefined`;
 }
 
-export function Form(props: FormProps) {
-    
+export function Form({
+    apiUrl,
+    projectId,
+    formId,
+    language,
+    versionStatus,
+    loading,
+    disabled,
+    error,
+    onSubmit,
+    onSubmitError,
+    onSubmitSuccess
+}: FormProps) {
+
     if (isServer()) {
         return null;
     }
 
+    const [defaultPageTitle] = useState(document.title);
+    const [isLoading, setIsLoading] = useState(true);
+    const [apiError, setApiError] = useState<unknown>(null);
+    const [form, setForm] = useState<Nullable<FormContentType>>(null);
+    const [pageIndex, setPageIndex] = useState(0);
+    const [value, setValue] = useState<Dictionary<unknown>>({});
+    const [inputValue, setInputValue] = useState<Dictionary<unknown>>({});
+    const [showErrors, setShowErrors] = useState(false);
+    const [errors, setErrors] = useState<Dictionary<Nullable<Dictionary<ValidationError>>>>({});
+    const [_focussed, setFocussed] = useState('');
+    const [isDirty, setIsDirty] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const [confirmationRule, setConfirmationRule] = useState<Nullable<ConfirmationRuleReturn>>(null);
     const [formResponse, setFormResponse] = useState<Nullable<FormResponse>>(null);
-    const htmlId = useId();
-    const form = createForm(props, htmlId);
+    const formHtmlId = useId();
+
+    useEffect(() => {
+        setIsLoading(true);
+        const controller = new AbortController();
+        const signal = controller.signal;
+        Api.getForm({ apiUrl: apiUrl || '', projectId, formId, language: language || null, versionStatus: versionStatus || 'published' }, signal).then(
+            (form) => {
+                setForm(form);
+                setIsLoading(false);
+                setApiError(null);
+                setPageIndex(0);
+
+                const initialValue = FormMethods.getInitialValue(form);
+                setValue(initialValue);
+                setInputValue(FormMethods.getInputValue(form, initialValue));
+                setShowErrors(false);
+                
+                const initialErrors = FormMethods.validate(form, initialValue);
+                setErrors(initialErrors);
+            },
+            (error) => {
+                setIsLoading(false);
+                setApiError(error);
+            }
+        );
+        return () => {
+            controller.abort();
+        };
+    }, [apiUrl, projectId, formId, language, versionStatus]);
+
+    const pages: FormPage[] = useMemo(() => FormMethods.getPages(form), [form]);
+    const pageCount = pages.length;
+    const currentPage = pages[pageIndex];
+    const currentPageHasError = FormMethods.pageHasErrors(currentPage, errors);
+
+    const inputRefs = useMemo(() => Fields.reduceFields(form, (): MutableRefObject<any> => ({ current: undefined })), [form]);
+
+    const pageTitle = getPageTitle(defaultPageTitle, currentPage?.title, currentPage?.pageNo, pageCount, showErrors && currentPageHasError);
+
+    const updateValue = (id: string, value: unknown) => {
+        const field = form?.fields.find(f => f.id === id);
+        if (field) {
+            setValue((prev) => ({ ...prev, [id]: value }));
+            const fieldErrors = Fields.validate(field, value);
+            setErrors((prev) => ({ ...prev, [id]: fieldErrors }));
+            setIsDirty(true);
+            if (showErrors) {
+                setShowErrors(currentPageHasError);
+            }
+        }
+    };
+
+    const updateInputValue = (id: string, value: unknown) => {
+        const field = form?.fields.find(f => f.id === id);
+        if (field) {
+            setInputValue((prev) => ({ ...prev, [id]: value }));
+        }
+    };
+
+    const updateFocussed = (id: string, focussed: boolean) => {
+        setFocussed((prev) => {
+            if (focussed) {
+                return id;
+            } else if (prev === id) {
+                return '';
+            }
+            return prev;
+        });
+    };
+
+    const previousPage = () => {
+        setPageIndex((prev) => Math.max(prev - 1, 0));
+    };
 
     const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const canSave = form.submit();
-        if (!canSave) {
+        if (!form) {
             return;
         }
 
-        const formContentType = form.getForm();
-        const originalFormResponse = form.getFormResponse();
+        if (currentPageHasError) {
+            setShowErrors(true);
+            return;
+        }
 
-        const formResponse = props?.onSubmit ? props.onSubmit(originalFormResponse, formContentType as FormContentType) : originalFormResponse;
+        setShowErrors(false);
+        const isLastPage = !!pageCount && (pageIndex === (pageCount - 1));
+        if (!isLastPage) {
+            setPageIndex((prev) => prev + 1);
+            return;
+        }
+
+        const formResponse = onSubmit ? onSubmit(value, form) : value;
         if (!formResponse) {
             return;
         }
 
         try {
             const result = await Api.saveFormResponse({
-                ...form.getSaveFormResponseParams(),
+                apiUrl: apiUrl || '',
+                projectId,
+                formId,
+                language: language || null,
+                versionStatus: versionStatus || 'published',
+                formVersionNo: form?.version?.versionNo || '',
+                captcha: form?.properties?.captcha,
                 formResponse
             });
-            const success = props?.onSubmitSuccess ? props.onSubmitSuccess(result) : true;
+            const success = onSubmitSuccess ? onSubmitSuccess(result) : true;
             if (success) {
+                setIsSubmitted(true);
                 if (Rules.isConfirmationRuleReturnUri(result?.confirmation)) {
                     window.location.assign(result.confirmation.link.sys.uri)
                 } else {
                     setFormResponse(result.form);
                     setConfirmationRule(result.confirmation);
-                    form.resetProgress();
+                    Progress.reset(form);
                 }
             }
         } catch (e) {
-            const handleSubmitError = props?.onSubmitError ? props.onSubmitError(e) : true;
-            if (handleSubmitError) {                
-                handleError(e);
-                form.setApiError(e);
+            const handleSubmitError = onSubmitError ? onSubmitError(e) : true;
+            if (handleSubmitError) {
+                Errors.handleError(e);
+                setApiError(e);
             }
         }
 
     };
 
     useEffect(() => {
+        document.title = pageTitle;
+    }, [pageTitle]);
+
+    useEffect(() => {
+        if (form && isDirty && !isSubmitted) {
+            Progress.autoSave(form, value);
+        }
+    }, [form, value, isDirty, isSubmitted]);
+
+    const previousPageIndexRef = useRef<null | number>(null);
+    useEffect(() => {
+        if (currentPage) {
+            if (previousPageIndexRef.current === null) {
+                // initial load
+                history.pushState(currentPage.id, '', '');
+            } else if (previousPageIndexRef.current < pageIndex) {
+                // submit
+                history.pushState(currentPage.id, '', '');
+            } else if (previousPageIndexRef.current > pageIndex) {
+                // previous
+                history.replaceState(currentPage.id, '', '');
+            }
+            previousPageIndexRef.current = pageIndex;
+        }
+    }, [pageIndex, currentPage]);
+
+    useEffect(() => {
         const onPopState = (e: PopStateEvent) => {
-            form.gotoPage(e.state, 'popstate');
+            if (pages) {
+                const index = pages.findIndex((page) => page.id === e.state);
+                if (index >= 0) {
+                    setPageIndex(index);
+                }
+            }
         };
-
         window.addEventListener('popstate', onPopState);
-
         return () => {
             window.removeEventListener('popstate', onPopState);
         };
-    }, []);
+    }, [pages]);
 
     return (
         <div className="form">
-            <FormContextProvider form={form}>
-                {!confirmationRule ? (<FormLoader {...props} onFormSubmit={onFormSubmit} />) : null}
-                {(!!confirmationRule && !!formResponse) ? (<FormConfirmation rule={confirmationRule} formResponse={formResponse} />) : null}
-            </FormContextProvider>
+            {!confirmationRule ? (<FormLoader
+                apiUrl={apiUrl}
+                projectId={projectId}
+                formId={formId}
+                language={language}
+                versionStatus={versionStatus}
+                loading={loading}
+                disabled={disabled}
+                error={error}
+                formHtmlId={formHtmlId}
+                isLoading={isLoading}
+                apiError={apiError}
+                form={form}
+                pageIndex={pageIndex}
+                pageCount={pageCount}
+                currentPage={currentPage}
+                formValue={value}
+                formInputValue={inputValue}
+                showErrors={showErrors}
+                formErrors={errors}
+                inputRefs={inputRefs}
+                setValue={updateValue}
+                setInputValue={updateInputValue}
+                setFocussed={updateFocussed}
+                previousPage={previousPage}
+                onFormSubmit={onFormSubmit}
+            />) : null}
+            {(!!confirmationRule && !!formResponse) ? (<FormConfirmation rule={confirmationRule} formResponse={formResponse} />) : null}
         </div>
     );
 }

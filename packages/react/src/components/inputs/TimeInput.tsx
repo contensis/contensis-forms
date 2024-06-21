@@ -1,11 +1,11 @@
 import { ChangeEvent } from 'react';
-import { parseTime } from '../../dates';
-import { inputAttrs, textValue } from '../utils';
+import { DateTime } from '../../state';
 import { FormInputProps } from '../models';
+import { inputAttrs, textValue } from '../utils';
 
 export function TimeInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
     const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
-        const time = parseTime($event.target.value);
+        const time = DateTime.parseTime($event.target.value);
         onChange($event.target.value, time);
     };  
 

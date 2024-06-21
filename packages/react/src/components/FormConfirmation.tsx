@@ -1,7 +1,12 @@
 import { useMemo } from 'react';
-import { ConfirmationRuleReturn, FormConfirmationProps } from '../models';
+import { ConfirmationRuleReturn, FormResponse } from '../models';
 import { Rules, localisations } from '../state';
 import { Renderers } from './html';
+
+type FormConfirmationProps = {
+    rule: ConfirmationRuleReturn;
+    formResponse: FormResponse;
+};
 
 export function FormConfirmation(props: FormConfirmationProps) {
     const confirmation = useMemo(() => getConfirmationHtml(props.rule), [props.rule]);

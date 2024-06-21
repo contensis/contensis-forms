@@ -352,7 +352,7 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
         : noopValidator;
 }
 
-export function validate(value: unknown, field: Field) {
+function validate(value: unknown, field: Field) {
     const validator = createFieldValidator(field);
     return validator(value);
 }
@@ -405,3 +405,7 @@ function getRangeErrorMessage(
     }
     return '';
 }
+
+export const Validation = {
+    validate
+};

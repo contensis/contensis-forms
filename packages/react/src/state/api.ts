@@ -5,7 +5,7 @@ import {
     SaveFormResponseParams
 } from '../models';
 import { Captcha } from './captcha';
-import { isPublishedVersion } from './version';
+import { Version } from './version';
 
 function getAllCookies(): { [key: string]: string } {
     return (document.cookie || '').split('; ').reduce(
@@ -111,7 +111,7 @@ async function getDefaultHeaders(options: RequestOptions) {
     return headers;
 }
 
-async function getForm({ apiUrl, projectId, formId, language, versionStatus }: GetFormParams) {
+async function getForm({ apiUrl, projectId, formId, language, versionStatus }: GetFormParams, signal: AbortSignal) {
 
     const query = (versionStatus === 'latest') ? `?versionStatus=${versionStatus}` : '';
 
@@ -120,7 +120,8 @@ async function getForm({ apiUrl, projectId, formId, language, versionStatus }: G
     const response = await fetch(`${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}${query}`, {
         headers,
         method: 'GET',
-        mode: 'cors'
+        mode: 'cors',
+        signal
     });
 
     if (response.ok) {
@@ -139,7 +140,7 @@ async function getForm({ apiUrl, projectId, formId, language, versionStatus }: G
 
 async function saveFormResponse({ apiUrl, projectId, formId, language, formVersionNo, versionStatus, formResponse, captcha }: SaveFormResponseParams): Promise<SaveFormResponse> {
     const headers = await getDefaultHeaders({ apiUrl });
-    const captchaResponse = (isPublishedVersion(versionStatus) && !isLoggedIn()) ? await Captcha.submit(formId, captcha) : '';
+    const captchaResponse = (Version.isPublishedVersion(versionStatus) && !isLoggedIn()) ? await Captcha.submit(formId, captcha) : '';
 
     formResponse = {
         ...formResponse,
@@ -151,7 +152,7 @@ async function saveFormResponse({ apiUrl, projectId, formId, language, formVersi
     };    
 
     let url = `${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}/entries`;
-    url = (isPublishedVersion(versionStatus) && (formVersionNo))
+    url = (Version.isPublishedVersion(versionStatus) && (formVersionNo))
         ? url
         : `${url}?contentTypePreviewVersion=${formVersionNo}`;
 
