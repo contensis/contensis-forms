@@ -12,6 +12,7 @@
 
   --color-accent: #00857e;
   --color-border: #949494;
+  --color-border-subtle: #dbdbdb;
   --color-error: #d4351c;
   --color-focus: #4c9aff;
   --color-progress: var(--color-accent);
@@ -32,6 +33,7 @@
 
   --size-border: 0.1875rem;
   --size-border-small: 0.125rem;
+  --size-border-large: 0.375rem;
 
   --size-border-radius: 0.1875rem;
 
@@ -46,7 +48,8 @@
   --form-text-size-title: calc(var(--global-font-size) * 2);
   --form-text-size-subtitle: calc(var(--global-font-size) * 1.5);
   --form-text-size-description: var(--global-font-size);
-
+  --form-text-size-toolbar-title: var(--global-font-size);
+  --form-text-size-toolbar-small: calc(14 / var(--global-font-size));
   /* --------------------------------------------------------*/
   /* Page header                                             */
   /* --------------------------------------------------------*/
@@ -126,6 +129,9 @@
   /* Utility                                                 */
   /* --------------------------------------------------------*/
 
+  --text-preset-5: 1rem;
+  --text-preset-6: 0.875rem;
+
   --size-space-4: 0.25rem;
   --size-space-8: 0.5rem;
   --size-space-12: 0.75rem;
@@ -135,6 +141,8 @@
 
   --size-dimension-4: 0.25rem;
   --size-dimension-8: 0.5rem;
+  --size-dimension-24: 1.5rem;
+  --size-dimension-32: 2rem;
   --size-dimension-40: 2.5rem;
 
   --size-width-25: 25%;
@@ -638,8 +646,8 @@ legend {
 }
 
 .form-radio-input {
-  inline-size: var(--size-dimension-40);
-  block-size: var(--size-dimension-40);
+  inline-size: var(--size-dimension-32);
+  block-size: var(--size-dimension-32);
   border: var(--form-field-border-width) solid var(--form-field-border-color);
   accent-color: var(--color-accent);
   margin: 0;
@@ -661,8 +669,8 @@ legend {
 }
 
 .form-checkbox-input {
-  inline-size: var(--size-dimension-40);
-  block-size: var(--size-dimension-40);
+  inline-size: var(--size-dimension-32);
+  block-size: var(--size-dimension-32);
   border: var(--form-field-border-width) solid var(--form-field-border-color);
   accent-color: var(--color-accent);
   margin: 0;
@@ -703,7 +711,7 @@ legend {
 }
 
 /* --------------------------------------------------------*/
-/* Progress bar                                            
+/* Progress bar
 /* --------------------------------------------------------*/
 
 .form-progress {
@@ -715,6 +723,7 @@ legend {
 
 .form-progress-label {
   font-size: var(--form-progress-label-font-size);
+  font-weight: var(--global-font-weight-bold);
   color: var(--form-progress-label-color);
 }
 
@@ -760,15 +769,14 @@ progress[value]::-moz-progress-bar {
 /* --------------------------------------------------------*/
 /*
 /* RTL Languages
-/* 
+/*
 /* Most of the styles for RTL are handled by the browser
-/* using logical properties. but there are a few exceptions 
+/* using logical properties. but there are a few exceptions
 /* that need to be handled.
 /*
 /* --------------------------------------------------------*/
 
 [dir='rtl'] {
-
   /* Ensures that email address and telephone number inputs are left-aligned */
   & .form-tel-input,
   & .form-email-input {
@@ -783,29 +791,178 @@ progress[value]::-moz-progress-bar {
 
 /* --------------------------------------------------------*/
 /*
-/* Preview toolbar
+/* DO NOT EDIT: Contensis Styles
+/*
+/* The following styles are specific to the Contensis
+/* and are used as part of the preview toolbar.
 /*
 /* --------------------------------------------------------*/
 
 .form-preview-toolbar {
-  background: red;
-  color: white;
+  background: #fff;
+  color: #444444;
   padding: 1em;
-  border-block-end: 1px solid black;
+  border-block-end: 1px solid #dbdbdb;
+  display: flex;
+  align-items: center;
+  gap: var(--size-space-16);
 }
 
-.form-preview-toolbar__name {
-  border: 1px solid black;
-  padding: 0.25 0.5em;
+.form-preview-toolbar__title {
+  font-size: var(--global-font-size);
+  font-weight: var(--global-font-weight-bold);
 }
 
-.form-preview-notice {
-  border: 1px solid black;
-  border-inline-start: 4px solid blue;
-  background: lightblue;
-  color: #444;
+.panel {
+  --color-bg: #E8F0FC;
+  --color-stroke: #BDD4F5;
+  --color-fill: #1B5483;
+  display: flex;
+  gap: var(--size-space-16);
+  display: flex;
+  padding: var(--size-space-24);
+  color: var(--color-text);
+  border-inline-start: var(--size-border-large) solid var(--color-stroke);
+  align-items: center;
+  background-color: var(--color-bg);
 
-  p {
-    margin: 0;
+  & svg {
+      fill: var(--color-fill);
   }
+}
+
+.panel__content {
+  inline-size: 100%;
+}
+
+.panel__title {
+  font-size: var(--global-font-size);
+  font-weight: var(--global-font-weight-bold);
+}
+
+.svg {
+  display: inline-block;
+  vertical-align: middle;
+  background-repeat: no-repeat;
+  background-size: contain;
+  block-size: var(--size-dimension-24);
+  inline-size: var(--size-dimension-24);
+  overflow: visible;
+  transform: translateZ(0);
+}
+
+.lozenge {
+  font-size: 0.875rem;
+  line-height: 1.7142857143;
+  display: inline-flex;
+  border-radius: var(--size-border-radius);
+  background: var(--color-bg-light);
+  color: var(--color-text);
+  box-shadow: inset 0 0 0 0.125rem var(--color-border-subtle);
+  padding: 0 var(--size-space-8) 0 var(--size-space-8);
+}
+
+.lozenge__text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.container {
+  margin: 3em auto;
+  max-inline-size: var(--form-width);
+}
+
+.c-response-summary {
+  max-inline-size: var(--form-width);
+  margin-inline: auto;
+  display: block;
+  container-type: inline-size;
+}
+
+.c-response-summary__block {
+  padding: var(--size-space-8);
+  background-color: var(--color-bg-light);
+  border: 0.0625rem solid var(--color-border-subtle);
+  border-radius: var(--size-border-radius);
+  font-size: var(--text-preset-6);
+}
+
+.c-summary-list-title {
+  padding-block-start: var(--size-space-24);
+  padding-block-end: var(--size-space-12);
+  font-size: var(--text-preset-5);
+  font-weight: var(--global-font-weight-bold);
+  color: var(--color-text-subtle);
+}
+
+.c-summary-list {
+  color: var(--color-text);
+  border-radius: var(--size-border-radius);
+  border: 0.0625rem solid var(--color-border-subtle);
+
+}
+
+.c-summary-list__row {
+  padding: var(--size-space-8);
+  background-color: var(--color-bg-light);
+  box-shadow: inset 0px -0.0625rem 0 var(--color-border-subtle);
+
+  &:last-child:not(:first-child) {
+      box-shadow: none;
+  }
+
+  &:first-child:last-child {
+      box-shadow: none;
+  }
+
+}
+
+.c-summary-list__key,
+.c-summary-list__value {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.c-summary-list__key {
+  color: var(--color-text);
+  font-weight: var(--global-font-weight-bold);
+  font-size: var(--text-preset-6);
+}
+
+.c-summary-list__value {
+  margin-block-end: var(--size-space-8);
+  font-size: var(--text-preset-6);
+}
+
+
+@container (min-inline-size: 25em) {
+.c-summary-list {
+display: table;
+inline-size: 100%;
+table-layout: fixed;
+}
+
+.c-summary-list__row {
+display: table-row;
+}
+
+.c-summary-list__key,
+.c-summary-list__value {
+display: table-cell;
+padding: var(--size-space-12) var(--size-space-8);
+}
+
+.c-summary-list__key {
+inline-size: 20%;
+padding-inline-start: var(--size-space-16);
+}
+
+}
+
+article h2 {
+font-size: var(--text-preset-5);
+padding-block-start: var(--size-space-24);
+padding-block-end: var(--size-space-12);
 }
