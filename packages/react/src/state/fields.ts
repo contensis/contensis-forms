@@ -45,9 +45,9 @@ function getEditorType(field: Field) {
 
 const EMPTY_FIELD_VALUES: Record<FieldDataType, any> = {
     boolean: false,
-    dateTime: '',
-    decimal: '',
-    integer: '',
+    dateTime: null,
+    decimal: null,
+    integer: null,
     string: '',
     stringArray: null
 };

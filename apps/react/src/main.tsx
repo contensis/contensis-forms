@@ -8,6 +8,9 @@ declare global {
         CONTENSIS_FORMS: {
             api?: string;
             render?: (element: Element, props: FormProps) => void;
+            onSubmit?: (...args: any[]) => any;
+            onSubmitSuccess?: (...args: any[]) => any;
+            onSubmitError?: (...args: any[]) => any;
         }
     }
 }
@@ -28,12 +31,17 @@ elements.forEach(element => {
     const formId = element.getAttribute('data-contensis-form-id') || ''; // required
     const language = element.getAttribute('data-contensis-form-language'); // optional
     const version = element.getAttribute('data-contensis-form-version'); // optional
-
+    const onSubmit = window.CONTENSIS_FORMS.onSubmit;
+    const onSubmitSuccess = window.CONTENSIS_FORMS.onSubmitSuccess;
+    const onSubmitError = window.CONTENSIS_FORMS.onSubmitError;
     window.CONTENSIS_FORMS.render!(element, {
         apiUrl,
         projectId,
         formId,
         language,
-        versionStatus: version === 'latest' ? 'latest' : undefined
+        versionStatus: version === 'latest' ? 'latest' : undefined,
+        onSubmit,
+        onSubmitSuccess,
+        onSubmitError
     });
 });

@@ -758,8 +758,7 @@ progress[value]::-moz-progress-bar {
 /* Character count
 /* --------------------------------------------------------*/
 
-.field-char-count {
-}
+.field-char-count {}
 
 .field-char-count-error {
   color: var(--color-text-error);
@@ -777,6 +776,7 @@ progress[value]::-moz-progress-bar {
 /* --------------------------------------------------------*/
 
 [dir='rtl'] {
+
   /* Ensures that email address and telephone number inputs are left-aligned */
   & .form-tel-input,
   & .form-email-input {
@@ -827,7 +827,7 @@ progress[value]::-moz-progress-bar {
   background-color: var(--color-bg);
 
   & svg {
-      fill: var(--color-fill);
+    fill: var(--color-fill);
   }
 }
 
@@ -910,11 +910,11 @@ progress[value]::-moz-progress-bar {
   box-shadow: inset 0px -0.0625rem 0 var(--color-border-subtle);
 
   &:last-child:not(:first-child) {
-      box-shadow: none;
+    box-shadow: none;
   }
 
   &:first-child:last-child {
-      box-shadow: none;
+    box-shadow: none;
   }
 
 }
@@ -938,31 +938,31 @@ progress[value]::-moz-progress-bar {
 
 
 @container (min-inline-size: 25em) {
-.c-summary-list {
-display: table;
-inline-size: 100%;
-table-layout: fixed;
-}
+  .c-summary-list {
+    display: table;
+    inline-size: 100%;
+    table-layout: fixed;
+  }
 
-.c-summary-list__row {
-display: table-row;
-}
+  .c-summary-list__row {
+    display: table-row;
+  }
 
-.c-summary-list__key,
-.c-summary-list__value {
-display: table-cell;
-padding: var(--size-space-12) var(--size-space-8);
-}
+  .c-summary-list__key,
+  .c-summary-list__value {
+    display: table-cell;
+    padding: var(--size-space-12) var(--size-space-8);
+  }
 
-.c-summary-list__key {
-inline-size: 20%;
-padding-inline-start: var(--size-space-16);
-}
+  .c-summary-list__key {
+    inline-size: 20%;
+    padding-inline-start: var(--size-space-16);
+  }
 
 }
 
 article h2 {
-font-size: var(--text-preset-5);
-padding-block-start: var(--size-space-24);
-padding-block-end: var(--size-space-12);
+  font-size: var(--text-preset-5);
+  padding-block-start: var(--size-space-24);
+  padding-block-end: var(--size-space-12);
 }

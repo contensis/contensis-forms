@@ -1,8 +1,6 @@
 import { Dictionary, Nullable } from './shared';
 
 // todo: considerations
-// autoSaveProgress
-// mode
 // do form descriptions / field descriptions need canvas?
 
 export type VersionStatus = null | 'latest' | 'published';

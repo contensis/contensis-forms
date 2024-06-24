@@ -140,6 +140,7 @@ function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loadin
                 formResponse
             });
             const success = onSubmitSuccess ? onSubmitSuccess(result) : true;
+            Progress.reset(form);
             if (success) {
                 setIsSubmitted(true);
                 if (Rules.isConfirmationRuleReturnUri(result?.confirmation)) {
@@ -147,7 +148,6 @@ function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loadin
                 } else {
                     setFormResponse(result.form);
                     setConfirmationRule(result.confirmation);
-                    Progress.reset(form);
                 }
             }
         } catch (e) {
