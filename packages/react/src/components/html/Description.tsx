@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
-import { Nullable, StringOrCanvas } from '../../models';
+import { Nullable } from '../../models';
 import { Renderers } from './renderer';
 
-export function Description(props: { id?: string; className: string; description: Nullable<StringOrCanvas> }) {
+export function Description(props: { id?: string; className: string; description: Nullable<string> }) {
     const description = useMemo(() => getDescriptionHtml(props.description), [props.description]);
     return !!description ? <div id={props.id} className={props.className} dangerouslySetInnerHTML={{ __html: description }}></div> : null;
 }
 
-function getDescriptionHtml(description: Nullable<StringOrCanvas>) {
+function getDescriptionHtml(description: Nullable<string>) {
     if (!description) {
         return '';
     }
-    return typeof description === 'string' ? Renderers.markdown(description) : Renderers.canvas({ data: description });
+    return Renderers.markdown(description);
 }

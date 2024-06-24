@@ -1,11 +1,11 @@
-import { Field, StringOrCanvas } from './api';
+import { Field } from './api';
 import { Nullable } from './shared';
 
 export type FormPage = {
     pageNo: number;
     id: string;
     title: string;
-    description: Nullable<StringOrCanvas>;
+    description: Nullable<string>;
     fields: Field[];
 };
 

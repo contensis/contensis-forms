@@ -61,7 +61,7 @@ function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[]
         ? field?.validations?.allowedValues?.labeledValues?.map((value) => value)
         : field?.validations?.allowedValues?.values?.map((value) => ({ value, label: value }));
 
-    let options = pairs?.map((pair, index) => {
+    let options = pairs?.filter((pair) => !!pair.value).map((pair, index) => {
         return {
             key: `${index}`,
             htmlId: `${htmlId}-option-${index}`,
@@ -71,18 +71,15 @@ function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[]
     });
 
     if (getEditorType(field) === 'select') {
-        const emptyOption = options?.find((o) => o.value === '');
-        if (!emptyOption) {
-            options = [
-                {
-                    key: '',
-                    htmlId: `${htmlId}-option--1`,
-                    value: '',
-                    label: field?.editor?.properties?.placeholderText || localisations.pleaseSelect
-                },
-                ...(options || [])
-            ];
-        }
+        options = [
+            {
+                key: '',
+                htmlId: `${htmlId}-option--1`,
+                value: '',
+                label: field?.editor?.properties?.placeholderText || localisations.pleaseSelect
+            },
+            ...(options || [])
+        ];
     }
 
     return options;

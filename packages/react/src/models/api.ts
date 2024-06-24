@@ -21,8 +21,6 @@ export type SaveFormResponseParams = ApiParams & {
     formVersionNo: string;
 };
 
-export type StringOrCanvas = string | import('@contensis/canvas-html').Block[];
-
 export type FormResponse = Dictionary<unknown>;
 
 export type FormContentType = {
@@ -58,7 +56,7 @@ export type Field = {
 export type Group = {
     id: string;
     name: string;
-    description?: Nullable<StringOrCanvas>;
+    description?: Nullable<string>;
 };
 
 export type CaptchaSettings = {
@@ -139,10 +137,8 @@ export type ConfirmationRuleReturnUri = {
     };
 };
 
-type Block = import('@contensis/canvas-html').Block;
-
 export type ConfirmationRuleReturnContent = {
-    content: Block[];
+    content: string;
 };
 
 export type ConfirmationRuleReturn = ConfirmationRuleReturnUri | ConfirmationRuleReturnContent;
