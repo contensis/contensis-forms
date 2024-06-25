@@ -14,7 +14,7 @@ export function ContensisForm(props: FormProps) {
     return isServer() ? null : <ClientForm {...props} />;
 }
 
-function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loading, disabled, error, onSubmit, onSubmitError, onSubmitSuccess }: FormProps) {
+function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loading, disabled, error, onPopulate, onSubmit, onSubmitError, onSubmitSuccess }: FormProps) {
     const [defaultPageTitle] = useState(document.title);
     const [isLoading, setIsLoading] = useState(true);
     const [apiError, setApiError] = useState<unknown>(null);
@@ -41,7 +41,8 @@ function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loadin
                 setApiError(null);
                 setPageIndex(0);
 
-                const initialValue = Form.getInitialValue(form);
+                let initialValue = Form.getInitialValue(form);
+                initialValue = onPopulate ? onPopulate(initialValue, form) : initialValue;
                 setValue(initialValue);
                 setInputValue(Form.getInputValue(form, initialValue));
                 setShowErrors(false);
@@ -139,7 +140,7 @@ function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loadin
                 captcha: form?.properties?.captcha,
                 formResponse
             });
-            const success = onSubmitSuccess ? onSubmitSuccess(result) : true;
+            const success = onSubmitSuccess ? onSubmitSuccess(result, form) : true;
             Progress.reset(form);
             if (success) {
                 setIsSubmitted(true);
@@ -151,7 +152,7 @@ function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loadin
                 }
             }
         } catch (e) {
-            const handleSubmitError = onSubmitError ? onSubmitError(e) : true;
+            const handleSubmitError = onSubmitError ? onSubmitError(e, form) : true;
             if (handleSubmitError) {
                 Errors.handleError(e);
                 setApiError(e);

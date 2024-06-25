@@ -75,7 +75,8 @@ export type FormProps = {
     loading?: ReactNode;
     disabled?: ReactNode;
     error?: (error: unknown) => ReactNode;
+    onPopulate?: (defaultValue: FormResponse, form: FormContentType) => FormResponse;
     onSubmit?: (response: FormResponse, form: FormContentType) => false | FormResponse;
-    onSubmitSuccess?: (response: FormResponse) => boolean;
-    onSubmitError?: (error: unknown) => boolean;
+    onSubmitSuccess?: (response: FormResponse, form: FormContentType) => boolean;
+    onSubmitError?: (error: unknown, form: FormContentType) => boolean;
 };

@@ -8,6 +8,7 @@ declare global {
         CONTENSIS_FORMS: {
             api?: string;
             render?: (element: Element, props: FormProps) => void;
+            onPopulate?: (...args: any[]) => any;
             onSubmit?: (...args: any[]) => any;
             onSubmitSuccess?: (...args: any[]) => any;
             onSubmitError?: (...args: any[]) => any;
@@ -31,6 +32,7 @@ elements.forEach(element => {
     const formId = element.getAttribute('data-contensis-form-id') || ''; // required
     const language = element.getAttribute('data-contensis-form-language'); // optional
     const version = element.getAttribute('data-contensis-form-version'); // optional
+    const onPopulate = window.CONTENSIS_FORMS.onPopulate;
     const onSubmit = window.CONTENSIS_FORMS.onSubmit;
     const onSubmitSuccess = window.CONTENSIS_FORMS.onSubmitSuccess;
     const onSubmitError = window.CONTENSIS_FORMS.onSubmitError;
@@ -40,6 +42,7 @@ elements.forEach(element => {
         formId,
         language,
         versionStatus: version === 'latest' ? 'latest' : undefined,
+        onPopulate,
         onSubmit,
         onSubmitSuccess,
         onSubmitError
