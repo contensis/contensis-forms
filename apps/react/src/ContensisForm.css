@@ -311,6 +311,9 @@ legend {
 /* --------------------------------------------------------*/
 
 .form-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-space-4);
   border: none;
   padding: 0;
 }
