@@ -17,7 +17,7 @@
         "dev": "tsup --dts-resolve --watch",
         "lint": "eslint",
         "lint:fix": "npx eslint --fix \"src/**/*.{ts,tsx,js,json}\" > lintresults.txt",
-        "prettify": "npx prettier --write \"src/**/*.{ts,tsx,js,json}\""
+        "prettify": "npx prettier --write \"src/**/*.{ts,tsx,js,json,css}\""
     },
     "dependencies": {
         "markdown-it": "^14.0.0",

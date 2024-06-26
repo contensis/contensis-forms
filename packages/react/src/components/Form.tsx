@@ -14,7 +14,20 @@ export function ContensisForm(props: FormProps) {
     return isServer() ? null : <ClientForm {...props} />;
 }
 
-function ClientForm({ apiUrl, projectId, formId, language, versionStatus, loading, disabled, error, onPopulate, onSubmit, onSubmitError, onSubmitSuccess }: FormProps) {
+function ClientForm({
+    apiUrl,
+    projectId,
+    formId,
+    language,
+    versionStatus,
+    loading,
+    disabled,
+    error,
+    onPopulate,
+    onSubmit,
+    onSubmitError,
+    onSubmitSuccess
+}: FormProps) {
     const [defaultPageTitle] = useState(document.title);
     const [isLoading, setIsLoading] = useState(true);
     const [apiError, setApiError] = useState<unknown>(null);

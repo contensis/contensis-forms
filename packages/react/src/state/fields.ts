@@ -61,14 +61,16 @@ function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[]
         ? field?.validations?.allowedValues?.labeledValues?.map((value) => value)
         : field?.validations?.allowedValues?.values?.map((value) => ({ value, label: value }));
 
-    let options = pairs?.filter((pair) => !!pair.value).map((pair, index) => {
-        return {
-            key: `${index}`,
-            htmlId: `${htmlId}-option-${index}`,
-            value: pair.value || '',
-            label: pair.label
-        };
-    });
+    let options = pairs
+        ?.filter((pair) => !!pair.value)
+        .map((pair, index) => {
+            return {
+                key: `${index}`,
+                htmlId: `${htmlId}-option-${index}`,
+                value: pair.value || '',
+                label: pair.label
+            };
+        });
 
     if (getEditorType(field) === 'select') {
         options = [

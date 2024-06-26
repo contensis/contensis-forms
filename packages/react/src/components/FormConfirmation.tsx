@@ -7,9 +7,7 @@ type FormConfirmationProps = {
 };
 
 export function FormConfirmation(props: FormConfirmationProps) {
-    const confirmation = Rules.isConfirmationRuleReturnContent(props.rule)
-        ? props.rule.content
-        : null;
+    const confirmation = Rules.isConfirmationRuleReturnContent(props.rule) ? props.rule.content : null;
 
     return !!confirmation ? (
         <div className="form-confirmation-message" dangerouslySetInnerHTML={{ __html: confirmation }}></div>
