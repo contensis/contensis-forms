@@ -9,5 +9,6 @@ export default defineConfig({
     // output is not as readable as vanilla tsc when there are problems to resolve
     //   dts: true,
     sourcemap: true,
-    clean: true
+    clean: true,
+    injectStyle: true
 });

@@ -1,7 +1,6 @@
 import { ContensisForm, FormProps } from '@contensis/forms';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './ContensisForm.css';
 
 declare global {
     interface Window {

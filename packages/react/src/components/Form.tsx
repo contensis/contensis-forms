@@ -5,6 +5,7 @@ import { getPageTitle } from '../state/localisations';
 import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
 import { FormProps } from './models';
+import '../css/ContensisForm.css';
 
 function isServer() {
     return typeof window === `undefined`;
@@ -216,37 +217,39 @@ function ClientForm({
     }, [pages]);
 
     return (
-        <div className="form">
-            {!confirmationRule ? (
-                <FormLoader
-                    apiUrl={apiUrl}
-                    projectId={projectId}
-                    formId={formId}
-                    language={language}
-                    versionStatus={versionStatus}
-                    loading={loading}
-                    disabled={disabled}
-                    error={error}
-                    formHtmlId={formHtmlId}
-                    isLoading={isLoading}
-                    apiError={apiError}
-                    form={form}
-                    pageIndex={pageIndex}
-                    pageCount={pageCount}
-                    currentPage={currentPage}
-                    formValue={value}
-                    formInputValue={inputValue}
-                    showErrors={showErrors}
-                    formErrors={errors}
-                    inputRefs={inputRefs}
-                    setValue={updateValue}
-                    setInputValue={updateInputValue}
-                    setFocussed={updateFocussed}
-                    previousPage={previousPage}
-                    onFormSubmit={onFormSubmit}
-                />
-            ) : null}
-            {!!confirmationRule && !!formResponse ? <FormConfirmation rule={confirmationRule} formResponse={formResponse} /> : null}
+        <div className="contensis-form">
+            <div className="form">
+                {!confirmationRule ? (
+                    <FormLoader
+                        apiUrl={apiUrl}
+                        projectId={projectId}
+                        formId={formId}
+                        language={language}
+                        versionStatus={versionStatus}
+                        loading={loading}
+                        disabled={disabled}
+                        error={error}
+                        formHtmlId={formHtmlId}
+                        isLoading={isLoading}
+                        apiError={apiError}
+                        form={form}
+                        pageIndex={pageIndex}
+                        pageCount={pageCount}
+                        currentPage={currentPage}
+                        formValue={value}
+                        formInputValue={inputValue}
+                        showErrors={showErrors}
+                        formErrors={errors}
+                        inputRefs={inputRefs}
+                        setValue={updateValue}
+                        setInputValue={updateInputValue}
+                        setFocussed={updateFocussed}
+                        previousPage={previousPage}
+                        onFormSubmit={onFormSubmit}
+                    />
+                ) : null}
+                {!!confirmationRule && !!formResponse ? <FormConfirmation rule={confirmationRule} formResponse={formResponse} /> : null}
+            </div>
         </div>
     );
 }
