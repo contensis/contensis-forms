@@ -9,7 +9,7 @@ export function TelInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: Fo
     return (
         <input
             type="tel"
-            {...inputAttrs(attrs, 'tel', { autoComplete: 'tel' })}
+            {...inputAttrs(attrs, 'tel', { autoComplete: 'tel', placeholder: true })}
             spellCheck="false"
             value={textValue(inputValue)}
             onChange={onInputChange}

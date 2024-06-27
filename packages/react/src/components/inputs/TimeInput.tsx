@@ -13,7 +13,7 @@ export function TimeInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: F
         <>
             <input
                 type="text"
-                {...inputAttrs(attrs, 'time', { autoComplete: 'off' })}
+                {...inputAttrs(attrs, 'time', { autoComplete: 'off', placeholder:false })}
                 value={textValue(inputValue)}
                 onChange={onInputChange}
                 onFocus={onFocus}

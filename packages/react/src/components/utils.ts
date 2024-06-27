@@ -5,7 +5,7 @@ type AttrArg = undefined | null | string | string[] | Record<string, boolean>;
 
 type FieldInputProps = Pick<
     FormInputProps,
-    'htmlId' | 'showErrors' | 'errors' | 'inputRef' | 'autoFill' | 'rows' | 'instructions' | 'maxLength' | 'cssClass' | 'labelPosition'
+    'htmlId' | 'showErrors' | 'errors' | 'inputRef' | 'autoFill' | 'placeholder' | 'rows' | 'instructions' | 'maxLength' | 'cssClass' | 'labelPosition'
 >;
 
 export function attr(...args: AttrArg[]) {
@@ -59,10 +59,10 @@ function inputClassname(inputs: FieldInputProps, fieldType: string, additionalCs
 type InputSettings = {
     autoComplete?: string;
     cssSuffix?: string[];
-    rows?: number;
+    placeholder?: boolean;
 };
 
-export function inputAttrs(inputs: FieldInputProps, fieldType: string, settings?: InputSettings) {
+export function inputAttrs(inputs: FieldInputProps, fieldType: string, settings: InputSettings) {
     const invalid = inputs.showErrors && !!inputs.errors;
     return {
         ref: inputs.inputRef,
@@ -71,6 +71,7 @@ export function inputAttrs(inputs: FieldInputProps, fieldType: string, settings?
         name: inputs.htmlId,
         autoComplete: inputs.autoFill || settings?.autoComplete,
         rows: inputs.rows || undefined,
+        placeholder: (settings.placeholder && inputs.placeholder) || undefined,
         'aria-invalid': invalid,
         'aria-describedby': attr({
             [instructionsId(inputs)]: !!inputs.instructions,

@@ -9,7 +9,7 @@ export function EmailInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: 
     return (
         <input
             type="email"
-            {...inputAttrs(attrs, 'email', { autoComplete: 'email' })}
+            {...inputAttrs(attrs, 'email', { autoComplete: 'email', placeholder: true })}
             spellCheck="false"
             value={textValue(inputValue)}
             onChange={onInputChange}

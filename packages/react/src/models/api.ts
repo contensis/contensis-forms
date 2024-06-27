@@ -122,7 +122,7 @@ type FieldEditorProperties = {
     cssClass?: string;
     hidden?: boolean;
     readOnly?: boolean;
-    placeholderText?: string;
+    placeholderText?: string; // todo: this is reurned as a localised object from the API
 };
 
 export type FormRule<TReturn> = {

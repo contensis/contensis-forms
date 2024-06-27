@@ -28,6 +28,7 @@ export type FormInputProps = {
 
     inputRef: MutableRefObject<any>;
     autoFill: Nullable<string>;
+    placeholder: Nullable<string>;
     rows: Nullable<number>;
     label: string;
     instructions: Nullable<string>;

@@ -12,7 +12,7 @@ export function IntegerInput({ inputValue, onChange, onBlur, onFocus, ...attrs }
     return (
         <input
             type="text"
-            {...inputAttrs(attrs, 'integer')}
+            {...inputAttrs(attrs, 'integer', {placeholder:true})}
             spellCheck="false"
             inputMode="numeric"
             pattern="[0-9]*"

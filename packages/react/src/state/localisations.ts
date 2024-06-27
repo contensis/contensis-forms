@@ -40,11 +40,12 @@ export const localisations = {
     fieldMaxCountValidationMessageMany: '{0} requires a maximum of {1} items',
     fieldMaxCountValidationMessageOther: '{0} requires a maximum of {1} items',
 
-    fieldMinMaxCountValidationMessage: '{0} requires between {1} and {2}items',
+    fieldMinMaxCountValidationMessage: '{0} requires between {1} and {2} items',
 
     fieldRegExValidationMessage: '{0} has an invalid format',
     fieldAllowedValuesValidationMessage: '{0} has an invalid value',
     fieldPastDateTimeValidationMessage: '{0} must be in the past',
+    fieldDecimalPlacesValidationMessage: '{0} requires {1} decimal places',
 
     errorLabel: 'Error',
     errorSummaryTitle: 'There is a problem',

@@ -54,6 +54,7 @@ export function FormFieldContainer({
         label: field?.editor?.label || field.name,
         instructions: field?.editor?.instructions,
         autoFill: field?.editor?.properties?.autoFill,
+        placeholder: field?.editor?.properties?.placeholderText,
         rows: field?.editor?.properties?.rows,
         labelPosition: field?.editor?.properties?.labelPosition,
         cssClass: field?.editor?.properties?.cssClass,
@@ -84,6 +85,8 @@ export function FormFieldContainer({
         }
     };
 
+    console.log(inputProps);
+    
     const Field = DEFAULT_CONTAINERS[formFieldContainer];
     const Input = DEFAULT_INPUTS[inputProps.editor];
     return inputProps.hidden ? null : (

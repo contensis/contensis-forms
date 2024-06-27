@@ -117,6 +117,10 @@ function validate(field: Field, value: unknown) {
     return Validation.validate(value, field);
 }
 
+function isNullish(o: unknown) {
+    return (o === null) || (typeof o === 'undefined');
+}
+
 function getInitialValue(field: Field, query: Nullable<string[]>, progressValue: unknown) {
     let value = null;
     if (typeof progressValue !== 'undefined') {
@@ -125,7 +129,7 @@ function getInitialValue(field: Field, query: Nullable<string[]>, progressValue:
             value = progressValue;
         }
     }
-    if (value === null) {
+    if (isNullish(value)) {
         let queryValue = null;
         const firstQuery = query?.[0];
         switch (field.dataType) {
@@ -182,7 +186,7 @@ function getInitialValue(field: Field, query: Nullable<string[]>, progressValue:
             }
         }
     }
-    if (value === null) {
+    if (isNullish(value)) {
         value = getDefaultValue(field);
     }
     return value;

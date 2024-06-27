@@ -9,7 +9,7 @@ export function UrlInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: Fo
     return (
         <input
             type="url"
-            {...inputAttrs(attrs, 'url', { autoComplete: 'url' })}
+            {...inputAttrs(attrs, 'url', { autoComplete: 'url', placeholder: true })}
             spellCheck="false"
             value={textValue(inputValue)}
             onChange={onInputChange}
