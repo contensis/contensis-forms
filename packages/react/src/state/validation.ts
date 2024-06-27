@@ -93,14 +93,6 @@ const createFieldValidator = memo((field: Field) => {
             createPastDateTimeValidator(field.dataType, field.validations?.pastDateTime),
             field.validations?.pastDateTime?.message || format(localisations.fieldPastDateTimeValidationMessage, field.name)
         ],
-        // todo: this does not actually work, the as the decimalPlaces validation is not set but the
-        // editor.properties.decimalPlaces is
-        // should the decimal input "fix" the value to the correct number of decimal places?
-        [
-            'decimalPlaces',
-            createDecimalPlacesValidator(field.validations?.decimalPlaces),
-            field.validations?.decimalPlaces?.message || format(localisations.fieldDecimalPlacesValidationMessage, field.name, field.validations?.decimalPlaces?.value)
-        ]
     ];
 
     return function (value: unknown) {
@@ -363,23 +355,6 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
                 return true;
             },
             () => ({})
-        )
-        : noopValidator;
-}
-
-function createDecimalPlacesValidator(decimalPlaces: Nullable<FieldValidationWithValue<number>>): Validator<{ decimalPlaces: Nullable<number>; }> {
-    return !!decimalPlaces
-        ? fromValid(
-            (value: unknown) => {
-                let valid = true;
-                if (typeof value === 'number') {
-                    const parts = `${value}`.split('.');
-                    const places = (parts.length > 1) ? parts[1].length :0;
-                    return (places === decimalPlaces.value);
-                }
-                return valid;
-            },
-            () => ({ decimalPlaces: decimalPlaces.value })
         )
         : noopValidator;
 }

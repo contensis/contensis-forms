@@ -84,8 +84,6 @@ export function FormFieldContainer({
             setFocussed(field.id, false);
         }
     };
-
-    console.log(inputProps);
     
     const Field = DEFAULT_CONTAINERS[formFieldContainer];
     const Input = DEFAULT_INPUTS[inputProps.editor];

@@ -45,7 +45,6 @@ export const localisations = {
     fieldRegExValidationMessage: '{0} has an invalid format',
     fieldAllowedValuesValidationMessage: '{0} has an invalid value',
     fieldPastDateTimeValidationMessage: '{0} must be in the past',
-    fieldDecimalPlacesValidationMessage: '{0} requires {1} decimal places',
 
     errorLabel: 'Error',
     errorSummaryTitle: 'There is a problem',

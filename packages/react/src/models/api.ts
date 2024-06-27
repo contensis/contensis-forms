@@ -100,7 +100,6 @@ export type FieldValidations = {
     allowedValue?: Nullable<FieldValidationWithValue<any>>;
     allowedValues?: Nullable<FieldValidation & AllowedValues>;
     pastDateTime?: Nullable<FieldValidation>;
-    decimalPlaces?: Nullable<FieldValidationWithValue<number>>;
 };
 
 export type FieldValidation = { message?: Nullable<string> };
