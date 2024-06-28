@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import { inputAttrs, textValue } from '../utils';
 import { FormInputProps } from '../models';
 
@@ -12,7 +12,7 @@ export function IntegerInput({ inputValue, onChange, onBlur, onFocus, ...attrs }
     return (
         <input
             type="text"
-            {...inputAttrs(attrs, 'integer', {placeholder:true})}
+            {...inputAttrs(attrs, 'integer', { placeholder: true })}
             spellCheck="false"
             inputMode="numeric"
             pattern="[0-9]*"

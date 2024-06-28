@@ -1,3 +1,4 @@
+import React from 'react';
 import { localisations } from '../state';
 import { FormInputProps } from './models';
 import { errorsId } from './utils';

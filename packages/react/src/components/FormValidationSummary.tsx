@@ -1,4 +1,4 @@
-import { useEffect, useRef, UIEvent, MutableRefObject } from 'react';
+import React, { useEffect, useRef, UIEvent, MutableRefObject } from 'react';
 import { Dictionary, FormContentType, FormPage, Nullable, ValidationError } from '../models';
 import { Errors, Form } from '../state';
 

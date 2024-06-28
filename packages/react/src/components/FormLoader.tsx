@@ -1,4 +1,4 @@
-import { FormEventHandler, MutableRefObject } from 'react';
+import React, { FormEventHandler, MutableRefObject } from 'react';
 import { Dictionary, FormContentType, FormPage, Nullable, ValidationError } from '../models';
 import { Api, Captcha, Version, localisations } from '../state';
 import { FormButtons } from './FormButtons';

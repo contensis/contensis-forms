@@ -1,3 +1,4 @@
+import React from 'react';
 import { FormPage } from '../models';
 import { format, localisations } from '../state';
 import { progressId } from './utils';

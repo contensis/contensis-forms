@@ -1,10 +1,11 @@
-import { FormEvent, MutableRefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, { FormEvent, MutableRefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ConfirmationRuleReturn, Dictionary, FormContentType, FormPage, FormResponse, Nullable, ValidationError } from '../models';
 import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
 import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
 import { FormProps } from './models';
+import { nanoid } from 'https://cdn.jsdelivr.net/npm/nanoid/nanoid.js';
 
 function isServer() {
     return typeof window === `undefined`;
@@ -41,7 +42,7 @@ function ClientForm({
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [confirmationRule, setConfirmationRule] = useState<Nullable<ConfirmationRuleReturn>>(null);
     const [formResponse, setFormResponse] = useState<Nullable<FormResponse>>(null);
-    const formHtmlId = useId();
+    const formHtmlId = nanoid();
 
     useEffect(() => {
         setIsLoading(true);

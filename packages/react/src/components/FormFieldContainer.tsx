@@ -1,3 +1,4 @@
+import React from 'react';
 import { FieldEditorType, FormFieldContainer as FormFieldContainerType } from '../models';
 import { Errors, Fields } from '../state';
 import { FormCheckbox } from './FormCheckbox';
@@ -84,7 +85,7 @@ export function FormFieldContainer({
             setFocussed(field.id, false);
         }
     };
-    
+
     const Field = DEFAULT_CONTAINERS[formFieldContainer];
     const Input = DEFAULT_INPUTS[inputProps.editor];
     return inputProps.hidden ? null : (

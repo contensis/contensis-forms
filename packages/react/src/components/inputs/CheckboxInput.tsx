@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import { inputAttrs } from '../utils';
 import { FormInputProps } from '../models';
 
