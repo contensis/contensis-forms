@@ -1,4 +1,4 @@
-import { FormEvent, MutableRefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { FormEvent, MutableRefObject, useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { ConfirmationRuleReturn, Dictionary, FormContentType, FormPage, FormResponse, Nullable, ValidationError } from '../models';
 import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
@@ -183,37 +183,43 @@ function ClientForm({
         }
     }, [form, value, isDirty, isSubmitted]);
 
-    const previousPageIndexRef = useRef<null | number>(null);
     useEffect(() => {
-        if (currentPage) {
-            if (previousPageIndexRef.current === null) {
-                // initial load
-                window.history.pushState(currentPage.id, '', '');
-            } else if (previousPageIndexRef.current < pageIndex) {
-                // submit
-                window.history.pushState(currentPage.id, '', '');
-            } else if (previousPageIndexRef.current > pageIndex) {
-                // previous
-                window.history.replaceState(currentPage.id, '', '');
-            }
-            previousPageIndexRef.current = pageIndex;
+        const newState = toHistoryState(currentPage?.id, pageIndex);
+        if (isValidHistoryState(newState) && !isCurrentHistoryState(newState)) {
+            window.history.pushState(newState, '');
         }
     }, [pageIndex, currentPage]);
 
-    useEffect(() => {
-        const onPopState = (e: PopStateEvent) => {
-            if (pages) {
-                const index = pages.findIndex((page) => page.id === e.state);
-                if (index >= 0) {
-                    setPageIndex(index);
+    const onPopState = useCallback(function(e: PopStateEvent) {
+        if (isValidHistoryState(e.state)) {
+            const newState = e.state as FormHistory;
+            const newPage = pages[newState.pageIndex];
+            if (newPage) {
+                if (newState.pageIndex < pageIndex) {
+                    // back
+                    setShowErrors(false);
+                    setPageIndex(newState.pageIndex);
+                } else if (newState.pageIndex > pageIndex) {
+                    // forward
+                    if (currentPageHasError) {
+                        // current page not valid
+                        setShowErrors(true);
+                    } else {
+                        setShowErrors(false);
+                        setPageIndex((prev) => prev + 1);
+                    }
                 }
             }
-        };
-        window.addEventListener('popstate', onPopState);
+        }
+    }, [pageIndex, pages, currentPageHasError]);
+
+    useEffect(() => {
+        const fn = onPopState;
+        window.addEventListener('popstate', fn);
         return () => {
-            window.removeEventListener('popstate', onPopState);
+            window.removeEventListener('popstate', fn);
         };
-    }, [pages]);
+    }, [onPopState]);
 
     return (
         <div className="contensis-form">
@@ -251,4 +257,21 @@ function ClientForm({
             </div>
         </div>
     );
+}
+
+type FormHistory = { pageId: string, pageIndex: number };
+
+function toHistoryState(pageId: string, pageIndex: number): FormHistory {
+    return { pageId, pageIndex };
+}
+
+function isValidHistoryState(state: FormHistory) {
+    return !!state?.pageId && (typeof state?.pageIndex === 'number');
+}
+
+function isCurrentHistoryState(state: FormHistory, windowState: FormHistory = window.history.state) {
+    if (isValidHistoryState(state) && isValidHistoryState(windowState)) {
+        return (state.pageId === windowState.pageId) && (state.pageIndex === windowState.pageIndex);
+    }
+    return false;
 }
