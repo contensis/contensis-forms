@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import { FormInputProps } from '../models';
 
 export function RadioInput({ onChange, options, htmlId, inputRef, value, onBlur, onFocus }: FormInputProps) {

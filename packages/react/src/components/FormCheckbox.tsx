@@ -1,3 +1,4 @@
+import React from 'react';
 import { FormFieldErrors } from './FormFieldErrors';
 import { FormFieldFooter } from './FormFieldFooter';
 import { FormFieldInstructions } from './FormFieldInstructions';

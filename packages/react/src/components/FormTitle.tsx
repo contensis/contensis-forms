@@ -1,3 +1,4 @@
+import React from 'react';
 import { FormContentType, Nullable } from '../models';
 import { Description } from './html';
 

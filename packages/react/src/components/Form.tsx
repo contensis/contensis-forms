@@ -1,4 +1,5 @@
-import { FormEvent, MutableRefObject, useCallback, useEffect, useId, useMemo } from 'react';
+import { nanoid } from 'https://cdn.jsdelivr.net/npm/nanoid/nanoid.js';
+import React, { FormEvent, MutableRefObject, useCallback, useEffect, useMemo } from 'react';
 import { FormPage } from '../models';
 import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
@@ -30,7 +31,7 @@ function ClientForm({
     onSubmitSuccess
 }: FormProps) {
     const [formState, setFormState, patchFormState] = useFormState();
-    const formHtmlId = useId();
+    const formHtmlId = nanoid();
 
     const {
         defaultPageTitle,

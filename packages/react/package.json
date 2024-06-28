@@ -19,10 +19,12 @@
         "lint:fix": "npx eslint --fix \"src/**/*.{ts,tsx,js,json}\" > lintresults.txt",
         "prettify": "npx prettier --write \"src/**/*.{ts,tsx,js,json,css}\""
     },
+    "peerDependencies": {
+        "react": ">16.8.0",
+        "react-dom": ">16.8.0"
+    },
     "dependencies": {
-        "markdown-it": "^14.0.0",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "markdown-it": "^14.0.0"
     },
     "devDependencies": {
         "@types/react": "^18.0.28",
@@ -31,6 +33,8 @@
         "eslint": "^8.57.0",
         "eslint-config-react-app": "^7.0.1",
         "prettier": "^3.3.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "vite": "^5.1.4"
     },
     "exports": {

@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import { DateTime } from '../../state';
 import { FormInputProps } from '../models';
 import { inputAttrs, textValue } from '../utils';
@@ -13,7 +13,7 @@ export function TimeInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: F
         <>
             <input
                 type="text"
-                {...inputAttrs(attrs, 'time', { autoComplete: 'off', placeholder:false })}
+                {...inputAttrs(attrs, 'time', { autoComplete: 'off', placeholder: false })}
                 value={textValue(inputValue)}
                 onChange={onInputChange}
                 onFocus={onFocus}

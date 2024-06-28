@@ -1,3 +1,4 @@
+import React from 'react';
 import { format, localisations, plural } from '../state';
 import { FormInputProps } from './models';
 import { attr, charCountId } from './utils';

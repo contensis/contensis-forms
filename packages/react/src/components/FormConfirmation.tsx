@@ -1,3 +1,4 @@
+import React from 'react';
 import { ConfirmationRuleReturn, FormResponse } from '../models';
 import { Rules, localisations } from '../state';
 

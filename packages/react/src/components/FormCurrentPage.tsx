@@ -1,4 +1,4 @@
-import { MutableRefObject } from 'react';
+import React, { MutableRefObject } from 'react';
 import { Dictionary, FormContentType, FormPage, Nullable, ValidationError } from '../models';
 import { FormFieldContainer } from './FormFieldContainer';
 import { FormValidationSummary } from './FormValidationSummary';

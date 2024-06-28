@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import { inputAttrs, textValue } from '../utils';
 import { FormInputProps } from '../models';
 
@@ -12,7 +12,7 @@ export function DecimalInput({ inputValue, onChange, onBlur, onFocus, ...attrs }
     return (
         <input
             type="text"
-            {...inputAttrs(attrs, 'decimal', {placeholder:true})}
+            {...inputAttrs(attrs, 'decimal', { placeholder: true })}
             spellCheck="false"
             value={textValue(inputValue)}
             onChange={onInputChange}

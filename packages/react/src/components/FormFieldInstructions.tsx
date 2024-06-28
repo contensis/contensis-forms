@@ -1,3 +1,4 @@
+import React from 'react';
 import { Description } from './html';
 import { FormInputProps } from './models';
 import { instructionsId } from './utils';
