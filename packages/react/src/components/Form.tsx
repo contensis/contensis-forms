@@ -1,9 +1,10 @@
-import { FormEvent, MutableRefObject, useCallback, useEffect, useId, useMemo, useState } from 'react';
-import { ConfirmationRuleReturn, Dictionary, FormContentType, FormPage, FormResponse, Nullable, ValidationError } from '../models';
+import { FormEvent, MutableRefObject, useCallback, useEffect, useId, useMemo } from 'react';
+import { FormPage } from '../models';
 import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
 import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
+import { FormHistory, isCurrentHistoryState, isValidHistoryState, toHistoryState, useFormState } from './form-state';
 import { FormProps } from './models';
 
 function isServer() {
@@ -28,45 +29,52 @@ function ClientForm({
     onSubmitError,
     onSubmitSuccess
 }: FormProps) {
-    const [defaultPageTitle] = useState(document.title);
-    const [isLoading, setIsLoading] = useState(true);
-    const [apiError, setApiError] = useState<unknown>(null);
-    const [form, setForm] = useState<Nullable<FormContentType>>(null);
-    const [pageIndex, setPageIndex] = useState(0);
-    const [value, setValue] = useState<Dictionary<unknown>>({});
-    const [inputValue, setInputValue] = useState<Dictionary<unknown>>({});
-    const [showErrors, setShowErrors] = useState(false);
-    const [errors, setErrors] = useState<Dictionary<Nullable<Dictionary<ValidationError>>>>({});
-    const [isDirty, setIsDirty] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
-    const [confirmationRule, setConfirmationRule] = useState<Nullable<ConfirmationRuleReturn>>(null);
-    const [formResponse, setFormResponse] = useState<Nullable<FormResponse>>(null);
+    const [formState, setFormState, patchFormState] = useFormState();
     const formHtmlId = useId();
 
+    const {
+        defaultPageTitle,
+        isLoading,
+        apiError,
+        form,
+        pageIndex,
+        value,
+        inputValue,
+        confirmationRule,
+        formResponse,
+        showErrors,
+        errors,
+        isDirty,
+        isSubmitted
+    } = formState;
+
     useEffect(() => {
-        setIsLoading(true);
+        patchFormState({ isLoading: true });
         const controller = new AbortController();
         const signal = controller.signal;
         Api.getForm({ apiUrl: apiUrl || '', projectId, formId, language: language || null, versionStatus: versionStatus || 'published' }, signal).then(
             (form) => {
-                setForm(form);
-                setIsLoading(false);
-                setApiError(null);
-                setPageIndex(0);
-
                 let initialValue = Form.getInitialValue(form);
                 initialValue = onPopulate ? onPopulate(initialValue, form) : initialValue;
-                setValue(initialValue);
-                setInputValue(Form.getInputValue(form, initialValue));
-                setShowErrors(false);
-
                 const initialErrors = Form.validate(form, initialValue);
-                setErrors(initialErrors);
+
+                patchFormState({
+                    form,
+                    isLoading: false,
+                    apiError: null,
+                    pageIndex: 0,
+                    value: initialValue,
+                    inputValue: Form.getInputValue(form, initialValue),
+                    showErrors: false,
+                    errors: initialErrors
+                });
             },
-            (error) => {
+            (apiError) => {
                 if (!signal.aborted) {
-                    setIsLoading(false);
-                    setApiError(error);
+                    patchFormState({
+                        isLoading: false,
+                        apiError
+                    });
                 }
             }
         );
@@ -87,20 +95,29 @@ function ClientForm({
     const updateValue = (id: string, value: unknown) => {
         const field = form?.fields.find((f) => f.id === id);
         if (field) {
-            setValue((prev) => ({ ...prev, [id]: value }));
-            const fieldErrors = Fields.validate(field, value);
-            setErrors((prev) => ({ ...prev, [id]: fieldErrors }));
-            setIsDirty(true);
-            if (showErrors) {
-                setShowErrors(currentPageHasError);
-            }
+            setFormState((prev) => {
+                const fieldErrors = Fields.validate(field, value);
+                const newValue = { ...prev.value, [id]: value };
+                const newErrors = { ...prev.errors, [id]: fieldErrors };
+                const newShowErrors = prev.showErrors && Form.pageHasErrors(currentPage, newErrors);
+                return {
+                    ...prev,
+                    value: newValue,
+                    errors: newErrors,
+                    showErrors: newShowErrors,
+                    isDirty: true
+                };
+            });
         }
     };
 
     const updateInputValue = (id: string, value: unknown) => {
         const field = form?.fields.find((f) => f.id === id);
         if (field) {
-            setInputValue((prev) => ({ ...prev, [id]: value }));
+            setFormState((prev) => ({
+                ...prev,
+                inputValue: { ...prev.inputValue, [id]: value }
+            }));
         }
     };
 
@@ -116,7 +133,10 @@ function ClientForm({
     };
 
     const previousPage = () => {
-        setPageIndex((prev) => Math.max(prev - 1, 0));
+        setFormState((prev) => ({
+            ...prev,
+            pageIndex: Math.max(prev.pageIndex - 1, 0)
+        }));
     };
 
     const onFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -126,17 +146,21 @@ function ClientForm({
         }
 
         if (currentPageHasError) {
-            setShowErrors(true);
+            patchFormState({ showErrors: true });
             return;
         }
 
-        setShowErrors(false);
         const isLastPage = !!pageCount && pageIndex === pageCount - 1;
         if (!isLastPage) {
-            setPageIndex((prev) => prev + 1);
+            setFormState((prev) => ({
+                ...prev,
+                showErrors: false,
+                pageIndex: prev.pageIndex + 1
+            }));
             return;
         }
 
+        patchFormState({ showErrors: false });
         const formResponse = onSubmit ? onSubmit(value, form) : value;
         if (!formResponse) {
             return;
@@ -156,19 +180,21 @@ function ClientForm({
             const success = onSubmitSuccess ? onSubmitSuccess(result, form) : true;
             Progress.reset(form);
             if (success) {
-                setIsSubmitted(true);
                 if (Rules.isConfirmationRuleReturnUri(result?.confirmation)) {
                     window.location.assign(result.confirmation.link.sys.uri);
                 } else {
-                    setFormResponse(result.form);
-                    setConfirmationRule(result.confirmation);
+                    patchFormState({
+                        isSubmitted: true,
+                        formResponse: result.form,
+                        confirmationRule: result.confirmation
+                    });
                 }
             }
         } catch (e) {
             const handleSubmitError = onSubmitError ? onSubmitError(e, form) : true;
             if (handleSubmitError) {
                 Errors.handleError(e);
-                setApiError(e);
+                patchFormState({ apiError: e });
             }
         }
     };
@@ -190,23 +216,28 @@ function ClientForm({
         }
     }, [pageIndex, currentPage]);
 
-    const onPopState = useCallback(function(e: PopStateEvent) {
+    const onPopState = useCallback(function (e: PopStateEvent) {
         if (isValidHistoryState(e.state)) {
             const newState = e.state as FormHistory;
             const newPage = pages[newState.pageIndex];
             if (newPage) {
                 if (newState.pageIndex < pageIndex) {
                     // back
-                    setShowErrors(false);
-                    setPageIndex(newState.pageIndex);
+                    patchFormState({
+                        showErrors: false,
+                        pageIndex: newState.pageIndex
+                    });
                 } else if (newState.pageIndex > pageIndex) {
                     // forward
                     if (currentPageHasError) {
                         // current page not valid
-                        setShowErrors(true);
+                        patchFormState({ showErrors: true });
                     } else {
-                        setShowErrors(false);
-                        setPageIndex((prev) => prev + 1);
+                        setFormState((prev) => ({
+                            ...prev,
+                            showErrors: false,
+                            pageIndex: prev.pageIndex + 1
+                        }));
                     }
                 }
             }
@@ -257,21 +288,4 @@ function ClientForm({
             </div>
         </div>
     );
-}
-
-type FormHistory = { pageId: string, pageIndex: number };
-
-function toHistoryState(pageId: string, pageIndex: number): FormHistory {
-    return { pageId, pageIndex };
-}
-
-function isValidHistoryState(state: FormHistory) {
-    return !!state?.pageId && (typeof state?.pageIndex === 'number');
-}
-
-function isCurrentHistoryState(state: FormHistory, windowState: FormHistory = window.history.state) {
-    if (isValidHistoryState(state) && isValidHistoryState(windowState)) {
-        return (state.pageId === windowState.pageId) && (state.pageIndex === windowState.pageIndex);
-    }
-    return false;
 }
