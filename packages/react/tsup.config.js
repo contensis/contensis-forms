@@ -1,14 +1,12 @@
 import { defineConfig } from 'tsup';
 
-export default defineConfig({
-    entry: {
-        ['contensis-forms']: 'src/index.ts'
-    },
-    format: ['esm', 'cjs'],
-    // this runs tsc to do type checking during build but the console
-    // output is not as readable as vanilla tsc when there are problems to resolve
-    //   dts: true,
-    sourcemap: true,
-    clean: true,
-    injectStyle: true
-});
+export default defineConfig([
+    {
+        entry: {
+            ['contensis-forms']: 'src/index.ts'
+        },
+        format: ['esm', 'cjs'],
+        sourcemap: true,
+        clean: true
+    }
+]);

@@ -5,7 +5,6 @@ import { getPageTitle } from '../state/localisations';
 import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
 import { FormProps } from './models';
-import '../css/ContensisForm.css';
 
 function isServer() {
     return typeof window === `undefined`;
