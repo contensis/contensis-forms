@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ConfirmationRuleReturn, Dictionary, FormContentType, FormResponse, Nullable, ValidationError } from '../models';
 
 export type FormState = {
@@ -64,4 +64,18 @@ export function isCurrentHistoryState(state: FormHistory, windowState: FormHisto
         return (state.pageId === windowState.pageId) && (state.pageIndex === windowState.pageIndex);
     }
     return false;
+}
+
+export function useFormHtmlId(formId: string) {
+    // todo: this needs to be unique like this
+    // someUniqueCounter = window.CONTENSIS_FORMS.instanceCounter
+    return useMemo(() => {
+        window.CONTENSIS_FORMS = window.CONTENSIS_FORMS || {};
+        window.CONTENSIS_FORMS.formCounter = window.CONTENSIS_FORMS.formCounter || 1;
+        const counter = window.CONTENSIS_FORMS.formCounter++;
+        return `contensis-form-${formId}-${counter}`;
+    }, [formId]);
+
+
+
 }

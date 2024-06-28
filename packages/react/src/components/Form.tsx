@@ -1,11 +1,10 @@
-import { nanoid } from 'https://cdn.jsdelivr.net/npm/nanoid/nanoid.js';
 import React, { FormEvent, MutableRefObject, useCallback, useEffect, useMemo } from 'react';
 import { FormPage } from '../models';
 import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
 import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
-import { FormHistory, isCurrentHistoryState, isValidHistoryState, toHistoryState, useFormState } from './form-state';
+import { FormHistory, isCurrentHistoryState, isValidHistoryState, toHistoryState, useFormHtmlId, useFormState } from './form-state';
 import { FormProps } from './models';
 
 function isServer() {
@@ -31,8 +30,8 @@ function ClientForm({
     onSubmitSuccess
 }: FormProps) {
     const [formState, setFormState, patchFormState] = useFormState();
-    const formHtmlId = nanoid();
-
+    const formHtmlId = useFormHtmlId(formId);
+    
     const {
         defaultPageTitle,
         isLoading,

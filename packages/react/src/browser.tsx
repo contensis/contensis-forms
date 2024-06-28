@@ -6,6 +6,7 @@ import type { FormProps } from './components/models';
 declare global {
     interface Window {
         CONTENSIS_FORMS: {
+            formCounter?: number;
             api?: string;
             render?: (element: Element, props: FormProps) => void;
             onPopulate?: (...args: any[]) => any;
