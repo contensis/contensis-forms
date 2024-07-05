@@ -67,15 +67,10 @@ export function isCurrentHistoryState(state: FormHistory, windowState: FormHisto
 }
 
 export function useFormHtmlId(formId: string) {
-    // todo: this needs to be unique like this
-    // someUniqueCounter = window.CONTENSIS_FORMS.instanceCounter
     return useMemo(() => {
         window.CONTENSIS_FORMS = window.CONTENSIS_FORMS || {};
         window.CONTENSIS_FORMS.formCounter = window.CONTENSIS_FORMS.formCounter || 1;
         const counter = window.CONTENSIS_FORMS.formCounter++;
         return `contensis-form-${formId}-${counter}`;
     }, [formId]);
-
-
-
 }

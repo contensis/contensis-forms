@@ -1,8 +1,5 @@
 import { Dictionary, Nullable } from './shared';
 
-// todo: considerations
-// do form descriptions / field descriptions need canvas?
-
 export type VersionStatus = null | 'latest' | 'published';
 
 type ApiParams = {
@@ -121,7 +118,7 @@ type FieldEditorProperties = {
     cssClass?: string;
     hidden?: boolean;
     readOnly?: boolean;
-    placeholderText?: string; // todo: this is reurned as a localised object from the API
+    placeholderText?: string;
 };
 
 export type FormRule<TReturn> = {
