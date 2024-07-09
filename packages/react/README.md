@@ -19,7 +19,7 @@ yarn add --save @contensis/forms
 Render a Contensis Form with React
 
 ```tsx
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ContensisForm } from '@contensis/forms';
 
@@ -33,7 +33,7 @@ const App = () => {
         formId="contactForm" />
     </div>
   );
-  // avoid CORS - omit apiUrl prop to make forms requests from your root domain (same as delivery api requests)
+  // avoid CORS - omit apiUrl prop to make Forms API requests from your root domain (same as Delivery API requests)
 };
 
 const element = document.getElementById('root') as HTMLElement;
@@ -61,16 +61,6 @@ Specify which Form to request from the Forms API
 | projectId     | Y        | The API id of the project containing the form to render                                                                                                                                      |
 | versionStatus |          | Render the 'latest' or 'published' version of the form (default 'published')                                                                                                                 |
 
-### Render States
-
-You can override built-in fallback components to render when the form is in a particular state
-
-| prop     | required | comments                                                                        |
-| -------- | -------- | ------------------------------------------------------------------------------- |
-| disabled |          | Component to render when the Contensis Form is not enabled render               |
-| error    |          | Component to render when the Contensis Form could not be retrieved from the API |
-| loading  |          | Component to render when the Contensis Form is loading                          |
-
 ### Event Handlers
 
 Handle or override specific form data and events
@@ -81,6 +71,16 @@ Handle or override specific form data and events
 | onSubmit        |          | Call your own custom actions when a user has completed the form            |
 | onSubmitError   |          | Called when there has been a problem submitting a user's completed form    |
 | onSubmitSuccess |          | Call your own custom actions when a user has submitted a form successfully |
+
+### Render States
+
+You can override built-in fallback components to render when the form is in a particular state
+
+| prop     | required | comments                                                                        |
+| -------- | -------- | ------------------------------------------------------------------------------- |
+| disabled |          | Component to render when the Contensis Form is not enabled render               |
+| error    |          | Component to render when the Contensis Form could not be retrieved from the API |
+| loading  |          | Component to render when the Contensis Form is loading                          |
 
 ## Example project
 

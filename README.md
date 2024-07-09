@@ -29,3 +29,19 @@ Example:
   </body>
 </html>
 ```
+
+### Customistion
+
+All customisation options are added to the `<div>` tag via `data` attributes.
+
+| attribute          | required | comments                                                                                                                                                                                     |
+| ------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data-contensis-form-api        |          | The root url for clients to access the Forms API. You do not need this if you are invoking the script from a host where the Delivery API is also available. |
+| data-contensis-form-id        | Y        | The API id of the form to render                                                                                                                                                             |
+| data-contensis-form-language      |          | The language variation of the form to render                                                                                                                                                 |
+| data-contensis-form-project-id     | Y        | The API id of the project containing the form to render                                                                                                                                      |
+| data-contensis-form-version |          | Render the 'latest' or 'published' version of the form (default 'published')                                                                                                                 |
+
+## Example project
+
+You try this out with the [Standalone example project](https://github.com/contensis/contensis-forms/tree/main/apps/standalone)
