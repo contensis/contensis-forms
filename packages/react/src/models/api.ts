@@ -103,7 +103,7 @@ export type FieldValidation = { message?: Nullable<string> };
 export type FieldValidationWithValue<T> = FieldValidation & { value: T };
 
 export type FieldEditor = {
-    id?: FieldEditorId;
+    id?: Nullable<FieldEditorId>;
     instructions?: Nullable<string>;
     label?: Nullable<string>;
     properties?: FieldEditorProperties;
@@ -117,7 +117,6 @@ type FieldEditorProperties = {
     labelPosition?: FieldLabelPosition;
     cssClass?: string;
     hidden?: boolean;
-    readOnly?: boolean;
     placeholderText?: string;
 };
 
