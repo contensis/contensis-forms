@@ -10,7 +10,9 @@ import { FormContainer, FormFieldContainerProps, FormInputProps } from './models
 export const DEFAULT_CONTAINERS_TYPES: Record<FieldEditorType, FormFieldContainerType> = {
     checkbox: 'checkbox',
     date: 'control',
+    dateparts: 'fieldset',
     datetime: 'control',
+    datetimeparts: 'fieldset',
     decimal: 'control',
     email: 'control',
     integer: 'control',
@@ -22,6 +24,7 @@ export const DEFAULT_CONTAINERS_TYPES: Record<FieldEditorType, FormFieldContaine
     tel: 'control',
     text: 'control',
     time: 'control',
+    timeparts: 'fieldset',
     url: 'control'
 };
 

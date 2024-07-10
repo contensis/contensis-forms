@@ -66,6 +66,15 @@ function isWithinRange(n: null | number, min: number, max: number): n is number 
 export const INVALID_DATE = 'Invalid date';
 export const INVALID_TIME = 'Invalid time';
 
+
+export function isDate(d: unknown): d is Date {
+    return Object.prototype.toString.call(d) === '[object Date]';
+}
+
+export function isValidDate(dt: Date) {
+    return !Number.isNaN(Number(dt));
+}
+
 export function validateDateTimeParts(parts: DateTimeParts): DateTimeValidation {
     if (!parts?.year && !parts?.month && !parts?.day && !parts?.hour && !parts?.minute) {
         return { datetime: null };

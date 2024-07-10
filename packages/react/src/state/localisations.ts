@@ -83,7 +83,7 @@ export function format(s: string, ...args: any[]): string {
 
     return s.replace(/{([^{}]*)}/g, (_a, b) => {
         const bValue = parseInt(b, 10);
-        if (!isNaN(bValue) && bValue < args.length) {
+        if (!Number.isNaN(bValue) && bValue < args.length) {
             return args[bValue];
         }
         return '';

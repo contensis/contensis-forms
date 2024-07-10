@@ -76,8 +76,8 @@ export type FormProps = {
     loading?: ReactNode;
     disabled?: ReactNode;
     error?: (error: unknown) => ReactNode;
-    onPopulate?: (defaultValue: FormResponse, form: FormContentType) => FormResponse;
-    onSubmit?: (response: FormResponse, form: FormContentType) => false | FormResponse;
-    onSubmitSuccess?: (response: FormResponse, form: FormContentType) => boolean;
-    onSubmitError?: (error: unknown, form: FormContentType) => boolean;
+    onPopulate?: (defaultValue: FormResponse, form: FormContentType) => FormResponse; // todo: should this be async?????
+    onSubmit?: (response: FormResponse, form: FormContentType) => false | FormResponse;  // todo: should populate be async?????
+    onSubmitSuccess?: (response: FormResponse, form: FormContentType) => boolean; // todo: should populate be async?????
+    onSubmitError?: (error: unknown, form: FormContentType) => boolean; // todo: should populate be async?????
 };

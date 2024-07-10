@@ -1,4 +1,4 @@
-import { DatePartKey, DateParts, DateTimeParts, validateDateParts, validateDateTimeParts } from './date-utils';
+import { DatePartKey, DateParts, DateTimeParts, isDate, isValidDate, validateDateParts, validateDateTimeParts } from './date-utils';
 import { parseTime } from './time-parsing';
 
 const DEFAULT_LOCALE = 'default';
@@ -8,19 +8,11 @@ type LocaleInfo = {
     toShortDateTimeString(input: number | string | Date): string;
     shortDateMatchToParts(match: [string, string, string]): DateParts;
     shortDateTimeMatchToParts(match: [string, string, string, string, string]): DateTimeParts;
-    formatters: DateFormatter[];
+    formatters: DateFormatter[]    
 };
 
 function isDatePartKey(key: string): key is DatePartKey {
     return key === 'day' || key === 'month' || key === 'year';
-}
-
-export function isDate(d: unknown): d is Date {
-    return Object.prototype.toString.call(d) === '[object Date]';
-}
-
-function isValidDate(dt: Date) {
-    return !Number.isNaN(Number(dt));
 }
 
 export const localeInfo = (function () {

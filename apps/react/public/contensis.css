@@ -554,7 +554,9 @@ legend {
 .form-date-month-input,
 .form-date-year-input,
 .form-date-hour-input,
-.form-date-minute-input {
+.form-date-minute-input,
+.form-time-hour-input,
+.form-time-minute-input {
     --width: var(--size-width-100);
 
     padding: var(--form-field-padding);
@@ -587,7 +589,9 @@ legend {
 .form-date-month-input:focus,
 .form-date-year-input:focus,
 .form-date-hour-input:focus,
-.form-date-minute-input:focus {
+.form-date-minute-input:focus,
+.form-time-hour-input:focus,
+.form-time-minute-input:focus {
     outline: var(--size-outline) solid var(--color-focus);
     outline-offset: 0;
     box-shadow: inset 0 0 0 0.0625em var(--form-field-border-focus-color);
@@ -609,7 +613,9 @@ legend {
 .form-date-month-input.form-date-month-input-has-error,
 .form-date-year-input.form-date-year-input-has-error,
 .form-date-hour-input.form-date-hour-input-has-error,
-.form-date-minute-input.form-date-minute-input-has-error {
+.form-date-minute-input.form-date-minute-input-has-error,
+.form-time-hour-input.form-time-hour-input-has-error,
+.form-time-minute-input.form-time-minute-input-has-error {
     border: var(--form-field-border-width) solid var(--color-error);
     box-shadow: inset 0 0 0 0.0625em var(--form-field-border-error-color);
     background-color: var(--form-field-error-bg-color);
@@ -683,13 +689,26 @@ legend {
 /* Date and time                                           */
 /* --------------------------------------------------------*/
 
+/* added by dan */
+.form-date-items {
+    display: flex;
+}
+
+/* added by dan */
 .form-date-item {
     display: inline-block;
 }
 
+/* added by dan */
+.form-date-item label {
+    display: block;
+}
+
 .form-date-day-input,
 .form-date-hour-input,
-.form-date-minute-input {
+.form-date-minute-input,
+.form-time-hour-input,
+.form-time-minute-input  {
     max-inline-size: var(--size-width-ch-2);
 }
 
@@ -713,6 +732,10 @@ legend {
     max-inline-size: var(--size-width-ch-30);
 }
 
+/* added by dan */
+.form-date-separator {
+    margin: 35px 10px 10px 10px;
+}
 /* --------------------------------------------------------*/
 /* Progress bar
 /* --------------------------------------------------------*/

@@ -1,6 +1,7 @@
 export { Api } from './api';
 export { Captcha } from './captcha';
 export { DateTime } from './dates';
+export type { DateParts, DateTimeParts, TimeParts } from './dates';
 export { Errors } from './errors';
 export { Fields } from './fields';
 export { Form } from './form';

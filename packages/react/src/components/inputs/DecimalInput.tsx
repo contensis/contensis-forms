@@ -12,7 +12,7 @@ export function DecimalInput({ inputValue, onChange, onBlur, onFocus, ...attrs }
     return (
         <input
             type="text"
-            {...inputAttrs(attrs, 'decimal', { placeholder: true })}
+            {...inputAttrs(attrs, 'decimal', { placeholder: true, inputMode: 'decimal' })}
             spellCheck="false"
             value={textValue(inputValue)}
             onChange={onInputChange}

@@ -29,6 +29,7 @@ function ClientForm({
     onSubmitError,
     onSubmitSuccess
 }: FormProps) {
+    // todo: check we can populate form values
     const [formState, setFormState, patchFormState] = useFormState();
     const formHtmlId = useFormHtmlId(formId);
     
@@ -55,6 +56,7 @@ function ClientForm({
         Api.getForm({ apiUrl: apiUrl || '', projectId, formId, language: language || null, versionStatus: versionStatus || 'published' }, signal).then(
             (form) => {
                 let initialValue = Form.getInitialValue(form);
+                // todo: should populate be async?????
                 initialValue = onPopulate ? onPopulate(initialValue, form) : initialValue;
                 const initialErrors = Form.validate(form, initialValue);
 
@@ -70,6 +72,7 @@ function ClientForm({
                 });
             },
             (apiError) => {
+                // todo: should we be able to handle load errors
                 if (!signal.aborted) {
                     patchFormState({
                         isLoading: false,

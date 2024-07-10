@@ -22,13 +22,17 @@ const DEFAULT_DATA_FORMAT_EDITOR_TYPES: Record<FieldDataFormat, FieldEditorType>
 
 const DEFAULT_EDITOR_ID_EDITOR_TYPES: Record<FieldEditorId, FieldEditorType> = {
     date: 'date',
+    dateparts: 'dateparts',
     datetime: 'datetime',
+    datetimeparts: 'datetimeparts',
     decimal: 'decimal',
     integer: 'integer',
     list: 'radio',
     'list-dropdown': 'select',
     multiline: 'multiline',
-    text: 'text'
+    text: 'text',
+    time: 'time',
+    timeparts: 'timeparts'
 };
 
 function getEditorType(field: Field) {
@@ -90,7 +94,8 @@ function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[]
 function getDefaultValue(field: Field) {
     const defaultValue = typeof field?.default !== 'undefined' && field?.default !== null ? field.default : getEmptyFieldValue(field);
     if (field.dataType === 'dateTime' && defaultValue === 'now()') {
-        return getEditorType(field) === 'datetime' ? DateTime.getNowDateTime() : DateTime.getNowDate();
+        const editorType = getEditorType(field);
+        return ((editorType === 'datetime') || (editorType === 'datetimeparts')) ? DateTime.getNowDateTime() : DateTime.getNowDate();
     } else if (field.dataType === 'string' && field.dataFormat === 'time' && defaultValue === 'now()') {
         return DateTime.getNowTime();
     }
@@ -98,12 +103,24 @@ function getDefaultValue(field: Field) {
 }
 
 function getInputValue(field: Field, value: unknown) {
+    const editor = getEditorType(field);
     if (field.dataType === 'dateTime') {
-        const editor = getEditorType(field);
         if (editor === 'datetime') {
             return DateTime.localeInfo().toShortDateTimeString(value as string | Date);
-        } else {
+        }
+        if (editor === 'date') {
             return DateTime.localeInfo().toShortDateString(value as string | Date);
+        }
+        if (editor === 'datetimeparts') {
+            return DateTime.toDateTimeParts(value as string | Date);
+        }
+        if (editor === 'dateparts') {
+            return DateTime.toDateParts(value as string | Date);
+        }
+    }
+    if ((field.dataType === 'string') && (field.dataFormat === 'time')) {
+        if (editor === 'timeparts') {
+            return DateTime.toTimeParts(value as string | Date);
         }
     }
     return value;

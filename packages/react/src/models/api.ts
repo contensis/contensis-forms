@@ -42,7 +42,7 @@ export type Field = {
     id: string;
     name: string;
     dataType: FieldDataType;
-    dataFormat?: FieldDataFormat;
+    dataFormat?: Nullable<FieldDataFormat>;
     description?: Nullable<string>;
     default?: unknown;
     groupId: string;
@@ -78,7 +78,19 @@ export type FieldDataType = 'boolean' | 'dateTime' | 'decimal' | 'integer' | 'st
 
 export type FieldDataFormat = 'email' | 'phone' | 'reference' | 'time' | 'url';
 
-export type FieldEditorId = 'datetime' | 'date' | 'decimal' | 'integer' | 'list-dropdown' | 'list' | 'multiline' | 'text';
+export type FieldEditorId =
+    | 'datetime'
+    | 'datetimeparts'
+    | 'date'
+    | 'dateparts'
+    | 'decimal'
+    | 'integer'
+    | 'list-dropdown'
+    | 'list'
+    | 'multiline'
+    | 'text'
+    | 'time'
+    | 'timeparts';
 
 export type AllowedValues = {
     values?: Nullable<string[]>;
@@ -103,7 +115,7 @@ export type FieldValidation = { message?: Nullable<string> };
 export type FieldValidationWithValue<T> = FieldValidation & { value: T };
 
 export type FieldEditor = {
-    id?: FieldEditorId;
+    id?: Nullable<FieldEditorId>;
     instructions?: Nullable<string>;
     label?: Nullable<string>;
     properties?: FieldEditorProperties;
@@ -117,7 +129,7 @@ type FieldEditorProperties = {
     labelPosition?: FieldLabelPosition;
     cssClass?: string;
     hidden?: boolean;
-    readOnly?: boolean;
+    readOnly?: boolean; // todo: remove this just use hidden
     placeholderText?: string;
 };
 

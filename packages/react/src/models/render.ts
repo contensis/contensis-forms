@@ -16,7 +16,9 @@ export type FormFieldContainer = 'control' | 'fieldset' | 'checkbox';
 export type FieldEditorType =
     | 'checkbox'
     | 'date'
+    | 'dateparts'
     | 'datetime'
+    | 'datetimeparts'
     | 'decimal'
     | 'email'
     | 'integer'
@@ -28,6 +30,7 @@ export type FieldEditorType =
     | 'tel'
     | 'text'
     | 'time'
+    | 'timeparts'
     | 'url';
 
 export type ValidationError = {

@@ -1,4 +1,3 @@
-import { Nullable } from '../models';
 import { FormInputProps } from './models';
 
 type AttrArg = undefined | null | string | string[] | Record<string, boolean>;
@@ -46,10 +45,9 @@ export function charCountId(inputs: Pick<FormInputProps, 'htmlId'>) {
     return `${inputs.htmlId}-char-count`;
 }
 
-function inputClassname(inputs: FieldInputProps, fieldType: string, additionalCss: Nullable<string[]>) {
+function inputClassname(inputs: FieldInputProps, fieldType: string) {
     return attr(
         `form-${fieldType}-input`,
-        additionalCss?.filter((suffix) => !!suffix).map((suffix) => `form-${fieldType}-input-${suffix}`),
         {
             [`form-${fieldType}-input-has-error`]: inputs.showErrors && !!inputs.errors
         }
@@ -58,20 +56,47 @@ function inputClassname(inputs: FieldInputProps, fieldType: string, additionalCs
 
 type InputSettings = {
     autoComplete?: string;
-    cssSuffix?: string[];
     placeholder?: boolean;
+    inputMode?: 'numeric' | 'decimal';
 };
 
 export function inputAttrs(inputs: FieldInputProps, fieldType: string, settings: InputSettings) {
     const invalid = inputs.showErrors && !!inputs.errors;
     return {
         ref: inputs.inputRef,
-        className: !!fieldType ? inputClassname(inputs, fieldType, settings?.cssSuffix) : undefined,
+        className: !!fieldType ? inputClassname(inputs, fieldType) : undefined,
         id: inputs.htmlId,
         name: inputs.htmlId,
         autoComplete: inputs.autoFill || settings?.autoComplete,
         rows: inputs.rows || undefined,
         placeholder: (settings.placeholder && inputs.placeholder) || undefined,
+        inputMode: settings?.inputMode || undefined,
+        'aria-invalid': invalid,
+        'aria-describedby': attr({
+            [instructionsId(inputs)]: !!inputs.instructions,
+            [errorsId(inputs)]: invalid,
+            [charCountId(inputs)]: !!inputs.maxLength
+        })
+    };
+}
+
+type ChildInputSettings = {
+    autoComplete?: string;
+    placeholder?: string;
+    name: string;
+    inputMode?: 'numeric' | 'decimal';
+};
+
+export function childInputAttrs(inputs: FieldInputProps, fieldType: string, settings: ChildInputSettings) {
+    const invalid = inputs.showErrors && !!inputs.errors;
+    return {
+        ref: inputs.inputRef,
+        className: !!fieldType ? inputClassname(inputs, `${fieldType}-${settings.name}`) : undefined,
+        id: `${inputs.htmlId}-${settings.name}`,
+        name: settings.name,
+        autoComplete: settings?.autoComplete || undefined,
+        placeholder: settings?.placeholder || undefined,
+        inputMode: settings?.inputMode || undefined,
         'aria-invalid': invalid,
         'aria-describedby': attr({
             [instructionsId(inputs)]: !!inputs.instructions,
