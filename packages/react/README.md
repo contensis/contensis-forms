@@ -67,6 +67,7 @@ Handle or override specific form data and events
 
 | prop            | required | comments                                                                   |
 | --------------- | -------- | -------------------------------------------------------------------------- |
+| onLoadError     |          | Called when there has been a problem loading the form content type         |
 | onPopulate      |          | Populate the form with your own custom default values                      |
 | onSubmit        |          | Call your own custom actions when a user has completed the form            |
 | onSubmitError   |          | Called when there has been a problem submitting a user's completed form    |
