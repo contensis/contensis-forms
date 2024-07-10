@@ -62,7 +62,7 @@ export function FormFieldContainer({
         rows: field?.editor?.properties?.rows,
         labelPosition: field?.editor?.properties?.labelPosition,
         cssClass: field?.editor?.properties?.cssClass,
-        hidden: !!field?.editor?.properties?.readOnly || !!field?.editor?.properties?.hidden || editor === 'reference',
+        hidden: !!field?.editor?.properties?.hidden || editor === 'reference',
         options: Fields.getOptions(field, htmlId),
         field,
         editor,
