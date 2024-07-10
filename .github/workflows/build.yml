@@ -1,0 +1,62 @@
+name: Node.js build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # outputs:
+    #   releases_created: ${{ steps.release.outputs.releases_created == 'true' }}
+    #   paths_released: ${{ steps.release.outputs.paths_released }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build all workspace packages
+        run: npm run build --if-present --workspaces
+
+      # - name: Run tests for all workspace packages
+      #   run: npm run test:mock --if-present --workspaces
+
+      - name: Make local packages
+        run: cd packages && npm pack --workspace ./**
+
+      - name: Upload packaged artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: contensis-forms
+          path: ./packages/*.tgz
+
+      # - uses: googleapis/release-please-action@v4
+      #   id: release
+      #   with:
+      #     token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
+      #     target-branch: main
+
+      # - name: Check release output
+      #   id: check
+      #   env:
+      #     OUTPUTS: '${{ toJson(steps.release.outputs) }}'
+      #   run: |
+      #     echo "releases_created=${{ steps.release.outputs.releases_created }}" >> $GITHUB_OUTPUT
+      #     echo "paths_released=${{ steps.release.outputs.paths_released }}" >> $GITHUB_OUTPUT
+
+  # publish:
+  #   needs: build
+  #   uses: ./.github/workflows/publish.yml
+  #   with:
+  #     package_paths: ${{ needs.build.outputs.paths_released }}
+  #     npm_tag: ${{ needs.build.outputs.releases_created != 'true' && 'prerelease' || 'latest' }}
+  #     release: ${{ needs.build.outputs.releases_created == 'true' }}
+  #   secrets: inherit
