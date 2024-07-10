@@ -11,6 +11,7 @@ declare global {
             onSubmit?: (...args: any[]) => any;
             onSubmitSuccess?: (...args: any[]) => any;
             onSubmitError?: (...args: any[]) => any;
+            onLoadError?: (...args: any[]) => any;
         }
     }
 }
@@ -35,6 +36,7 @@ elements.forEach(element => {
     const onSubmit = window.CONTENSIS_FORMS.onSubmit;
     const onSubmitSuccess = window.CONTENSIS_FORMS.onSubmitSuccess;
     const onSubmitError = window.CONTENSIS_FORMS.onSubmitError;
+    const onLoadError = window.CONTENSIS_FORMS.onLoadError;
     window.CONTENSIS_FORMS.render!(element, {
         apiUrl,
         projectId,
@@ -44,6 +46,7 @@ elements.forEach(element => {
         onPopulate,
         onSubmit,
         onSubmitSuccess,
-        onSubmitError
+        onSubmitError,
+        onLoadError
     });
 });

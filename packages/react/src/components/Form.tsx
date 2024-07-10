@@ -27,11 +27,12 @@ function ClientForm({
     onPopulate,
     onSubmit,
     onSubmitError,
-    onSubmitSuccess
+    onSubmitSuccess,
+    onLoadError
 }: FormProps) {
     const [formState, setFormState, patchFormState] = useFormState();
     const formHtmlId = useFormHtmlId(formId);
-    
+
     const {
         defaultPageTitle,
         isLoading,
@@ -49,13 +50,12 @@ function ClientForm({
     } = formState;
 
     useEffect(() => {
-        patchFormState({ isLoading: true });
-        const controller = new AbortController();
-        const signal = controller.signal;
-        Api.getForm({ apiUrl: apiUrl || '', projectId, formId, language: language || null, versionStatus: versionStatus || 'published' }, signal).then(
-            (form) => {
+        async function loadForm(signal: AbortSignal) {
+            const params = { apiUrl: apiUrl || '', projectId, formId, language: language || null, versionStatus: versionStatus || 'published' };
+            try {
+                const form = await Api.getForm(params, signal);
                 let initialValue = Form.getInitialValue(form);
-                initialValue = onPopulate ? onPopulate(initialValue, form) : initialValue;
+                initialValue = await (onPopulate ? onPopulate(initialValue, form) : initialValue);
                 const initialErrors = Form.validate(form, initialValue);
 
                 patchFormState({
@@ -68,16 +68,22 @@ function ClientForm({
                     showErrors: false,
                     errors: initialErrors
                 });
-            },
-            (apiError) => {
+            } catch (apiError) {
                 if (!signal.aborted) {
+                    if (onLoadError) {
+                        onLoadError(apiError, params);
+                    }
                     patchFormState({
                         isLoading: false,
                         apiError
                     });
                 }
             }
-        );
+        }
+
+        patchFormState({ isLoading: true });
+        const controller = new AbortController();
+        loadForm(controller.signal);
         return () => {
             controller.abort();
         };
@@ -161,7 +167,7 @@ function ClientForm({
         }
 
         patchFormState({ showErrors: false });
-        const formResponse = onSubmit ? onSubmit(value, form) : value;
+        const formResponse = await (onSubmit ? onSubmit(value, form) : value);
         if (!formResponse) {
             return;
         }
@@ -177,7 +183,7 @@ function ClientForm({
                 captcha: form?.properties?.captcha,
                 formResponse
             });
-            const success = onSubmitSuccess ? onSubmitSuccess(result, form) : true;
+            const success = await (onSubmitSuccess ? onSubmitSuccess(result, form) : true);
             Progress.reset(form);
             if (success) {
                 if (Rules.isConfirmationRuleReturnUri(result?.confirmation)) {
@@ -191,7 +197,7 @@ function ClientForm({
                 }
             }
         } catch (e) {
-            const handleSubmitError = onSubmitError ? onSubmitError(e, form) : true;
+            const handleSubmitError = await (onSubmitError ? onSubmitError(e, form) : true);
             if (handleSubmitError) {
                 Errors.handleError(e);
                 patchFormState({ apiError: e });

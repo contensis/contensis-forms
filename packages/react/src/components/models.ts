@@ -7,6 +7,7 @@ import {
     FormContentType,
     FormFieldOption,
     FormResponse,
+    GetFormParams,
     Nullable,
     ValidationError,
     VersionStatus
@@ -76,8 +77,9 @@ export type FormProps = {
     loading?: ReactNode;
     disabled?: ReactNode;
     error?: (error: unknown) => ReactNode;
-    onPopulate?: (defaultValue: FormResponse, form: FormContentType) => FormResponse;
-    onSubmit?: (response: FormResponse, form: FormContentType) => false | FormResponse;
-    onSubmitSuccess?: (response: FormResponse, form: FormContentType) => boolean;
-    onSubmitError?: (error: unknown, form: FormContentType) => boolean;
+    onPopulate?: (defaultValue: FormResponse, form: FormContentType) => FormResponse | Promise<FormResponse>;
+    onSubmit?: (response: FormResponse, form: FormContentType) => false | FormResponse | Promise<false | FormResponse>;
+    onSubmitSuccess?: (response: FormResponse, form: FormContentType) => boolean | Promise<boolean>;
+    onSubmitError?: (error: unknown, form: FormContentType) => boolean | Promise<boolean>;
+    onLoadError?: (error: unknown, params: GetFormParams) => void;
 };
