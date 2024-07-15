@@ -146,15 +146,6 @@ async function saveFormResponse({
     const headers = await getDefaultHeaders({ apiUrl });
     const captchaResponse = Version.isPublishedVersion(versionStatus) && !isLoggedIn() ? await Captcha.submit(formId, captcha) : '';
 
-    formResponse = {
-        ...formResponse,
-        sys: {
-            contentTypeId: formId,
-            dataFormat: 'form' as const,
-            language
-        }
-    };
-
     let url = `${apiUrl}/api/forms/projects/${projectId}/contentTypes/${formId}/languages/${language || 'default'}/entries`;
     url = Version.isPublishedVersion(versionStatus) && formVersionNo ? url : `${url}?contentTypePreviewVersion=${formVersionNo}`;
 
