@@ -1,47 +1,64 @@
 {
-    "name": "@contensis/forms",
-    "version": "0.0.1",
-    "description": "",
-    "license": "ISC",
-    "main": "dist/contensis-forms.js",
-    "module": "dist/contensis-forms.mjs",
-    "types": "dist/contensis-forms.d.ts",
-    "files": [
-        "dist"
-    ],
-    "scripts": {
-        "start": "npm run build",
-        "prebuild": "npm run tsc",
-        "build": "tsup --dts-resolve",
-        "tsc": "tsc --noEmit",
-        "dev": "tsup --dts-resolve --watch",
-        "lint": "eslint",
-        "lint:fix": "npx eslint --fix \"src/**/*.{ts,tsx,js,json}\" > lintresults.txt",
-        "prettify": "npx prettier --write \"src/**/*.{ts,tsx,js,json,css}\""
-    },
-    "peerDependencies": {
-        "react": ">16.8.0",
-        "react-dom": ">16.8.0"
-    },
-    "dependencies": {
-        "markdown-it": "^14.0.0"
-    },
-    "devDependencies": {
-        "@types/react": "^18.0.28",
-        "@types/react-dom": "^18.0.11",
-        "@vitejs/plugin-react": "^4.2.1",
-        "eslint": "^8.57.0",
-        "eslint-config-react-app": "^7.0.1",
-        "prettier": "^3.3.2",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "vite": "^5.1.4"
-    },
-    "exports": {
-        ".": {
-            "require": "./dist/contensis-forms.js",
-            "import": "./dist/contensis-forms.mjs",
-            "types": "./dist/contensis-forms.d.ts"
-        }
+  "name": "@contensis/forms",
+  "version": "1.0.0-beta.0",
+  "description": "Render Contensis Forms with React",
+  "keywords": [
+    "contensis",
+    "form",
+    "forms",
+    "react",
+    "render",
+    "jsx"
+  ],
+  "homepage": "https://github.com/contensis/contensis-forms",
+  "author": {
+    "name": "Zengenti",
+    "url": "https://www.contensis.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/contensis/contensis-forms.git"
+  },
+  "license": "ISC",
+  "main": "dist/contensis-forms.js",
+  "module": "dist/contensis-forms.mjs",
+  "types": "dist/contensis-forms.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "npm run build",
+    "prebuild": "npm run tsc",
+    "build": "tsup --dts-resolve",
+    "tsc": "tsc --noEmit",
+    "dev": "tsup --dts-resolve --watch",
+    "lint": "eslint",
+    "lint:fix": "npx eslint --fix \"src/**/*.{ts,tsx,js,json}\" > lintresults.txt",
+    "prettify": "npx prettier --write \"src/**/*.{ts,tsx,js,json,css}\""
+  },
+  "peerDependencies": {
+    "react": ">16.8.0",
+    "react-dom": ">16.8.0"
+  },
+  "dependencies": {
+    "markdown-it": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-config-react-app": "^7.0.1",
+    "prettier": "^3.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vite": "^5.1.4"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/contensis-forms.js",
+      "import": "./dist/contensis-forms.mjs",
+      "types": "./dist/contensis-forms.d.ts"
     }
+  }
 }
