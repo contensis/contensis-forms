@@ -360,6 +360,9 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
 }
 
 function validate(value: unknown, field: Field) {
+    if (field?.editor?.properties?.hidden) {
+        return null;
+    }
     const validator = createFieldValidator(field);
     return validator(value);
 }
