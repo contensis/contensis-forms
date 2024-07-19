@@ -51,38 +51,17 @@ export function DatePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs
         <div className="form-date-items">
             <div className="form-date-item">
                 <label htmlFor={input1.attrs.id}>{input1.label}</label>
-                <input
-                    type="text"
-                    {...input1.attrs}
-                    value={input1.value}
-                    onChange={onInputChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                />
+                <input type="text" {...input1.attrs} value={input1.value} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />
             </div>
             <div className="form-date-separator">{separator}</div>
             <div className="form-date-item">
                 <label htmlFor={input2.attrs.id}>{input2.label}</label>
-                <input
-                    type="text"
-                    {...input2.attrs}
-                    value={input2.value}
-                    onChange={onInputChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                />
+                <input type="text" {...input2.attrs} value={input2.value} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />
             </div>
             <div className="form-date-separator">{separator}</div>
             <div className="form-date-item">
                 <label htmlFor={input3.attrs.id}>{input3.label}</label>
-                <input
-                    type="text"
-                    {...input3.attrs}
-                    value={input3.value}
-                    onChange={onInputChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                />
+                <input type="text" {...input3.attrs} value={input3.value} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />
             </div>
         </div>
     );

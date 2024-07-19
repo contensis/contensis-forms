@@ -33,7 +33,7 @@ export const DateTimeSettings = {
         h12: '12h' as const,
         h24: '24h' as const
     },
-    defaultSeparators:  {
+    defaultSeparators: {
         date: '/',
         time: ':'
     },

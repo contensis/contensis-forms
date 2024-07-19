@@ -1,8 +1,6 @@
-
 export type DateFormat = 'dd-mm-yyyy' | 'mm-dd-yyyy' | 'yyyy-mm-dd';
 export type TimeFormat = '12h' | '24h';
 export type TimePeriod = 'am' | 'pm';
-
 
 export type DateParts = {
     year?: string;
@@ -81,7 +79,6 @@ function isWithinRange(n: null | number, min: number, max: number): n is number 
 export const INVALID_DATE = 'Invalid date';
 export const INVALID_TIME = 'Invalid time';
 
-
 export function isDate(d: unknown): d is Date {
     return Object.prototype.toString.call(d) === '[object Date]';
 }
@@ -100,10 +97,7 @@ export function validateDateTimeParts(parts: DateTimeParts): DateTimeValidation 
     if (date.invalid || time.invalid) {
         return {
             datetime: INVALID_DATE,
-            invalid: [
-                ...(date.invalid || []),
-                ...(time.invalid || []),
-            ]
+            invalid: [...(date.invalid || []), ...(time.invalid || [])]
         };
     }
     // date: 0000-00-00T00:00
@@ -166,10 +160,10 @@ export function validateTimeParts(parts: TimeParts): TimeValidation {
         } else {
             if (hour === 12) {
                 // 12am -> 0
-                hour24 = (period === 'am') ? 0 : hour;
+                hour24 = period === 'am' ? 0 : hour;
             } else {
                 // 1-11pm -> + 12
-                hour24 = (period === 'pm') ? hour + 12 : hour;
+                hour24 = period === 'pm' ? hour + 12 : hour;
             }
         }
     } else {

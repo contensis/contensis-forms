@@ -13,7 +13,7 @@ declare global {
             onSubmit?: (...args: any[]) => any;
             onSubmitSuccess?: (...args: any[]) => any;
             onSubmitError?: (...args: any[]) => any;
-        }
+        };
     }
 }
 
@@ -27,7 +27,7 @@ window.CONTENSIS_FORMS.render = function (element, props) {
 };
 
 const elements = [...document.querySelectorAll('[data-contensis-form-id]')];
-elements.forEach(element => {
+elements.forEach((element) => {
     const apiUrl = element.getAttribute('data-contensis-form-api') || window.CONTENSIS_FORMS.api || '';
     const projectId = element.getAttribute('data-contensis-form-project-id') || ''; // required
     const formId = element.getAttribute('data-contensis-form-id') || ''; // required

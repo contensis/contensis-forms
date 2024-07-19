@@ -223,33 +223,36 @@ function ClientForm({
         }
     }, [pageIndex, currentPage]);
 
-    const onPopState = useCallback(function (e: PopStateEvent) {
-        if (isValidHistoryState(e.state)) {
-            const newState = e.state as FormHistory;
-            const newPage = pages[newState.pageIndex];
-            if (newPage) {
-                if (newState.pageIndex < pageIndex) {
-                    // back
-                    patchFormState({
-                        showErrors: false,
-                        pageIndex: newState.pageIndex
-                    });
-                } else if (newState.pageIndex > pageIndex) {
-                    // forward
-                    if (currentPageHasError) {
-                        // current page not valid
-                        patchFormState({ showErrors: true });
-                    } else {
-                        setFormState((prev) => ({
-                            ...prev,
+    const onPopState = useCallback(
+        function (e: PopStateEvent) {
+            if (isValidHistoryState(e.state)) {
+                const newState = e.state as FormHistory;
+                const newPage = pages[newState.pageIndex];
+                if (newPage) {
+                    if (newState.pageIndex < pageIndex) {
+                        // back
+                        patchFormState({
                             showErrors: false,
-                            pageIndex: prev.pageIndex + 1
-                        }));
+                            pageIndex: newState.pageIndex
+                        });
+                    } else if (newState.pageIndex > pageIndex) {
+                        // forward
+                        if (currentPageHasError) {
+                            // current page not valid
+                            patchFormState({ showErrors: true });
+                        } else {
+                            setFormState((prev) => ({
+                                ...prev,
+                                showErrors: false,
+                                pageIndex: prev.pageIndex + 1
+                            }));
+                        }
                     }
                 }
             }
-        }
-    }, [pageIndex, pages, currentPageHasError]);
+        },
+        [pageIndex, pages, currentPageHasError]
+    );
 
     useEffect(() => {
         const fn = onPopState;

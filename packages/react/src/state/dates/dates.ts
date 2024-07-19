@@ -22,7 +22,7 @@ export function toLocalIsoDateTime(dt: Date) {
 
 export function toDateParts(input: number | string | Date): DateParts {
     const { year, month, day } = toDateTimeParts(input, '24h');
-    return { year, month, day }
+    return { year, month, day };
 }
 
 function timeToTimeParts(hour: number, minute: number, timeFormat: TimeFormat): TimeParts {
@@ -38,7 +38,7 @@ function timeToTimeParts(hour: number, minute: number, timeFormat: TimeFormat): 
         }
     }
     return {
-        hour: (timeFormat === '24h') ? pad(hour) : `${hour}`,
+        hour: timeFormat === '24h' ? pad(hour) : `${hour}`,
         minute: pad(minute),
         period,
         timeFormat
@@ -94,8 +94,8 @@ export function toTimeParts(input: number | string | Date, timeFormat: TimeForma
             const hourNum = parseInt(parts[0], 10);
             const minuteNum = parseInt(parts[1], 10);
             if (!Number.isNaN(hourNum) && !Number.isNaN(minuteNum)) {
-                return timeToTimeParts(hourNum,minuteNum,timeFormat);
-            }            
+                return timeToTimeParts(hourNum, minuteNum, timeFormat);
+            }
         }
     }
     return {

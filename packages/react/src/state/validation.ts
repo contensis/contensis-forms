@@ -92,7 +92,7 @@ const createFieldValidator = memo((field: Field) => {
             'pastDateTime',
             createPastDateTimeValidator(field.dataType, field.validations?.pastDateTime),
             field.validations?.pastDateTime?.message || format(localisations.fieldPastDateTimeValidationMessage, field.name)
-        ],
+        ]
     ];
 
     return function (value: unknown) {
@@ -213,9 +213,9 @@ function createDataFormatValidator(dataFormat: Nullable<FieldDataFormat>): Valid
 function createRequiredValidator(required: Nullable<FieldValidation>): Validator<{}> {
     return !!required
         ? fromValid(
-            (value: unknown) => !isEmpty(value),
-            () => ({})
-        )
+              (value: unknown) => !isEmpty(value),
+              () => ({})
+          )
         : noopValidator;
 }
 
@@ -225,20 +225,20 @@ function createSizeValidator(
 ): Validator<{ min: Nullable<number>; max: Nullable<number> }> {
     return !!min || !!max
         ? fromValid(
-            (value: unknown) => {
-                let valid = true;
-                if (typeof value === 'number') {
-                    if (min) {
-                        valid = value >= min.value;
-                    }
-                    if (valid && max) {
-                        valid = value <= max.value;
-                    }
-                }
-                return valid;
-            },
-            () => ({ min: min?.value, max: max?.value })
-        )
+              (value: unknown) => {
+                  let valid = true;
+                  if (typeof value === 'number') {
+                      if (min) {
+                          valid = value >= min.value;
+                      }
+                      if (valid && max) {
+                          valid = value <= max.value;
+                      }
+                  }
+                  return valid;
+              },
+              () => ({ min: min?.value, max: max?.value })
+          )
         : noopValidator;
 }
 
@@ -248,20 +248,20 @@ function createLengthValidator(
 ): Validator<{ minLength: Nullable<number>; maxLength: Nullable<number> }> {
     return !!minLength || !!maxLength
         ? fromValid(
-            (value: unknown) => {
-                let valid = true;
-                if (hasLength(value)) {
-                    if (minLength) {
-                        valid = value.length >= minLength.value;
-                    }
-                    if (valid && maxLength) {
-                        valid = value.length <= maxLength.value;
-                    }
-                }
-                return valid;
-            },
-            () => ({ minLength: minLength?.value, maxLength: maxLength?.value })
-        )
+              (value: unknown) => {
+                  let valid = true;
+                  if (hasLength(value)) {
+                      if (minLength) {
+                          valid = value.length >= minLength.value;
+                      }
+                      if (valid && maxLength) {
+                          valid = value.length <= maxLength.value;
+                      }
+                  }
+                  return valid;
+              },
+              () => ({ minLength: minLength?.value, maxLength: maxLength?.value })
+          )
         : noopValidator;
 }
 
@@ -271,20 +271,20 @@ function createCountValidator(
 ): Validator<{ minCount: Nullable<number>; maxCount: Nullable<number> }> {
     return !!minCount || !!maxCount
         ? fromValid(
-            (value: unknown) => {
-                let valid = true;
-                if (hasLength(value)) {
-                    if (minCount) {
-                        valid = value.length >= minCount.value;
-                    }
-                    if (valid && maxCount) {
-                        valid = value.length <= maxCount.value;
-                    }
-                }
-                return valid;
-            },
-            () => ({ minCount: minCount?.value, maxCount: maxCount?.value })
-        )
+              (value: unknown) => {
+                  let valid = true;
+                  if (hasLength(value)) {
+                      if (minCount) {
+                          valid = value.length >= minCount.value;
+                      }
+                      if (valid && maxCount) {
+                          valid = value.length <= maxCount.value;
+                      }
+                  }
+                  return valid;
+              },
+              () => ({ minCount: minCount?.value, maxCount: maxCount?.value })
+          )
         : noopValidator;
 }
 
@@ -343,19 +343,19 @@ function createAllowedValuesValidator(allowedValues: Nullable<FieldValidations['
 function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Nullable<FieldValidation>) {
     return !!pastDateTime
         ? fromValid(
-            (value: unknown) => {
-                if (isNull(value)) {
-                    return true;
-                }
-                if (dataType === 'dateTime') {
-                    const now = new Date();
-                    const dt = new Date(`${value}`);
-                    return dt.getTime() <= now.getTime();
-                }
-                return true;
-            },
-            () => ({})
-        )
+              (value: unknown) => {
+                  if (isNull(value)) {
+                      return true;
+                  }
+                  if (dataType === 'dateTime') {
+                      const now = new Date();
+                      const dt = new Date(`${value}`);
+                      return dt.getTime() <= now.getTime();
+                  }
+                  return true;
+              },
+              () => ({})
+          )
         : noopValidator;
 }
 

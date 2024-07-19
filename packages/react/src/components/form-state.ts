@@ -46,22 +46,22 @@ export function useFormState(): [FormState, React.Dispatch<React.SetStateAction<
             ...updates
         }));
     };
-    return [formState, setFormState, patchFormState]
-};
+    return [formState, setFormState, patchFormState];
+}
 
-export type FormHistory = { pageId: string, pageIndex: number };
+export type FormHistory = { pageId: string; pageIndex: number };
 
 export function toHistoryState(pageId: string, pageIndex: number): FormHistory {
     return { pageId, pageIndex };
 }
 
 export function isValidHistoryState(state: FormHistory) {
-    return !!state?.pageId && (typeof state?.pageIndex === 'number');
+    return !!state?.pageId && typeof state?.pageIndex === 'number';
 }
 
 export function isCurrentHistoryState(state: FormHistory, windowState: FormHistory = window.history.state) {
     if (isValidHistoryState(state) && isValidHistoryState(windowState)) {
-        return (state.pageId === windowState.pageId) && (state.pageIndex === windowState.pageIndex);
+        return state.pageId === windowState.pageId && state.pageIndex === windowState.pageIndex;
     }
     return false;
 }

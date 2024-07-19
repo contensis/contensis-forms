@@ -46,12 +46,9 @@ export function charCountId(inputs: Pick<FormInputProps, 'htmlId'>) {
 }
 
 function inputClassname(inputs: FieldInputProps, fieldType: string) {
-    return attr(
-        `form-${fieldType}-input`,
-        {
-            [`form-${fieldType}-input-has-error`]: inputs.showErrors && !!inputs.errors
-        }
-    );
+    return attr(`form-${fieldType}-input`, {
+        [`form-${fieldType}-input-has-error`]: inputs.showErrors && !!inputs.errors
+    });
 }
 
 type InputSettings = {

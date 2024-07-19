@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { FormContentType, FormPage, Nullable } from '../models';
 import { Form, format, localisations } from '../state';
 

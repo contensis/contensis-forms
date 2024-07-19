@@ -95,7 +95,7 @@ function getDefaultValue(field: Field) {
     const defaultValue = typeof field?.default !== 'undefined' && field?.default !== null ? field.default : getEmptyFieldValue(field);
     if (field.dataType === 'dateTime' && defaultValue === 'now()') {
         const editorType = getEditorType(field);
-        return ((editorType === 'datetime') || (editorType === 'datetimeparts')) ? DateTime.getNowDateTime() : DateTime.getNowDate();
+        return editorType === 'datetime' || editorType === 'datetimeparts' ? DateTime.getNowDateTime() : DateTime.getNowDate();
     } else if (field.dataType === 'string' && field.dataFormat === 'time' && defaultValue === 'now()') {
         return DateTime.getNowTime();
     }
@@ -112,21 +112,15 @@ function getInputValue(field: Field, value: unknown) {
             return DateTime.localeInfo().toShortDateString(value as string | Date);
         }
         if (editor === 'datetimeparts') {
-            return DateTime.toDateTimeParts(
-                value as string | Date,
-                field.editor?.properties?.timeFormat || '24h'
-            );
+            return DateTime.toDateTimeParts(value as string | Date, field.editor?.properties?.timeFormat || '24h');
         }
         if (editor === 'dateparts') {
             return DateTime.toDateParts(value as string | Date);
         }
     }
-    if ((field.dataType === 'string') && (field.dataFormat === 'time')) {
+    if (field.dataType === 'string' && field.dataFormat === 'time') {
         if (editor === 'timeparts') {
-            return DateTime.toTimeParts(
-                value as string | Date,
-                field.editor?.properties?.timeFormat || '24h'
-            );
+            return DateTime.toTimeParts(value as string | Date, field.editor?.properties?.timeFormat || '24h');
         }
     }
     return value;
@@ -141,7 +135,7 @@ function validate(field: Field, value: unknown) {
 }
 
 function isNullish(o: unknown) {
-    return (o === null) || (typeof o === 'undefined');
+    return o === null || typeof o === 'undefined';
 }
 
 function getInitialValue(field: Field, query: Nullable<string[]>, progressValue: unknown) {

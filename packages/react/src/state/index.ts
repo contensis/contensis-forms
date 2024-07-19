@@ -9,4 +9,3 @@ export { format, localisations, plural } from './localisations';
 export { Progress } from './progress';
 export { Rules } from './rules';
 export { Version } from './version';
-

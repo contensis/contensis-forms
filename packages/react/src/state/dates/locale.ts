@@ -8,7 +8,7 @@ type LocaleInfo = {
     toShortDateTimeString(input: number | string | Date): string;
     shortDateMatchToParts(match: [string, string, string]): DateParts;
     shortDateTimeMatchToParts(match: [string, string, string, string, string]): DateTimeParts;
-    formatters: DateFormatter[]    
+    formatters: DateFormatter[];
 };
 
 function isDatePartKey(key: string): key is DatePartKey {
@@ -169,7 +169,7 @@ export function parseDateTimeFromFormatter(input: string, formatter: DateFormatt
             month: `${month}`,
             day: result.day,
             hour,
-            minute,            
+            minute
         });
         if (!dt.invalid) {
             return dt;

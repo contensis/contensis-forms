@@ -69,75 +69,34 @@ export function DateTimePartsInput({ inputValue, onChange, onBlur, onFocus, ...a
         <div className="form-date-items">
             <div className="form-date-item">
                 <label htmlFor={input1.attrs.id}>{input1.label}</label>
-                <input
-                    type="text"
-                    {...input1.attrs}
-                    value={input1.value}
-                    onChange={onInputChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                />
+                <input type="text" {...input1.attrs} value={input1.value} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />
             </div>
             <div className="form-date-separator">{separator}</div>
             <div className="form-date-item">
                 <label htmlFor={input2.attrs.id}>{input2.label}</label>
-                <input
-                    type="text"
-                    {...input2.attrs}
-                    value={input2.value}
-                    onChange={onInputChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                />
+                <input type="text" {...input2.attrs} value={input2.value} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />
             </div>
             <div className="form-date-separator">{separator}</div>
             <div className="form-date-item">
                 <label htmlFor={input3.attrs.id}>{input3.label}</label>
-                <input
-                    type="text"
-                    {...input3.attrs}
-                    value={input3.value}
-                    onChange={onInputChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                />
+                <input type="text" {...input3.attrs} value={input3.value} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />
             </div>
             <div className="form-date-separator"> </div>
             <div className="form-date-item">
                 <label htmlFor={hour.attrs.id}>{hour.label}</label>
-                <input
-                    type="text"
-                    {...hour.attrs}
-                    value={hour.value}
-                    onChange={onInputChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                />
+                <input type="text" {...hour.attrs} value={hour.value} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />
             </div>
             <div className="form-date-separator">{timeSeparator}</div>
             <div className="form-date-item">
                 <label htmlFor={minute.attrs.id}>{minute.label}</label>
-                <input
-                    type="text"
-                    {...minute.attrs}
-                    value={minute.value}
-                    onChange={onInputChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                />
+                <input type="text" {...minute.attrs} value={minute.value} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur} />
             </div>
-            {(dateTime.timeFormat === '12h') ? (
+            {dateTime.timeFormat === '12h' ? (
                 <>
                     <div className="form-date-separator">{timeSeparator}</div>
                     <div className="form-date-item">
                         <label htmlFor={period.attrs.id}>{period.label}</label>
-                        <select
-                            {...period.attrs}
-                            value={period.value}
-                            onChange={onInputChange}
-                            onFocus={onFocus}
-                            onBlur={onBlur}
-                        >
+                        <select {...period.attrs} value={period.value} onChange={onInputChange} onFocus={onFocus} onBlur={onBlur}>
                             <option value={DateTimeSettings.timePeriods.am}>{DateTimeSettings.timePeriods.am}</option>
                             <option value={DateTimeSettings.timePeriods.pm}>{DateTimeSettings.timePeriods.pm}</option>
                         </select>
