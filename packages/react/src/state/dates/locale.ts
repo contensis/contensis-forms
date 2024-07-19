@@ -169,7 +169,7 @@ export function parseDateTimeFromFormatter(input: string, formatter: DateFormatt
             month: `${month}`,
             day: result.day,
             hour,
-            minute
+            minute,            
         });
         if (!dt.invalid) {
             return dt;

@@ -1,19 +1,20 @@
 import React, { ChangeEvent } from 'react';
-import { DateTime, DateTimeParts, localisations } from '../../state';
+import { DateTime, DateTimeParts, DateTimeSettings, localisations } from '../../state';
 import { FormInputProps } from '../models';
 import { childInputAttrs, textValue } from '../utils';
 
 export function DateTimePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
-    // todo: 12 / 24 clock?
+    const { field } = attrs;
     const dateTime = inputValue as DateTimeParts;
 
-    const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
+    const onInputChange = ($event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const newDateTimeParts = { ...dateTime, [$event.target.name]: $event.target.value };
-        const newDateTime = DateTime.validateDateTimeParts(newDateTimeParts); // todo: does this need a period
+        const newDateTime = DateTime.validateDateTimeParts(newDateTimeParts);
         onChange(newDateTimeParts, newDateTime.datetime);
     };
 
-    const separator = '/'; // todo: get this from the format
+    const separator = field?.editor?.properties?.dateSeparator || DateTimeSettings.defaultSeparators.date;
+    const timeSeparator = field?.editor?.properties?.timeSeparator || DateTimeSettings.defaultSeparators.time;
 
     const day = {
         label: localisations.dateInputDayLabel,
@@ -45,10 +46,24 @@ export function DateTimePartsInput({ inputValue, onChange, onBlur, onFocus, ...a
         value: textValue(dateTime.minute)
     };
 
-    // todo: get this from the date format
-    const input1 = day;
-    const input2 = month;
-    const input3 = year;
+    const period = {
+        label: localisations.dateInputPeriodLabel,
+        attrs: childInputAttrs(attrs, 'time', { name: 'period' }),
+        value: textValue(dateTime.period)
+    };
+
+    let input1 = day;
+    let input2 = month;
+    let input3 = year;
+    if (field?.editor?.properties?.dateFormat === DateTimeSettings.dateFormats.mm_dd_yyyy) {
+        input1 = month;
+        input2 = day;
+        input3 = year;
+    } else if (field?.editor?.properties?.dateFormat === DateTimeSettings.dateFormats.yyyy_mm_dd) {
+        input1 = year;
+        input2 = month;
+        input3 = day;
+    }
 
     return (
         <div className="form-date-items">
@@ -99,7 +114,7 @@ export function DateTimePartsInput({ inputValue, onChange, onBlur, onFocus, ...a
                     onBlur={onBlur}
                 />
             </div>
-            <div className="form-date-separator">:</div>
+            <div className="form-date-separator">{timeSeparator}</div>
             <div className="form-date-item">
                 <label htmlFor={minute.attrs.id}>{minute.label}</label>
                 <input
@@ -111,6 +126,24 @@ export function DateTimePartsInput({ inputValue, onChange, onBlur, onFocus, ...a
                     onBlur={onBlur}
                 />
             </div>
+            {(dateTime.timeFormat === '12h') ? (
+                <>
+                    <div className="form-date-separator">{timeSeparator}</div>
+                    <div className="form-date-item">
+                        <label htmlFor={period.attrs.id}>{period.label}</label>
+                        <select
+                            {...period.attrs}
+                            value={period.value}
+                            onChange={onInputChange}
+                            onFocus={onFocus}
+                            onBlur={onBlur}
+                        >
+                            <option value={DateTimeSettings.timePeriods.am}>{DateTimeSettings.timePeriods.am}</option>
+                            <option value={DateTimeSettings.timePeriods.pm}>{DateTimeSettings.timePeriods.pm}</option>
+                        </select>
+                    </div>
+                </>
+            ) : null}
         </div>
     );
 }

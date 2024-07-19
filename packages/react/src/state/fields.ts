@@ -112,7 +112,10 @@ function getInputValue(field: Field, value: unknown) {
             return DateTime.localeInfo().toShortDateString(value as string | Date);
         }
         if (editor === 'datetimeparts') {
-            return DateTime.toDateTimeParts(value as string | Date);
+            return DateTime.toDateTimeParts(
+                value as string | Date,
+                field.editor?.properties?.timeFormat || '24h'
+            );
         }
         if (editor === 'dateparts') {
             return DateTime.toDateParts(value as string | Date);
@@ -120,7 +123,10 @@ function getInputValue(field: Field, value: unknown) {
     }
     if ((field.dataType === 'string') && (field.dataFormat === 'time')) {
         if (editor === 'timeparts') {
-            return DateTime.toTimeParts(value as string | Date);
+            return DateTime.toTimeParts(
+                value as string | Date,
+                field.editor?.properties?.timeFormat || '24h'
+            );
         }
     }
     return value;

@@ -122,6 +122,8 @@ export type FieldEditor = {
 };
 
 export type FieldLabelPosition = 'top' | 'leftAligned';
+type DateFormat = 'dd-mm-yyyy' | 'mm-dd-yyyy' | 'yyyy-mm-dd';
+type TimeFormat = '12h' | '24h';
 
 type FieldEditorProperties = {
     autoFill?: string;
@@ -130,6 +132,10 @@ type FieldEditorProperties = {
     cssClass?: string;
     hidden?: boolean;
     placeholderText?: string;
+    dateFormat?: DateFormat;
+    dateSeparator?: string;
+    timeFormat?: TimeFormat;
+    timeSeparator?: string;
 };
 
 export type FormRule<TReturn> = {

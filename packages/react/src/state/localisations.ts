@@ -53,6 +53,7 @@ export const localisations = {
     dateInputYearLabel: 'Year',
     dateInputHourLabel: 'Hour',
     dateInputMinuteLabel: 'Minute',
+    dateInputPeriodLabel: 'Period',
     formLoading: 'Loading...',
     formLoadError: 'Error loading form',
     formDisabled: 'Form is disabled',

@@ -32,7 +32,7 @@ function parseIso(date: string) {
         const day = match[3];
         const hour = match[4];
         const minute = match[5];
-        return validateDateTimeParts({ year, month, day, hour, minute });
+        return validateDateTimeParts({ year, month, day, hour, minute, period: 'am', timeFormat: '24h' });
     }
 }
 

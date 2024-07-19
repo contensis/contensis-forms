@@ -1,9 +1,10 @@
 import React, { ChangeEvent } from 'react';
+import { DateParts, DateTime, DateTimeSettings, localisations } from '../../state';
 import { FormInputProps } from '../models';
-import { DateTime, DateParts, localisations } from '../../state';
 import { childInputAttrs, textValue } from '../utils';
 
 export function DatePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
+    const { field } = attrs;
 
     const date = inputValue as DateParts;
 
@@ -13,7 +14,7 @@ export function DatePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs
         onChange(newDateParts, newDate.date);
     };
 
-    const separator = '/'; // todo: get this from the format
+    const separator = field?.editor?.properties?.dateSeparator || DateTimeSettings.defaultSeparators.date;
 
     const day = {
         label: localisations.dateInputDayLabel,
@@ -33,10 +34,18 @@ export function DatePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs
         value: textValue(date.year)
     };
 
-    // todo: get this from the date format
-    const input1 = day;
-    const input2 = month;
-    const input3 = year;
+    let input1 = day;
+    let input2 = month;
+    let input3 = year;
+    if (field?.editor?.properties?.dateFormat === DateTimeSettings.dateFormats.mm_dd_yyyy) {
+        input1 = month;
+        input2 = day;
+        input3 = year;
+    } else if (field?.editor?.properties?.dateFormat === DateTimeSettings.dateFormats.yyyy_mm_dd) {
+        input1 = year;
+        input2 = month;
+        input3 = day;
+    }
 
     return (
         <div className="form-date-items">

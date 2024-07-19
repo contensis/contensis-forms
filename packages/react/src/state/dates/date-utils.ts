@@ -1,3 +1,9 @@
+
+export type DateFormat = 'dd-mm-yyyy' | 'mm-dd-yyyy' | 'yyyy-mm-dd';
+export type TimeFormat = '12h' | '24h';
+export type TimePeriod = 'am' | 'pm';
+
+
 export type DateParts = {
     year?: string;
     month?: string;
@@ -14,6 +20,15 @@ export type DateValidation = {
 export type TimeParts = {
     hour?: string;
     minute?: string;
+    period?: TimePeriod;
+    timeFormat?: TimeFormat;
+};
+
+export type TimePartKey = keyof TimeParts;
+
+export type TimeValidation = {
+    time: null | string;
+    invalid?: TimePartKey[];
 };
 
 export type DateTimeParts = DateParts & TimeParts;
@@ -79,44 +94,22 @@ export function validateDateTimeParts(parts: DateTimeParts): DateTimeValidation 
     if (!parts?.year && !parts?.month && !parts?.day && !parts?.hour && !parts?.minute) {
         return { datetime: null };
     }
-    const year = toNumber(parts.year);
-    const month = toNumber(parts.month);
-    const day = toNumber(parts.day);
-    const hour = toNumber(parts.hour);
-    const minute = toNumber(parts.minute);
-
-    const invalid: DateTimePartKey[] = [];
-
-    if (!isWithinRange(year, 0, 3000)) {
-        invalid.push('year');
-    }
-    if (!isWithinRange(month, 1, 12)) {
-        invalid.push('month');
-    }
-    if (!isWithinRange(day, 1, 31)) {
-        invalid.push('day');
-    }
-    if (!isWithinRange(hour, 0, 23)) {
-        invalid.push('hour');
-    }
-    if (!isWithinRange(minute, 0, 59)) {
-        invalid.push('minute');
-    }
-
-    if (!invalid.includes('year') && !invalid.includes('month') && !invalid.includes('day')) {
-        const monthDays = daysInMonth(year as number, month as number);
-        if ((day as number) > monthDays) {
-            invalid.push('day');
-        }
-    }
-    if (invalid.length) {
+    const { year, month, day, ...timeParts } = parts;
+    const date = validateDateParts({ year, month, day });
+    const time = validateTimeParts(timeParts);
+    if (date.invalid || time.invalid) {
         return {
             datetime: INVALID_DATE,
-            invalid
+            invalid: [
+                ...(date.invalid || []),
+                ...(time.invalid || []),
+            ]
         };
     }
+    // date: 0000-00-00T00:00
+    // time: 00:00
     return {
-        datetime: `${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T${pad(hour as number)}:${pad(minute as number)}`
+        datetime: (date.date as string).substring(0, 11) + time.time
     };
 }
 
@@ -154,6 +147,48 @@ export function validateDateParts(parts: DateParts): DateValidation {
     }
     return {
         date: `${padYear(year as number)}-${pad(month as number)}-${pad(day as number)}T00:00`
+    };
+}
+
+export function validateTimeParts(parts: TimeParts): TimeValidation {
+    if (!parts?.hour && !parts?.minute) {
+        return { time: null };
+    }
+    const hour = toNumber(parts.hour);
+    const minute = toNumber(parts.minute);
+    const { timeFormat, period } = parts;
+    let hour24 = hour;
+
+    const invalid: TimePartKey[] = [];
+    if (timeFormat === '12h') {
+        if (!isWithinRange(hour, 1, 12)) {
+            invalid.push('hour');
+        } else {
+            if (hour === 12) {
+                // 12am -> 0
+                hour24 = (period === 'am') ? 0 : hour;
+            } else {
+                // 1-11pm -> + 12
+                hour24 = (period === 'pm') ? hour + 12 : hour;
+            }
+        }
+    } else {
+        if (!isWithinRange(hour, 0, 23)) {
+            invalid.push('hour');
+        }
+    }
+    if (!isWithinRange(minute, 0, 59)) {
+        invalid.push('minute');
+    }
+
+    if (invalid.length) {
+        return {
+            time: INVALID_TIME,
+            invalid
+        };
+    }
+    return {
+        time: `${pad(hour24 as number)}:${pad(minute as number)}`
     };
 }
 

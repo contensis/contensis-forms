@@ -1,4 +1,4 @@
-import { DateParts, DateTimeParts, isDate, isValidDate, TimeParts } from './date-utils';
+import { DateParts, DateTimeParts, isDate, isValidDate, TimeFormat, TimeParts, TimePeriod } from './date-utils';
 
 export function getNowDate() {
     return toLocalIsoDate(new Date());
@@ -21,18 +21,40 @@ export function toLocalIsoDateTime(dt: Date) {
 }
 
 export function toDateParts(input: number | string | Date): DateParts {
-    const { year, month, day } = toDateTimeParts(input);
+    const { year, month, day } = toDateTimeParts(input, '24h');
     return { year, month, day }
 }
 
-export function toDateTimeParts(input: number | string | Date): DateTimeParts {
+function timeToTimeParts(hour: number, minute: number, timeFormat: TimeFormat): TimeParts {
+    let period: TimePeriod = 'am';
+    if (timeFormat === '12h') {
+        if (hour === 0) {
+            hour = 12;
+        } else if (hour === 12) {
+            period = 'pm';
+        } else if (hour > 12) {
+            hour = hour - 12;
+            period = 'pm';
+        }
+    }
+    return {
+        hour: (timeFormat === '24h') ? pad(hour) : `${hour}`,
+        minute: pad(minute),
+        period,
+        timeFormat
+    };
+}
+
+export function toDateTimeParts(input: number | string | Date, timeFormat: TimeFormat): DateTimeParts {
     if (!input) {
         return {
             year: '',
             month: '',
             day: '',
             hour: '',
-            minute: ''
+            minute: '',
+            period: 'am',
+            timeFormat
         };
     }
     const dt = isDate(input) ? input : new Date(input);
@@ -41,8 +63,7 @@ export function toDateTimeParts(input: number | string | Date): DateTimeParts {
             year: `${dt.getFullYear()}`,
             month: `${dt.getMonth() + 1}`,
             day: `${dt.getDate()}`,
-            hour: pad(dt.getHours()),
-            minute: pad(dt.getMinutes())
+            ...timeToTimeParts(dt.getHours(), dt.getMinutes(), timeFormat)
         };
     } else {
         return {
@@ -50,23 +71,39 @@ export function toDateTimeParts(input: number | string | Date): DateTimeParts {
             month: '',
             day: '',
             hour: '',
-            minute: ''
+            minute: '',
+            period: 'am',
+            timeFormat
         };
     }
 }
 
-export function toTimeParts(input: number | string | Date): TimeParts {
-    let { hour, minute } = toDateTimeParts(input);
-    if (!hour && !minute && (typeof input === 'string')) {
+export function toTimeParts(input: number | string | Date, timeFormat: TimeFormat): TimeParts {
+    const dateParts = toDateTimeParts(input, timeFormat);
+    if (dateParts.hour && dateParts.minute) {
+        return {
+            hour: dateParts.hour,
+            minute: dateParts.minute,
+            period: dateParts.period,
+            timeFormat: dateParts.timeFormat
+        };
+    }
+    if (typeof input === 'string') {
         const parts = input.split(':');
         if (parts.length === 2) {
             const hourNum = parseInt(parts[0], 10);
             const minuteNum = parseInt(parts[1], 10);
-            hour = !Number.isNaN(hourNum) ? pad(hourNum) : hour;
-            minute = !Number.isNaN(minuteNum) ? pad(minuteNum) : minute;
+            if (!Number.isNaN(hourNum) && !Number.isNaN(minuteNum)) {
+                return timeToTimeParts(hourNum,minuteNum,timeFormat);
+            }            
         }
     }
-    return { hour, minute }
+    return {
+        hour: '',
+        minute: '',
+        period: 'am',
+        timeFormat
+    };
 }
 
 function toLocalIsoTime(dt: Date) {
