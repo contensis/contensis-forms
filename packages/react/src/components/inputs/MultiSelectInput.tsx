@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from 'react';
-import { FormInputProps } from '../models';
 import { Nullable } from '../../models';
+import { FormInputProps } from '../models';
+import { attr } from '../utils';
 
 export function MultiSelectInput({ value: unknownValue, options, inputRef, htmlId, onChange, onBlur, onFocus }: FormInputProps) {
     const value = unknownValue as Nullable<string[]>;
@@ -20,7 +21,7 @@ export function MultiSelectInput({ value: unknownValue, options, inputRef, htmlI
     return (
         <div className="form-checkbox-list">
             {options?.map((option, index) => (
-                <div className="form-checkbox" key={option.key}>
+                <div className={attr("form-checkbox", { 'form-checkbox--checked': !!value?.includes(option.value) })} key={option.key}>
                     <input
                         type="checkbox"
                         ref={index === 0 ? inputRef : undefined}
