@@ -105,7 +105,14 @@ function ClientForm({
 
     const inputRefs = useMemo(() => Fields.reduceFields(form, (): MutableRefObject<any> => ({ current: undefined })), [form]);
 
-    const pageTitle = getPageTitle(defaultPageTitle, currentPage?.title, currentPage?.pageNo, pageCount, showErrors && currentPageHasError, defaultLocalizations);
+    const pageTitle = getPageTitle(
+        defaultPageTitle,
+        currentPage?.title,
+        currentPage?.pageNo,
+        pageCount,
+        showErrors && currentPageHasError,
+        defaultLocalizations
+    );
 
     const updateValue = (id: string, value: unknown) => {
         const field = form?.fields.find((f) => f.id === id);

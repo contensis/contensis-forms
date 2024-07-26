@@ -3,29 +3,28 @@ import { DeepPartial, FormContentType, FormLocalizations, Nullable } from '../mo
 
 type FormRenderProps = {
     headingLevel: number;
-    localizations: FormLocalizations
+    localizations: FormLocalizations;
 };
 
 type FormRenderContextProviderProps = {
     headingLevel?: number;
     localizations?: DeepPartial<FormLocalizations>;
     form?: Nullable<FormContentType>;
-    children?: ReactNode
+    children?: ReactNode;
 };
 
 const DEFAULT_RENDER_PROPS: FormRenderProps = {
     headingLevel: 3,
     localizations: {
-
         buttons: {
             next: 'Next',
             previous: 'Previous',
-            submit: 'Submit',
+            submit: 'Submit'
         },
 
         load: {
             error: 'Error loading form',
-            loading: 'Loading...',
+            loading: 'Loading...'
         },
 
         error: {
@@ -36,12 +35,12 @@ const DEFAULT_RENDER_PROPS: FormRenderProps = {
 
         messages: {
             confirmation: 'Form submitted successfully',
-            page: 'Page {0} of {1}',
+            page: 'Page {0} of {1}'
         },
 
         labels: {
             selectPlaceholder: 'Please select',
-            required: 'required',
+            required: 'required'
         },
 
         dates: {
@@ -50,7 +49,7 @@ const DEFAULT_RENDER_PROPS: FormRenderProps = {
             year: 'Year',
             hour: 'Hour',
             minute: 'Minute',
-            period: 'Period',
+            period: 'Period'
         },
 
         validation: {
@@ -60,13 +59,13 @@ const DEFAULT_RENDER_PROPS: FormRenderProps = {
                 decimal: '{0} is not a number',
                 integer: '{0} is not an integer',
                 string: '{0} is not a string',
-                stringArray: '{0} is not an array',
+                stringArray: '{0} is not an array'
             },
             dataFormat: {
                 email: '{0} is not a valid email',
                 phone: '{0} is not a valid telephone number',
                 time: '{0} is not a valid time',
-                url: '{0} is not a valid URL',
+                url: '{0} is not a valid URL'
             },
             minCount: {
                 zero: '{0} requires a minimum of {1} items',
@@ -74,7 +73,7 @@ const DEFAULT_RENDER_PROPS: FormRenderProps = {
                 two: '{0} requires a minimum of {1} items',
                 few: '{0} requires a minimum of {1} items',
                 many: '{0} requires a minimum of {1} items',
-                other: '{0} requires a minimum of {1} items',
+                other: '{0} requires a minimum of {1} items'
             },
             maxCount: {
                 zero: '{0} requires a maximum of {1} items',
@@ -82,7 +81,7 @@ const DEFAULT_RENDER_PROPS: FormRenderProps = {
                 two: '{0} requires a maximum of {1} items',
                 few: '{0} requires a maximum of {1} items',
                 many: '{0} requires a maximum of {1} items',
-                other: '{0} requires a maximum of {1} items',
+                other: '{0} requires a maximum of {1} items'
             },
 
             required: '{0} is required',
@@ -98,7 +97,7 @@ const DEFAULT_RENDER_PROPS: FormRenderProps = {
             maxLength: '{0} must have a maximum length of {1}',
             minMaxLength: '{0} must have a length between {1} and {2}',
 
-            minMaxCount: '{0} requires between {1} and {2} items',
+            minMaxCount: '{0} requires between {1} and {2} items'
         },
 
         characterCount: {
@@ -108,7 +107,7 @@ const DEFAULT_RENDER_PROPS: FormRenderProps = {
                 two: 'You have {0} characters remaining',
                 few: 'You have {0} characters remaining',
                 many: 'You have {0} characters remaining',
-                other: 'You have {0} characters remaining',
+                other: 'You have {0} characters remaining'
             },
             exceeded: {
                 zero: 'You have {0} characters too many',
@@ -118,7 +117,7 @@ const DEFAULT_RENDER_PROPS: FormRenderProps = {
                 many: 'You have {0} characters too many',
                 other: 'You have {0} characters too many'
             }
-        },
+        }
     }
 };
 
@@ -129,7 +128,7 @@ function deepMerge<T>(source: T, partial: DeepPartial<T>) {
         const value = (partial as any)[key];
         if (typeof value === 'string') {
             source = { ...source, [key]: value };
-        } else if ((value !== null) && (typeof value === 'object')) {
+        } else if (value !== null && typeof value === 'object') {
             source = {
                 ...source,
                 [key]: deepMerge((source as any)[key], value)
@@ -170,9 +169,5 @@ export function mergeLocalizations(localizations: Nullable<DeepPartial<FormLocal
 
 export function FormRenderContextProvider({ headingLevel, localizations, form, children }: FormRenderContextProviderProps) {
     const value = useMemo(() => mergeProps({ headingLevel, localizations, form }), [headingLevel, localizations, form]);
-    return (
-        <FormRenderContext.Provider value={value}>
-            {children}
-        </FormRenderContext.Provider>
-    );
+    return <FormRenderContext.Provider value={value}>{children}</FormRenderContext.Provider>;
 }

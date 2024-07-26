@@ -31,7 +31,14 @@ export function plural<T>(value: number, fns: PluralMap<() => T>) {
     return fn();
 }
 
-export function getPageTitle(defaultPageTitle: string, pageTitle: string, pageNo: number, pageCount: number, hasError: boolean, localizations: FormLocalizations) {
+export function getPageTitle(
+    defaultPageTitle: string,
+    pageTitle: string,
+    pageNo: number,
+    pageCount: number,
+    hasError: boolean,
+    localizations: FormLocalizations
+) {
     let result = defaultPageTitle;
     if (pageCount > 1) {
         const pageProgress = format(localizations.messages.page, pageNo, pageCount);

@@ -1,4 +1,15 @@
-import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldEditorId, FieldEditorType, FormContentType, FormFieldOption, FormLocalizations, Nullable } from '../models';
+import {
+    Dictionary,
+    Field,
+    FieldDataFormat,
+    FieldDataType,
+    FieldEditorId,
+    FieldEditorType,
+    FormContentType,
+    FormFieldOption,
+    FormLocalizations,
+    Nullable
+} from '../models';
 import { DateTime } from './dates';
 import { Validation } from './validation';
 

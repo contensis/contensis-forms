@@ -10,7 +10,7 @@ export function FormCheckbox(props: FormContainerProps) {
     return (
         <div className={formFieldCss(props, 'checkbox-field')}>
             <FormFieldInstructions {...props} />
-            <div className={attr("form-checkbox", { 'form-checkbox--checked': !!props.inputValue })}>
+            <div className={attr('form-checkbox', { 'form-checkbox--checked': !!props.inputValue })}>
                 {props.children}
                 <label className="form-checkbox-label form-checkbox-field-label" htmlFor={inputId(props)}>
                     <RequiredLabelText label={props.label} required={props.required} requiredClassName="form-checkbox-field-label-required"></RequiredLabelText>

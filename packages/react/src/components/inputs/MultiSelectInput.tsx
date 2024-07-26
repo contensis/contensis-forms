@@ -21,7 +21,7 @@ export function MultiSelectInput({ value: unknownValue, options, inputRef, htmlI
     return (
         <div className="form-checkbox-list">
             {options?.map((option, index) => (
-                <div className={attr("form-checkbox", { 'form-checkbox--checked': !!value?.includes(option.value) })} key={option.key}>
+                <div className={attr('form-checkbox', { 'form-checkbox--checked': !!value?.includes(option.value) })} key={option.key}>
                     <input
                         type="checkbox"
                         ref={index === 0 ? inputRef : undefined}

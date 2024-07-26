@@ -1,0 +1,203 @@
+
+C:\Git\contensis-forms\packages\react\src\components\Form.tsx
+   99:8  warning  React Hook useEffect has missing dependencies: 'onLoadError', 'onPopulate', and 'patchFormState'. Either include them or remove the dependency array. If 'onPopulate' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+  262:9  warning  React Hook useCallback has missing dependencies: 'patchFormState' and 'setFormState'. Either include them or remove the dependency array                                                                                                                                    react-hooks/exhaustive-deps
+
+C:\Git\contensis-forms\packages\react\src\contensis-forms.global.js
+     11:98   warning  Unexpected use of comma operator                                                                     no-sequences
+     25:66   warning  Unexpected use of comma operator                                                                     no-sequences
+    139:21   warning  Expected a default case                                                                              default-case
+    145:29   warning  Expected a default case                                                                              default-case
+    175:72   error    Expected an assignment or function call and instead saw an expression                                no-unused-expressions
+    175:85   warning  Unexpected use of comma operator                                                                     no-sequences
+    202:70   error    Expected an assignment or function call and instead saw an expression                                no-unused-expressions
+    202:85   warning  Unexpected use of comma operator                                                                     no-sequences
+    205:70   error    Expected an assignment or function call and instead saw an expression                                no-unused-expressions
+    205:85   warning  Unexpected use of comma operator                                                                     no-sequences
+    208:21   error    Expected an assignment or function call and instead saw an expression                                no-unused-expressions
+    260:21   error    Expected an assignment or function call and instead saw an expression                                no-unused-expressions
+    263:26   warning  'f' was used before it was defined                                                                   no-use-before-define
+    263:44   warning  'f' was used before it was defined                                                                   no-use-before-define
+    263:68   warning  'f' was used before it was defined                                                                   no-use-before-define
+    263:77   warning  'f' was used before it was defined                                                                   no-use-before-define
+    263:95   warning  'f' was used before it was defined                                                                   no-use-before-define
+    263:118  warning  'f' was used before it was defined                                                                   no-use-before-define
+    263:125  warning  'f' was used before it was defined                                                                   no-use-before-define
+    375:32   error    '__REACT_DEVTOOLS_GLOBAL_HOOK__' is not defined                                                      no-undef
+    377:25   error    '__REACT_DEVTOOLS_GLOBAL_HOOK__' is not defined                                                      no-undef
+    431:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    435:21   warning  Nested block is redundant                                                                            no-lone-blocks
+    437:29   warning  Nested block is redundant                                                                            no-lone-blocks
+    464:21   warning  Nested block is redundant                                                                            no-lone-blocks
+    469:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    470:29   warning  Nested block is redundant                                                                            no-lone-blocks
+    479:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    480:29   warning  Nested block is redundant                                                                            no-lone-blocks
+    489:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    505:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    583:21   warning  Nested block is redundant                                                                            no-lone-blocks
+    604:21   warning  Nested block is redundant                                                                            no-lone-blocks
+    642:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    652:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    659:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    672:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    697:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    708:25   warning  Expected a default case                                                                              default-case
+    723:29   warning  Expected a default case                                                                              default-case
+    760:21   warning  Nested block is redundant                                                                            no-lone-blocks
+    764:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    775:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    787:29   warning  Nested block is redundant                                                                            no-lone-blocks
+    805:29   warning  Nested block is redundant                                                                            no-lone-blocks
+    822:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    853:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    890:33   warning  Nested block is redundant                                                                            no-lone-blocks
+    895:33   warning  Nested block is redundant                                                                            no-lone-blocks
+    916:29   warning  Nested block is redundant                                                                            no-lone-blocks
+    931:25   warning  Nested block is redundant                                                                            no-lone-blocks
+    973:33   warning  Nested block is redundant                                                                            no-lone-blocks
+   1027:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   1043:29   warning  Expected a default case                                                                              default-case
+   1049:37   warning  Expected a default case                                                                              default-case
+   1070:37   warning  Nested block is redundant                                                                            no-lone-blocks
+   1082:51   error    Definition for rule 'react-internal/safe-string-coercion' was not found                              react-internal/safe-string-coercion
+   1106:33   warning  Nested block is redundant                                                                            no-lone-blocks
+   1202:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1274:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1312:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   1320:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   1344:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1383:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1399:75   warning  Using propTypes from another component is not safe because they may be removed in production builds  react/forbid-foreign-prop-types
+   1410:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1429:21   warning  Nested block is redundant                                                                            no-lone-blocks
+   1470:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1480:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1500:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1511:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1562:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1594:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1623:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1663:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1677:21   warning  Nested block is redundant                                                                            no-lone-blocks
+   1685:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1696:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1754:53   warning  Nested block is redundant                                                                            no-lone-blocks
+   1769:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   1777:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1785:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1798:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   1805:25   warning  Expected a default case                                                                              default-case
+   1812:29   warning  Expected a default case                                                                              default-case
+   1832:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1843:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1896:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1907:21   warning  Nested block is redundant                                                                            no-lone-blocks
+   1921:75   warning  Unnecessary escape character: \/                                                                     no-useless-escape
+   1958:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   1999:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2006:50   warning  Using propTypes from another component is not safe because they may be removed in production builds  react/forbid-foreign-prop-types
+   2013:50   warning  Using propTypes from another component is not safe because they may be removed in production builds  react/forbid-foreign-prop-types
+   2036:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2079:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   2107:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2139:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2146:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   2169:37   warning  Nested block is redundant                                                                            no-lone-blocks
+   2190:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2236:33   warning  Nested block is redundant                                                                            no-lone-blocks
+   2283:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2293:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2316:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2384:32   error    '__REACT_DEVTOOLS_GLOBAL_HOOK__' is not defined                                                      no-undef
+   2386:25   error    '__REACT_DEVTOOLS_GLOBAL_HOOK__' is not defined                                                      no-undef
+   2468:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2469:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   2478:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2498:21   warning  Nested block is redundant                                                                            no-lone-blocks
+   2553:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2564:25   warning  Expected a default case                                                                              default-case
+   2579:29   warning  Expected a default case                                                                              default-case
+   2620:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2649:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2689:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2703:21   warning  Nested block is redundant                                                                            no-lone-blocks
+   2711:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2722:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2780:53   warning  Nested block is redundant                                                                            no-lone-blocks
+   2795:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   2803:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2811:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2824:29   warning  Nested block is redundant                                                                            no-lone-blocks
+   2831:25   warning  Expected a default case                                                                              default-case
+   2838:29   warning  Expected a default case                                                                              default-case
+   2859:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2870:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2927:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2934:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2947:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2967:21   warning  Nested block is redundant                                                                            no-lone-blocks
+   2971:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2982:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   2993:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3008:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3026:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3055:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3083:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3089:33   warning  Nested block is redundant                                                                            no-lone-blocks
+   3095:33   warning  Nested block is redundant                                                                            no-lone-blocks
+   3132:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3143:21   warning  Nested block is redundant                                                                            no-lone-blocks
+   3147:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3152:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3163:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3165:79   warning  Unnecessary escape character: \/                                                                     no-useless-escape
+   3174:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3186:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3210:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3242:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3249:50   warning  Using propTypes from another component is not safe because they may be removed in production builds  react/forbid-foreign-prop-types
+   3256:50   warning  Using propTypes from another component is not safe because they may be removed in production builds  react/forbid-foreign-prop-types
+   3279:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3298:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3363:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3368:25   warning  Nested block is redundant                                                                            no-lone-blocks
+   3421:44   error    'grecaptcha' is not defined                                                                          no-undef
+   3422:20   error    'grecaptcha' is not defined                                                                          no-undef
+   4332:17   warning  Expected a default case                                                                              default-case
+   4366:17   warning  Expected a default case                                                                              default-case
+   4688:13   warning  Expected a default case                                                                              default-case
+   5285:45   warning  Unnecessary escape character: \?                                                                     no-useless-escape
+   5296:9    warning  Script URL is a form of eval                                                                         no-script-url
+   5337:63   warning  Unnecessary escape character: \/                                                                     no-useless-escape
+   5337:71   warning  Unnecessary escape character: \/                                                                     no-useless-escape
+   5469:26   warning  Unexpected control character(s) in regular expression: \x1f                                          no-control-regex
+   5477:16   warning  Unnecessary escape character: \*                                                                     no-useless-escape
+   5477:20   warning  Unnecessary escape character: \/                                                                     no-useless-escape
+   5477:24   warning  Unnecessary escape character: \?                                                                     no-useless-escape
+   5477:27   warning  Unnecessary escape character: \[                                                                     no-useless-escape
+   5477:33   warning  Unnecessary escape character: \{                                                                     no-useless-escape
+   5477:35   warning  Unnecessary escape character: \}                                                                     no-useless-escape
+   5481:11   warning  Unnecessary escape character: \$                                                                     no-useless-escape
+   5481:13   warning  Unnecessary escape character: \+                                                                     no-useless-escape
+   5481:18   warning  Unnecessary escape character: \^                                                                     no-useless-escape
+   5481:21   warning  Unnecessary escape character: \|                                                                     no-useless-escape
+   5532:9    error    Definition for rule 'node/no-unsupported-features/es-builtins' was not found                         node/no-unsupported-features/es-builtins
+   5635:13   warning  Expected a default case                                                                              default-case
+   5844:13   warning  Expected a default case                                                                              default-case
+   5918:9    warning  'xmlDecoder' is assigned a value but never used                                                      no-unused-vars
+   5930:9    warning  'encode_html_default' is assigned a value but never used                                             no-unused-vars
+   7421:9    warning  'getCodePoint' is assigned a value but never used                                                    no-unused-vars
+   7445:9    warning  'escapeUTF8' is assigned a value but never used                                                      no-unused-vars
+   7446:9    warning  'escapeAttribute' is assigned a value but never used                                                 no-unused-vars
+   7454:9    warning  'escapeText' is assigned a value but never used                                                      no-unused-vars
+   7601:9    warning  Expected a default case                                                                              default-case
+   7612:9    warning  Expected a default case                                                                              default-case
+  10665:23   warning  Unexpected control character(s) in regular expression: \x00                                          no-control-regex
+  11487:37   warning  Expected '===' and instead saw '=='                                                                  eqeqeq
+  11513:56   warning  Expected '!==' and instead saw '!='                                                                  eqeqeq
+  11565:46   warning  Expected '===' and instead saw '=='                                                                  eqeqeq
+  12763:14   warning  'ContensisForm' is defined but never used                                                            no-unused-vars
+
+✖ 196 problems (13 errors, 183 warnings)
+

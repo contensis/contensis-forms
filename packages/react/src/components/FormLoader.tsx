@@ -69,7 +69,7 @@ export function FormLoader({
             <FormTitle form={form} />
             <FormProgress formHtmlId={formHtmlId} pageCount={pageCount} currentPage={currentPage} />
             <FormCurrentPage
-                currentPage={currentPage}                
+                currentPage={currentPage}
                 formHtmlId={formHtmlId}
                 formValue={formValue}
                 formInputValue={formInputValue}

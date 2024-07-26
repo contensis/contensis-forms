@@ -9,7 +9,7 @@ export function RadioInput({ onChange, options, htmlId, inputRef, value, onBlur,
     return (
         <div className="form-radio-list">
             {options?.map((option, index) => (
-                <div className={attr("form-radio", { 'form-radio--checked': value === option.value })} key={option.key}>
+                <div className={attr('form-radio', { 'form-radio--checked': value === option.value })} key={option.key}>
                     <input
                         type="radio"
                         ref={index === 0 ? inputRef : undefined}

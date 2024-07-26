@@ -26,19 +26,19 @@ function getCharCountMessage(remaining: number, localizations: FormLocalizations
     const exceeded = -1 * remaining;
     return remaining < 0
         ? plural(exceeded, {
-            zero: () => format(localizations.characterCount.exceeded.zero, exceeded),
-            one: () => format(localizations.characterCount.exceeded.one, exceeded),
-            two: () => format(localizations.characterCount.exceeded.two, exceeded),
-            few: () => format(localizations.characterCount.exceeded.few, exceeded),
-            many: () => format(localizations.characterCount.exceeded.many, exceeded),
-            other: () => format(localizations.characterCount.exceeded.other, exceeded)
-        })
+              zero: () => format(localizations.characterCount.exceeded.zero, exceeded),
+              one: () => format(localizations.characterCount.exceeded.one, exceeded),
+              two: () => format(localizations.characterCount.exceeded.two, exceeded),
+              few: () => format(localizations.characterCount.exceeded.few, exceeded),
+              many: () => format(localizations.characterCount.exceeded.many, exceeded),
+              other: () => format(localizations.characterCount.exceeded.other, exceeded)
+          })
         : plural(remaining, {
-            zero: () => format(localizations.characterCount.remaining.zero, remaining),
-            one: () => format(localizations.characterCount.remaining.one, remaining),
-            two: () => format(localizations.characterCount.remaining.two, remaining),
-            few: () => format(localizations.characterCount.remaining.few, remaining),
-            many: () => format(localizations.characterCount.remaining.many, remaining),
-            other: () => format(localizations.characterCount.remaining.other, remaining)
-        });
+              zero: () => format(localizations.characterCount.remaining.zero, remaining),
+              one: () => format(localizations.characterCount.remaining.one, remaining),
+              two: () => format(localizations.characterCount.remaining.two, remaining),
+              few: () => format(localizations.characterCount.remaining.few, remaining),
+              many: () => format(localizations.characterCount.remaining.many, remaining),
+              other: () => format(localizations.characterCount.remaining.other, remaining)
+          });
 }

@@ -37,7 +37,9 @@ export function FormValidationSummary({ currentPage, showErrors, formErrors, inp
     return errors.valid ? null : (
         <div className="form-validation-summary" ref={summaryRef} onBlur={onBlur}>
             <div role="alert">
-                <Heading level="3" className="form-validation-summary-title">{localizations.error.summaryTitle}</Heading>
+                <Heading level="3" className="form-validation-summary-title">
+                    {localizations.error.summaryTitle}
+                </Heading>
                 <div className="form-validation-summary-body">
                     <ul className="form-validation-summary-list">
                         {errors.errors.map((error, index) => (

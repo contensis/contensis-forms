@@ -18,11 +18,11 @@ type Validator<TError extends Dictionary<any>> = (value: unknown) => null | TErr
 
 const createFieldValidator = memo((field: Field, localizations: FormLocalizations) => {
     const dataTypeMessage: Record<FieldDataType, string> = localizations.validation.dataType;
-    
+
     const dateFormatMessages: Record<FieldDataFormat, string> = {
         ...localizations.validation.dataFormat,
         reference: ''
-    }
+    };
 
     const validators: [string, Validator<Dictionary<any>>, message: string][] = [
         ['dataType', createDataTypeValidator(field.dataType), format(dataTypeMessage[field.dataType], field.name)],
@@ -70,11 +70,7 @@ const createFieldValidator = memo((field: Field, localizations: FormLocalization
                 format(localizations.validation.minMaxCount, field.name, field.validations?.minCount?.value, field.validations?.maxCount?.value)
             )
         ],
-        [
-            'regex',
-            createRegExValidator(field.validations?.regex),
-            field.validations?.regex?.message || format(localizations.validation.regEx, field.name)
-        ],
+        ['regex', createRegExValidator(field.validations?.regex), field.validations?.regex?.message || format(localizations.validation.regEx, field.name)],
         [
             'allowedValues',
             createAllowedValuesValidator(field.validations?.allowedValues),

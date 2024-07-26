@@ -33,27 +33,29 @@ export function FormCurrentPage({
     return (
         <div className="form-current-page">
             <div className="form-current-page-header">
-                <Heading level="2" className="form-current-page-title">{currentPage?.title}</Heading>
+                <Heading level="2" className="form-current-page-title">
+                    {currentPage?.title}
+                </Heading>
                 <Description className="form-current-page-description" description={currentPage.description} />
             </div>
             <FormValidationSummary currentPage={currentPage} showErrors={showErrors} formErrors={formErrors} inputRefs={inputRefs} />
             <div className="form-fields-container">
                 {currentPage?.fields
                     ? currentPage.fields.map((field) => (
-                        <FormFieldContainer
-                            key={field.id}
-                            field={field}
-                            formHtmlId={formHtmlId}
-                            formValue={formValue}
-                            formInputValue={formInputValue}
-                            formErrors={formErrors}
-                            showErrors={showErrors}
-                            inputRefs={inputRefs}
-                            setFocussed={setFocussed}
-                            setInputValue={setInputValue}
-                            setValue={setValue}
-                        />
-                    ))
+                          <FormFieldContainer
+                              key={field.id}
+                              field={field}
+                              formHtmlId={formHtmlId}
+                              formValue={formValue}
+                              formInputValue={formInputValue}
+                              formErrors={formErrors}
+                              showErrors={showErrors}
+                              inputRefs={inputRefs}
+                              setFocussed={setFocussed}
+                              setInputValue={setInputValue}
+                              setValue={setValue}
+                          />
+                      ))
                     : null}
             </div>
         </div>

@@ -47,45 +47,43 @@ export type PluralLocalizations = {
 };
 
 export type FormLocalizations = {
-   
     buttons: {
         next: string;
         previous: string;
         submit: string;
-    },
+    };
 
     load: {
         loading: string;
         error: string;
-    },
+    };
 
     error: {
         label: string;
         pageTitle: string;
-        summaryTitle: string
-    },
+        summaryTitle: string;
+    };
 
     messages: {
         confirmation: string;
         page: string;
-    },
+    };
 
     labels: {
         required: string;
         selectPlaceholder: string;
-    }
+    };
 
     dates: {
         day: string;
         month: string;
         year: string;
-        hour: string,
+        hour: string;
         minute: string;
         period: string;
-    },
+    };
 
     validation: {
-
         dataType: {
             boolean: string;
             dateTime: string;
@@ -120,12 +118,10 @@ export type FormLocalizations = {
         minMaxLength: string;
 
         minMaxCount: string;
-
-    },
+    };
 
     characterCount: {
         remaining: PluralLocalizations;
         exceeded: PluralLocalizations;
-    }
-
+    };
 };

@@ -4,7 +4,7 @@ import { FormRenderContext } from '../FormRenderContext';
 import { FormInputProps } from '../models';
 import { childInputAttrs, textValue } from '../utils';
 
-export function TimePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {    
+export function TimePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
     const { localizations } = useContext(FormRenderContext);
     const { field } = attrs;
     const time = inputValue as TimeParts;

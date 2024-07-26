@@ -1,4 +1,3 @@
-'use strict';
 (() => {
     var __create = Object.create;
     var __defProp = Object.defineProperty;
@@ -36,7 +35,6 @@
     // ../../node_modules/react/cjs/react.production.min.js
     var require_react_production_min = __commonJS({
         '../../node_modules/react/cjs/react.production.min.js'(exports) {
-            'use strict';
             var l = Symbol.for('react.element');
             var n = Symbol.for('react.portal');
             var p = Symbol.for('react.fragment');
@@ -366,10 +364,8 @@
     // ../../node_modules/react/cjs/react.development.js
     var require_react_development = __commonJS({
         '../../node_modules/react/cjs/react.development.js'(exports, module) {
-            'use strict';
             if (process.env.NODE_ENV !== 'production') {
                 (function () {
-                    'use strict';
                     if (
                         typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined' &&
                         typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === 'function'
@@ -2393,7 +2389,6 @@
     // ../../node_modules/react/index.js
     var require_react = __commonJS({
         '../../node_modules/react/index.js'(exports, module) {
-            'use strict';
             if (process.env.NODE_ENV === 'production') {
                 module.exports = require_react_production_min();
             } else {
@@ -2405,7 +2400,6 @@
     // ../../node_modules/react/cjs/react-jsx-runtime.production.min.js
     var require_react_jsx_runtime_production_min = __commonJS({
         '../../node_modules/react/cjs/react-jsx-runtime.production.min.js'(exports) {
-            'use strict';
             var f = require_react();
             var k = Symbol.for('react.element');
             var l = Symbol.for('react.fragment');
@@ -2433,10 +2427,8 @@
     // ../../node_modules/react/cjs/react-jsx-runtime.development.js
     var require_react_jsx_runtime_development = __commonJS({
         '../../node_modules/react/cjs/react-jsx-runtime.development.js'(exports) {
-            'use strict';
             if (process.env.NODE_ENV !== 'production') {
                 (function () {
-                    'use strict';
                     var React = require_react();
                     var REACT_ELEMENT_TYPE = Symbol.for('react.element');
                     var REACT_PORTAL_TYPE = Symbol.for('react.portal');
@@ -3382,7 +3374,6 @@
     // ../../node_modules/react/jsx-runtime.js
     var require_jsx_runtime = __commonJS({
         '../../node_modules/react/jsx-runtime.js'(exports, module) {
-            'use strict';
             if (process.env.NODE_ENV === 'production') {
                 module.exports = require_react_jsx_runtime_production_min();
             } else {
