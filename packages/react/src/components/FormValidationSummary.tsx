@@ -1,20 +1,20 @@
-import React, { MutableRefObject, UIEvent, useEffect, useRef } from 'react';
-import { Dictionary, FormContentType, FormPage, Nullable, ValidationError } from '../models';
-import { Errors, Form } from '../state';
+import React, { MutableRefObject, UIEvent, useContext, useEffect, useRef } from 'react';
+import { Dictionary, FormPage, Nullable, ValidationError } from '../models';
+import { Errors } from '../state';
+import { FormRenderContext } from './FormRenderContext';
 import { Heading } from './html';
 
 type FormValidationSummaryProps = {
     currentPage: FormPage;
-    form: Nullable<FormContentType>;
     showErrors: boolean;
     formErrors: Dictionary<Nullable<Dictionary<ValidationError>>>;
     inputRefs: Dictionary<MutableRefObject<any>>;
 };
 
-export function FormValidationSummary({ currentPage, form, showErrors, formErrors, inputRefs }: FormValidationSummaryProps) {
+export function FormValidationSummary({ currentPage, showErrors, formErrors, inputRefs }: FormValidationSummaryProps) {
     const errors = getErrors({ currentPage, showErrors, formErrors });
     const summaryRef = useRef<HTMLDivElement>(null);
-    const localizations = Form.getLocalizations(form);
+    const { localizations } = useContext(FormRenderContext);
 
     const onNavigateToError = (e: UIEvent, id: string) => {
         e.preventDefault();
@@ -37,7 +37,7 @@ export function FormValidationSummary({ currentPage, form, showErrors, formError
     return errors.valid ? null : (
         <div className="form-validation-summary" ref={summaryRef} onBlur={onBlur}>
             <div role="alert">
-                <Heading level="3" className="form-validation-summary-title">{localizations.errorSummaryTitle}</Heading>
+                <Heading level="3" className="form-validation-summary-title">{localizations.error.summaryTitle}</Heading>
                 <div className="form-validation-summary-body">
                     <ul className="form-validation-summary-list">
                         {errors.errors.map((error, index) => (

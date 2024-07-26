@@ -1,5 +1,5 @@
 import React, { MutableRefObject } from 'react';
-import { Dictionary, FormContentType, FormPage, Nullable, ValidationError } from '../models';
+import { Dictionary, FormPage, Nullable, ValidationError } from '../models';
 import { FormFieldContainer } from './FormFieldContainer';
 import { FormValidationSummary } from './FormValidationSummary';
 import { Description, Heading } from './html';
@@ -7,16 +7,12 @@ import { SetFocussed, SetValue } from './models';
 
 type FormCurrentPageProps = {
     currentPage: FormPage;
-    form: Nullable<FormContentType>;
-
     formHtmlId: string;
-
     formValue: Dictionary<unknown>;
     formInputValue: Dictionary<unknown>;
     formErrors: Dictionary<Nullable<Dictionary<ValidationError>>>;
     showErrors: boolean;
     inputRefs: Dictionary<MutableRefObject<any>>;
-
     setValue: SetValue;
     setInputValue: SetValue;
     setFocussed: SetFocussed;
@@ -24,7 +20,6 @@ type FormCurrentPageProps = {
 
 export function FormCurrentPage({
     currentPage,
-    form,
     formHtmlId,
     formValue,
     formInputValue,
@@ -41,7 +36,7 @@ export function FormCurrentPage({
                 <Heading level="2" className="form-current-page-title">{currentPage?.title}</Heading>
                 <Description className="form-current-page-description" description={currentPage.description} />
             </div>
-            <FormValidationSummary currentPage={currentPage} form={form} showErrors={showErrors} formErrors={formErrors} inputRefs={inputRefs} />
+            <FormValidationSummary currentPage={currentPage} showErrors={showErrors} formErrors={formErrors} inputRefs={inputRefs} />
             <div className="form-fields-container">
                 {currentPage?.fields
                     ? currentPage.fields.map((field) => (

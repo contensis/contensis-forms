@@ -6,44 +6,36 @@ import {
     FieldValidation,
     FieldValidationWithValue,
     FieldValidations,
+    FormLocalizations,
     Nullable,
+    PluralLocalizations,
     ValidationError
 } from '../models';
-import { format, localisations, plural } from './localisations';
+import { format, plural } from './localisations';
 import { memo } from './store';
 
 type Validator<TError extends Dictionary<any>> = (value: unknown) => null | TError;
 
-const DATA_TYPE_MESSAGES: Record<FieldDataType, string> = {
-    boolean: localisations.fieldDataTypeBooleanValidationMessage,
-    dateTime: localisations.fieldDataTypeDateTimeValidationMessage,
-    decimal: localisations.fieldDataTypeDecimalValidationMessage,
-    integer: localisations.fieldDataTypeIntegerValidationMessage,
-    string: localisations.fieldDataTypeStringValidationMessage,
-    stringArray: localisations.fieldDataTypeStringArrayValidationMessage
-};
+const createFieldValidator = memo((field: Field, localizations: FormLocalizations) => {
+    const dataTypeMessage: Record<FieldDataType, string> = localizations.validation.dataType;
+    
+    const dateFormatMessages: Record<FieldDataFormat, string> = {
+        ...localizations.validation.dataFormat,
+        reference: ''
+    }
 
-const DATA_FORMAT_MESSAGES: Record<FieldDataFormat, string> = {
-    email: localisations.fieldDataFormatEmailValidationMessage,
-    phone: localisations.fieldDataFormatPhoneValidationMessage,
-    reference: '',
-    time: localisations.fieldDataFormatTimeValidationMessage,
-    url: localisations.fieldDataFormatUrlValidationMessage
-};
-
-const createFieldValidator = memo((field: Field) => {
     const validators: [string, Validator<Dictionary<any>>, message: string][] = [
-        ['dataType', createDataTypeValidator(field.dataType), format(DATA_TYPE_MESSAGES[field.dataType], field.name)],
-        ['dataFormat', createDataFormatValidator(field.dataFormat), field.dataFormat ? format(DATA_FORMAT_MESSAGES[field.dataFormat], field.name) : ''],
+        ['dataType', createDataTypeValidator(field.dataType), format(dataTypeMessage[field.dataType], field.name)],
+        ['dataFormat', createDataFormatValidator(field.dataFormat), field.dataFormat ? format(dateFormatMessages[field.dataFormat], field.name) : ''],
         [
             'required',
             createRequiredValidator(field.validations?.required),
-            field.validations?.required?.message || format(localisations.fieldRequiredValidationMessage, field.name)
+            field.validations?.required?.message || format(localizations.validation.required, field.name)
         ],
         [
             'allowedValue',
             createAllowedValueValidator(field.validations?.allowedValue),
-            field.validations?.allowedValue?.message || format(localisations.fieldAllowedValueValidationMessage, field.name)
+            field.validations?.allowedValue?.message || format(localizations.validation.allowedValue, field.name)
         ],
         [
             'size',
@@ -51,9 +43,9 @@ const createFieldValidator = memo((field: Field) => {
             getRangeErrorMessage(
                 field.validations?.min,
                 field.validations?.max,
-                format(localisations.fieldMinValidationMessage, field.name, field.validations?.min?.value),
-                format(localisations.fieldMaxValidationMessage, field.name, field.validations?.max?.value),
-                format(localisations.fieldMinMaxValidationMessage, field.name, field.validations?.min?.value, field.validations?.max?.value)
+                format(localizations.validation.min, field.name, field.validations?.min?.value),
+                format(localizations.validation.max, field.name, field.validations?.max?.value),
+                format(localizations.validation.minMax, field.name, field.validations?.min?.value, field.validations?.max?.value)
             )
         ],
         [
@@ -62,9 +54,9 @@ const createFieldValidator = memo((field: Field) => {
             getRangeErrorMessage(
                 field.validations?.minLength,
                 field.validations?.maxLength,
-                format(localisations.fieldMinLengthValidationMessage, field.name, field.validations?.minLength?.value),
-                format(localisations.fieldMaxLengthValidationMessage, field.name, field.validations?.maxLength?.value),
-                format(localisations.fieldMinMaxLengthValidationMessage, field.name, field.validations?.minLength?.value, field.validations?.maxLength?.value)
+                format(localizations.validation.minLength, field.name, field.validations?.minLength?.value),
+                format(localizations.validation.maxLength, field.name, field.validations?.maxLength?.value),
+                format(localizations.validation.minMax, field.name, field.validations?.minLength?.value, field.validations?.maxLength?.value)
             )
         ],
         [
@@ -73,25 +65,25 @@ const createFieldValidator = memo((field: Field) => {
             getRangeErrorMessage(
                 field.validations?.minCount,
                 field.validations?.maxCount,
-                minCountMessage(field.validations?.minCount?.value, field),
-                maxCountMessage(field.validations?.maxCount?.value, field),
-                format(localisations.fieldMinMaxCountValidationMessage, field.name, field.validations?.minCount?.value, field.validations?.maxCount?.value)
+                countMessage(field.validations?.minCount?.value, field, localizations.validation.minCount),
+                countMessage(field.validations?.maxCount?.value, field, localizations.validation.maxCount),
+                format(localizations.validation.minMaxCount, field.name, field.validations?.minCount?.value, field.validations?.maxCount?.value)
             )
         ],
         [
             'regex',
             createRegExValidator(field.validations?.regex),
-            field.validations?.regex?.message || format(localisations.fieldRegExValidationMessage, field.name)
+            field.validations?.regex?.message || format(localizations.validation.regEx, field.name)
         ],
         [
             'allowedValues',
             createAllowedValuesValidator(field.validations?.allowedValues),
-            field.validations?.allowedValues?.message || format(localisations.fieldAllowedValuesValidationMessage, field.name)
+            field.validations?.allowedValues?.message || format(localizations.validation.allowedValues, field.name)
         ],
         [
             'pastDateTime',
             createPastDateTimeValidator(field.dataType, field.validations?.pastDateTime),
-            field.validations?.pastDateTime?.message || format(localisations.fieldPastDateTimeValidationMessage, field.name)
+            field.validations?.pastDateTime?.message || format(localizations.validation.pastDateTime, field.name)
         ]
     ];
 
@@ -359,35 +351,23 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
         : noopValidator;
 }
 
-function validate(value: unknown, field: Field) {
+function validate(value: unknown, field: Field, localizations: FormLocalizations) {
     if (field?.editor?.properties?.hidden) {
         return null;
     }
-    const validator = createFieldValidator(field);
+    const validator = createFieldValidator(field, localizations);
     return validator(value);
 }
 
-function minCountMessage(value: Nullable<number>, field: Field) {
+function countMessage(value: Nullable<number>, field: Field, localizations: PluralLocalizations) {
     value = value || 0;
     return plural(value, {
-        zero: () => format(localisations.fieldMinCountValidationMessageZero, field.name, value),
-        one: () => format(localisations.fieldMinCountValidationMessageOne, field.name, value),
-        two: () => format(localisations.fieldMinCountValidationMessageTwo, field.name, value),
-        few: () => format(localisations.fieldMinCountValidationMessageFew, field.name, value),
-        many: () => format(localisations.fieldMinCountValidationMessageMany, field.name, value),
-        other: () => format(localisations.fieldMinCountValidationMessageOther, field.name, value)
-    });
-}
-
-function maxCountMessage(value: Nullable<number>, field: Field) {
-    value = value || 0;
-    return plural(value, {
-        zero: () => format(localisations.fieldMaxCountValidationMessageZero, field.name, value),
-        one: () => format(localisations.fieldMaxCountValidationMessageOne, field.name, value),
-        two: () => format(localisations.fieldMaxCountValidationMessageTwo, field.name, value),
-        few: () => format(localisations.fieldMaxCountValidationMessageFew, field.name, value),
-        many: () => format(localisations.fieldMaxCountValidationMessageMany, field.name, value),
-        other: () => format(localisations.fieldMaxCountValidationMessageOther, field.name, value)
+        zero: () => format(localizations.zero, field.name, value),
+        one: () => format(localizations.one, field.name, value),
+        two: () => format(localizations.two, field.name, value),
+        few: () => format(localizations.few, field.name, value),
+        many: () => format(localizations.many, field.name, value),
+        other: () => format(localizations.other, field.name, value)
     });
 }
 

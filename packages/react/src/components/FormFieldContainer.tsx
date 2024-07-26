@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FieldEditorType, FormFieldContainer as FormFieldContainerType } from '../models';
 import { Errors, Fields } from '../state';
 import { FormCheckbox } from './FormCheckbox';
 import { FormField } from './FormField';
 import { FormFieldset } from './FormFieldset';
+import { FormRenderContext } from './FormRenderContext';
 import { DEFAULT_INPUTS } from './inputs';
 import { FormContainer, FormFieldContainerProps, FormInputProps } from './models';
 
@@ -46,6 +47,7 @@ export function FormFieldContainer({
     setInputValue,
     setFocussed
 }: FormFieldContainerProps) {
+    const { localizations } = useContext(FormRenderContext);
     const htmlId = `${formHtmlId}-${field.id}`;
     const editor = Fields.getEditorType(field);
     const errors = formErrors?.[field.id];
@@ -63,7 +65,7 @@ export function FormFieldContainer({
         labelPosition: field?.editor?.properties?.labelPosition,
         cssClass: field?.editor?.properties?.cssClass,
         hidden: !!field?.editor?.properties?.hidden || editor === 'reference',
-        options: Fields.getOptions(field, htmlId),
+        options: Fields.getOptions(field, htmlId, localizations),
         field,
         editor,
         required: !!field?.validations?.required,

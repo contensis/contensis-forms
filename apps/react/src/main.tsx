@@ -43,6 +43,12 @@ elements.forEach(element => {
         formId,
         language,
         versionStatus: version === 'latest' ? 'latest' : undefined,
+        headingLevel: 3,
+        localizations: {
+            error: {
+                summaryTitle: 'Don\'t be an idiot'
+            }
+        },
         onPopulate,
         onSubmit,
         onSubmitSuccess,

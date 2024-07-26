@@ -1,15 +1,18 @@
-import React from 'react';
-import { format, localisations, plural } from '../state';
+import React, { useContext } from 'react';
+import { FormLocalizations } from '../models';
+import { format, plural } from '../state';
+import { FormRenderContext } from './FormRenderContext';
 import { FormInputProps } from './models';
 import { attr, charCountId } from './utils';
 
 export function FormFieldFooter({ value, maxLength, ...attrs }: FormInputProps) {
+    const { localizations } = useContext(FormRenderContext);
     let message = '';
     let remaining = 0;
     if (maxLength) {
         const v = !!value ? `${value}` : '';
         remaining = maxLength - v.length;
-        message = getCharCountMessage(remaining);
+        message = getCharCountMessage(remaining, localizations);
     }
 
     return message ? (
@@ -19,23 +22,23 @@ export function FormFieldFooter({ value, maxLength, ...attrs }: FormInputProps) 
     ) : null;
 }
 
-function getCharCountMessage(remaining: number) {
+function getCharCountMessage(remaining: number, localizations: FormLocalizations) {
     const exceeded = -1 * remaining;
     return remaining < 0
         ? plural(exceeded, {
-              zero: () => format(localisations.characterCountMessageExceededZero, exceeded),
-              one: () => format(localisations.characterCountMessageExceededOne, exceeded),
-              two: () => format(localisations.characterCountMessageExceededTwo, exceeded),
-              few: () => format(localisations.characterCountMessageExceededFew, exceeded),
-              many: () => format(localisations.characterCountMessageExceededMany, exceeded),
-              other: () => format(localisations.characterCountMessageExceededOther, exceeded)
-          })
+            zero: () => format(localizations.characterCount.exceeded.zero, exceeded),
+            one: () => format(localizations.characterCount.exceeded.one, exceeded),
+            two: () => format(localizations.characterCount.exceeded.two, exceeded),
+            few: () => format(localizations.characterCount.exceeded.few, exceeded),
+            many: () => format(localizations.characterCount.exceeded.many, exceeded),
+            other: () => format(localizations.characterCount.exceeded.other, exceeded)
+        })
         : plural(remaining, {
-              zero: () => format(localisations.characterCountMessageRemainingZero, remaining),
-              one: () => format(localisations.characterCountMessageRemainingOne, remaining),
-              two: () => format(localisations.characterCountMessageRemainingTwo, remaining),
-              few: () => format(localisations.characterCountMessageRemainingFew, remaining),
-              many: () => format(localisations.characterCountMessageRemainingMany, remaining),
-              other: () => format(localisations.characterCountMessageRemainingOther, remaining)
-          });
+            zero: () => format(localizations.characterCount.remaining.zero, remaining),
+            one: () => format(localizations.characterCount.remaining.one, remaining),
+            two: () => format(localizations.characterCount.remaining.two, remaining),
+            few: () => format(localizations.characterCount.remaining.few, remaining),
+            many: () => format(localizations.characterCount.remaining.many, remaining),
+            other: () => format(localizations.characterCount.remaining.other, remaining)
+        });
 }

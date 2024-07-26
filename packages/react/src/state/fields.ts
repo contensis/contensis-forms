@@ -1,6 +1,5 @@
-import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldEditorId, FieldEditorType, FormContentType, FormFieldOption, Nullable } from '../models';
+import { Dictionary, Field, FieldDataFormat, FieldDataType, FieldEditorId, FieldEditorType, FormContentType, FormFieldOption, FormLocalizations, Nullable } from '../models';
 import { DateTime } from './dates';
-import { localisations } from './localisations';
 import { Validation } from './validation';
 
 const DEFAULT_DATA_TYPE_EDITOR_TYPES: Record<FieldDataType, FieldEditorType> = {
@@ -60,7 +59,7 @@ function getEmptyFieldValue(field: Field) {
     return EMPTY_FIELD_VALUES[field.dataType];
 }
 
-function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[] {
+function getOptions(field: Field, htmlId: string, localizations: FormLocalizations): undefined | FormFieldOption[] {
     const pairs = field?.validations?.allowedValues?.labeledValues
         ? field?.validations?.allowedValues?.labeledValues?.map((value) => value)
         : field?.validations?.allowedValues?.values?.map((value) => ({ value, label: value }));
@@ -82,7 +81,7 @@ function getOptions(field: Field, htmlId: string): undefined | FormFieldOption[]
                 key: '',
                 htmlId: `${htmlId}-option--1`,
                 value: '',
-                label: field?.editor?.properties?.placeholderText || localisations.pleaseSelect
+                label: field?.editor?.properties?.placeholderText || localizations.labels.selectPlaceholder
             },
             ...(options || [])
         ];
@@ -130,18 +129,18 @@ function reduceFields<T>(form: Nullable<FormContentType>, fn: (field: Field, ind
     return form?.fields ? form.fields.reduce((prev, field, index) => ({ ...prev, [field.id]: fn(field, index) }), {} as Dictionary<T>) : {};
 }
 
-function validate(field: Field, value: unknown) {
-    return Validation.validate(value, field);
+function validate(field: Field, value: unknown, localizations: FormLocalizations) {
+    return Validation.validate(value, field, localizations);
 }
 
 function isNullish(o: unknown) {
     return o === null || typeof o === 'undefined';
 }
 
-function getInitialValue(field: Field, query: Nullable<string[]>, progressValue: unknown) {
+function getInitialValue(field: Field, query: Nullable<string[]>, progressValue: unknown, localizations: FormLocalizations) {
     let value = null;
     if (typeof progressValue !== 'undefined') {
-        const errors = validate(field, progressValue);
+        const errors = validate(field, progressValue, localizations);
         if (!errors?.dataType && !errors?.allowedValues) {
             value = progressValue;
         }
@@ -197,7 +196,7 @@ function getInitialValue(field: Field, query: Nullable<string[]>, progressValue:
             }
         }
         if (queryValue !== null) {
-            const errors = validate(field, queryValue);
+            const errors = validate(field, queryValue, localizations);
             if (!errors?.dataType && !errors?.allowedValues) {
                 value = queryValue;
             }

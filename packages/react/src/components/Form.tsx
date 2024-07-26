@@ -1,4 +1,4 @@
-import React, { FormEvent, MutableRefObject, useCallback, useEffect, useMemo } from 'react';
+import React, { FormEvent, MutableRefObject, useCallback, useContext, useEffect, useMemo } from 'react';
 import { FormPage } from '../models';
 import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
@@ -6,14 +6,19 @@ import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
 import { FormHistory, isCurrentHistoryState, isValidHistoryState, toHistoryState, useFormHtmlId, useFormState } from './form-state';
 import { FormProps } from './models';
-import { FormRenderContext, mergeRenderProps } from './FormRenderContext';
+import { FormRenderContextProvider, FormRenderContext } from './FormRenderContext';
 
 function isServer() {
     return typeof window === `undefined`;
 }
 
 export function ContensisForm(props: FormProps) {
-    return isServer() ? null : <ClientForm {...props} />;
+    return isServer() ? null : (
+        /* set a render context here then the form can use the default localizations */
+        <FormRenderContextProvider localizations={props.localizations}>
+            <ClientForm {...props} />
+        </FormRenderContextProvider>
+    );
 }
 
 function ClientForm({
@@ -33,6 +38,7 @@ function ClientForm({
     onSubmitSuccess,
     onLoadError
 }: FormProps) {
+    const { localizations: defaultLocalizations } = useContext(FormRenderContext);
     const [formState, setFormState, patchFormState] = useFormState();
     const formHtmlId = useFormHtmlId(formId);
 
@@ -57,9 +63,9 @@ function ClientForm({
             const params = { apiUrl: apiUrl || '', projectId, formId, language: language || null, versionStatus: versionStatus || 'published' };
             try {
                 const form = await Api.getForm(params, signal);
-                let initialValue = Form.getInitialValue(form);
+                let initialValue = Form.getInitialValue(form, defaultLocalizations);
                 initialValue = await (onPopulate ? onPopulate(initialValue, form) : initialValue);
-                const initialErrors = Form.validate(form, initialValue);
+                const initialErrors = Form.validate(form, initialValue, defaultLocalizations);
 
                 patchFormState({
                     form,
@@ -90,7 +96,7 @@ function ClientForm({
         return () => {
             controller.abort();
         };
-    }, [apiUrl, projectId, formId, language, versionStatus]);
+    }, [apiUrl, projectId, formId, language, versionStatus, defaultLocalizations]);
 
     const pages: FormPage[] = useMemo(() => Form.getPages(form), [form]);
     const pageCount = pages.length;
@@ -99,13 +105,13 @@ function ClientForm({
 
     const inputRefs = useMemo(() => Fields.reduceFields(form, (): MutableRefObject<any> => ({ current: undefined })), [form]);
 
-    const pageTitle = getPageTitle(defaultPageTitle, currentPage?.title, currentPage?.pageNo, pageCount, showErrors && currentPageHasError);
+    const pageTitle = getPageTitle(defaultPageTitle, currentPage?.title, currentPage?.pageNo, pageCount, showErrors && currentPageHasError, defaultLocalizations);
 
     const updateValue = (id: string, value: unknown) => {
         const field = form?.fields.find((f) => f.id === id);
         if (field) {
             setFormState((prev) => {
-                const fieldErrors = Fields.validate(field, value);
+                const fieldErrors = Fields.validate(field, value, defaultLocalizations);
                 const newValue = { ...prev.value, [id]: value };
                 const newErrors = { ...prev.errors, [id]: fieldErrors };
                 const newShowErrors = prev.showErrors && Form.pageHasErrors(currentPage, newErrors);
@@ -265,7 +271,7 @@ function ClientForm({
     }, [onPopState]);
 
     return (
-        <FormRenderContext.Provider value={mergeRenderProps({ headingLevel, localizations })}>
+        <FormRenderContextProvider headingLevel={headingLevel} localizations={localizations} form={form}>
             <div className="contensis-form">
                 <div className="form">
                     {!confirmationRule ? (
@@ -300,6 +306,6 @@ function ClientForm({
                     {!!confirmationRule && !!formResponse ? <FormConfirmation rule={confirmationRule} formResponse={formResponse} /> : null}
                 </div>
             </div>
-        </FormRenderContext.Provider>
+        </FormRenderContextProvider>
     );
 }

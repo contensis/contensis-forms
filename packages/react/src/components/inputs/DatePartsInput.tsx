@@ -1,11 +1,12 @@
-import React, { ChangeEvent } from 'react';
-import { DateParts, DateTime, DateTimeSettings, localisations } from '../../state';
+import React, { ChangeEvent, useContext } from 'react';
+import { DateParts, DateTime, DateTimeSettings } from '../../state';
+import { FormRenderContext } from '../FormRenderContext';
 import { FormInputProps } from '../models';
 import { childInputAttrs, textValue } from '../utils';
 
 export function DatePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
+    const { localizations } = useContext(FormRenderContext);
     const { field } = attrs;
-
     const date = inputValue as DateParts;
 
     const onInputChange = ($event: ChangeEvent<HTMLInputElement>) => {
@@ -17,19 +18,19 @@ export function DatePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs
     const separator = field?.editor?.properties?.dateSeparator || DateTimeSettings.defaultSeparators.date;
 
     const day = {
-        label: localisations.dateInputDayLabel,
+        label: localizations.dates.day,
         attrs: childInputAttrs(attrs, 'date', { autoComplete: 'bday-day', inputMode: 'numeric', name: 'day' }),
         value: textValue(date.day)
     };
 
     const month = {
-        label: localisations.dateInputMonthLabel,
+        label: localizations.dates.month,
         attrs: childInputAttrs(attrs, 'date', { autoComplete: 'bday-month', inputMode: 'numeric', name: 'month' }),
         value: textValue(date.month)
     };
 
     const year = {
-        label: localisations.dateInputYearLabel,
+        label: localizations.dates.year,
         attrs: childInputAttrs(attrs, 'date', { autoComplete: 'bday-year', inputMode: 'numeric', name: 'year' }),
         value: textValue(date.year)
     };

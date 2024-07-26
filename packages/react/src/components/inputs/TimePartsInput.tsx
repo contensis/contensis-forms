@@ -1,11 +1,12 @@
-import React, { ChangeEvent } from 'react';
-import { DateTime, DateTimeSettings, localisations, TimeParts } from '../../state';
+import React, { ChangeEvent, useContext } from 'react';
+import { DateTime, DateTimeSettings, TimeParts } from '../../state';
+import { FormRenderContext } from '../FormRenderContext';
 import { FormInputProps } from '../models';
 import { childInputAttrs, textValue } from '../utils';
 
-export function TimePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
+export function TimePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {    
+    const { localizations } = useContext(FormRenderContext);
     const { field } = attrs;
-
     const time = inputValue as TimeParts;
 
     const timeSeparator = field?.editor?.properties?.timeSeparator || DateTimeSettings.defaultSeparators.time;
@@ -17,19 +18,19 @@ export function TimePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs
     };
 
     const hour = {
-        label: localisations.dateInputHourLabel,
+        label: localizations.dates.hour,
         attrs: childInputAttrs(attrs, 'time', { autoComplete: 'off', inputMode: 'numeric', name: 'hour' }),
         value: textValue(time.hour)
     };
 
     const minute = {
-        label: localisations.dateInputMinuteLabel,
+        label: localizations.dates.minute,
         attrs: childInputAttrs(attrs, 'time', { autoComplete: 'off', inputMode: 'numeric', name: 'minute' }),
         value: textValue(time.minute)
     };
 
     const period = {
-        label: localisations.dateInputPeriodLabel,
+        label: localizations.dates.period,
         attrs: childInputAttrs(attrs, 'time', { name: 'period' }),
         value: textValue(time.period)
     };

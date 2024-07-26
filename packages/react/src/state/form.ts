@@ -1,6 +1,5 @@
-import { Dictionary, FormContentType, FormPage, Nullable, ValidationError } from '../models';
+import { Dictionary, FormContentType, FormLocalizations, FormPage, Nullable, ValidationError } from '../models';
 import { Fields } from './fields';
-import { localisations } from './localisations';
 import { Progress } from './progress';
 import { Validation } from './validation';
 
@@ -8,18 +7,8 @@ function getInputValue(form: FormContentType, value: Dictionary<unknown>) {
     return Fields.reduceFields(form, (field) => Fields.getInputValue(field, value?.[field.id]));
 }
 
-function getLocalizations(form: Nullable<FormContentType>) {
-    const l = form?.properties?.localizations;
-    return {
-        next: l?.next || localisations.nextButtonText,
-        previous: l?.previous || localisations.previousButtonText,
-        submit: l?.submit || localisations.submitButtonText,
-        errorSummaryTitle: l?.errorSummaryTitle || localisations.errorSummaryTitle
-    };
-}
-
-function validate(form: FormContentType, value: Dictionary<unknown>) {
-    return Fields.reduceFields(form, (field) => Validation.validate(value?.[field.id], field));
+function validate(form: FormContentType, value: Dictionary<unknown>, localizations: FormLocalizations) {
+    return Fields.reduceFields(form, (field) => Validation.validate(value?.[field.id], field, localizations));
 }
 
 function getPages(form: Nullable<FormContentType>): FormPage[] {
@@ -61,10 +50,10 @@ function getPages(form: Nullable<FormContentType>): FormPage[] {
     }
 }
 
-function getInitialValue(form: FormContentType) {
+function getInitialValue(form: FormContentType, localizations: FormLocalizations) {
     const query = Progress.loadQuery();
     const progress = Progress.load(form);
-    return Fields.reduceFields(form, (field) => Fields.getInitialValue(field, query?.[field.id], progress?.value?.[field.id]));
+    return Fields.reduceFields(form, (field) => Fields.getInitialValue(field, query?.[field.id], progress?.value?.[field.id], localizations));
 }
 
 function pageHasErrors(page: FormPage, errors: Dictionary<Nullable<Dictionary<ValidationError>>>) {
@@ -72,9 +61,7 @@ function pageHasErrors(page: FormPage, errors: Dictionary<Nullable<Dictionary<Va
 }
 
 export const Form = {
-    // getDefaultValue,
     getInputValue,
-    getLocalizations,
     getPages,
     getInitialValue,
     pageHasErrors,

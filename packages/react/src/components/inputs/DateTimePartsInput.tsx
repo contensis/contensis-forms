@@ -1,9 +1,11 @@
-import React, { ChangeEvent } from 'react';
-import { DateTime, DateTimeParts, DateTimeSettings, localisations } from '../../state';
+import React, { ChangeEvent, useContext } from 'react';
+import { DateTime, DateTimeParts, DateTimeSettings } from '../../state';
+import { FormRenderContext } from '../FormRenderContext';
 import { FormInputProps } from '../models';
 import { childInputAttrs, textValue } from '../utils';
 
-export function DateTimePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {
+export function DateTimePartsInput({ inputValue, onChange, onBlur, onFocus, ...attrs }: FormInputProps) {    
+    const { localizations } = useContext(FormRenderContext);
     const { field } = attrs;
     const dateTime = inputValue as DateTimeParts;
 
@@ -17,37 +19,37 @@ export function DateTimePartsInput({ inputValue, onChange, onBlur, onFocus, ...a
     const timeSeparator = field?.editor?.properties?.timeSeparator || DateTimeSettings.defaultSeparators.time;
 
     const day = {
-        label: localisations.dateInputDayLabel,
+        label: localizations.dates.day,
         attrs: childInputAttrs(attrs, 'date', { autoComplete: 'bday-day', inputMode: 'numeric', name: 'day' }),
         value: textValue(dateTime.day)
     };
 
     const month = {
-        label: localisations.dateInputMonthLabel,
+        label: localizations.dates.month,
         attrs: childInputAttrs(attrs, 'date', { autoComplete: 'bday-month', inputMode: 'numeric', name: 'month' }),
         value: textValue(dateTime.month)
     };
 
     const year = {
-        label: localisations.dateInputYearLabel,
+        label: localizations.dates.year,
         attrs: childInputAttrs(attrs, 'date', { autoComplete: 'bday-year', inputMode: 'numeric', name: 'year' }),
         value: textValue(dateTime.year)
     };
 
     const hour = {
-        label: localisations.dateInputHourLabel,
+        label: localizations.dates.hour,
         attrs: childInputAttrs(attrs, 'time', { autoComplete: 'off', inputMode: 'numeric', name: 'hour' }),
         value: textValue(dateTime.hour)
     };
 
     const minute = {
-        label: localisations.dateInputMinuteLabel,
+        label: localizations.dates.minute,
         attrs: childInputAttrs(attrs, 'time', { autoComplete: 'off', inputMode: 'numeric', name: 'minute' }),
         value: textValue(dateTime.minute)
     };
 
     const period = {
-        label: localisations.dateInputPeriodLabel,
+        label: localizations.dates.period,
         attrs: childInputAttrs(attrs, 'time', { name: 'period' }),
         value: textValue(dateTime.period)
     };

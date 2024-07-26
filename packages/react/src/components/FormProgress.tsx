@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FormPage } from '../models';
-import { format, localisations } from '../state';
+import { format } from '../state';
+import { FormRenderContext } from './FormRenderContext';
 import { progressId } from './utils';
 
 type FormProgressProps = {
@@ -10,7 +11,8 @@ type FormProgressProps = {
 };
 
 export function FormProgress({ formHtmlId, pageCount, currentPage }: FormProgressProps) {
-    const pageProgress = format(localisations.pagingMessage, currentPage.pageNo, pageCount);
+    const { localizations } = useContext(FormRenderContext);
+    const pageProgress = format(localizations.messages.page, currentPage.pageNo, pageCount);
     const id = progressId(formHtmlId);
     return pageCount > 1 ? (
         <div className="form-progress">

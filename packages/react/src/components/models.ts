@@ -1,11 +1,13 @@
 import { ClassType, Component, ComponentClass, FunctionComponent, MutableRefObject, ReactNode } from 'react';
 import {
+    DeepPartial,
     Dictionary,
     Field,
     FieldEditorType,
     FieldLabelPosition,
     FormContentType,
     FormFieldOption,
+    FormLocalizations,
     FormResponse,
     GetFormParams,
     Nullable,
@@ -68,8 +70,6 @@ export type FormFieldContainerProps = {
     setFocussed: SetFocussed;
 };
 
-export type FormLocalizations = {};
-
 export type FormProps = {
     apiUrl?: null | string;
     projectId: string;
@@ -79,7 +79,7 @@ export type FormProps = {
     loading?: ReactNode;
     disabled?: ReactNode;
     headingLevel?: number;
-    localizations?: Partial<FormLocalizations>;
+    localizations?: DeepPartial<FormLocalizations>;
     error?: (error: unknown) => ReactNode;
     onPopulate?: (defaultValue: FormResponse, form: FormContentType) => FormResponse | Promise<FormResponse>;
     onSubmit?: (response: FormResponse, form: FormContentType) => false | FormResponse | Promise<false | FormResponse>;

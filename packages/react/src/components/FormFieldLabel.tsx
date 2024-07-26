@@ -1,5 +1,5 @@
-import React from 'react';
-import { localisations } from '../state';
+import React, { useContext } from 'react';
+import { FormRenderContext } from './FormRenderContext';
 import { FormInputProps } from './models';
 import { inputId } from './utils';
 
@@ -20,11 +20,12 @@ type RequiredLabelTextProps = {
 };
 
 export function RequiredLabelText(props: RequiredLabelTextProps) {
+    const { localizations } = useContext(FormRenderContext);
     return (
         <>
             {props.label}{' '}
             {props.required ? (
-                <abbr className={props.requiredClassName} title={localisations.requiredLabel}>
+                <abbr className={props.requiredClassName} title={localizations.labels.required}>
                     *
                 </abbr>
             ) : (
