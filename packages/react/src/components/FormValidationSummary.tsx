@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, UIEvent, MutableRefObject } from 'react';
+import React, { MutableRefObject, UIEvent, useEffect, useRef } from 'react';
 import { Dictionary, FormContentType, FormPage, Nullable, ValidationError } from '../models';
 import { Errors, Form } from '../state';
+import { Heading } from './html';
 
 type FormValidationSummaryProps = {
     currentPage: FormPage;
@@ -36,7 +37,7 @@ export function FormValidationSummary({ currentPage, form, showErrors, formError
     return errors.valid ? null : (
         <div className="form-validation-summary" ref={summaryRef} onBlur={onBlur}>
             <div role="alert">
-                <h3 className="form-validation-summary-title">{localizations.errorSummaryTitle}</h3>
+                <Heading level="3" className="form-validation-summary-title">{localizations.errorSummaryTitle}</Heading>
                 <div className="form-validation-summary-body">
                     <ul className="form-validation-summary-list">
                         {errors.errors.map((error, index) => (

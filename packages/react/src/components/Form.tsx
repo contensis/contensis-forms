@@ -6,6 +6,7 @@ import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
 import { FormHistory, isCurrentHistoryState, isValidHistoryState, toHistoryState, useFormHtmlId, useFormState } from './form-state';
 import { FormProps } from './models';
+import { FormRenderContext, mergeRenderProps } from './FormRenderContext';
 
 function isServer() {
     return typeof window === `undefined`;
@@ -23,6 +24,8 @@ function ClientForm({
     versionStatus,
     loading,
     disabled,
+    headingLevel,
+    localizations,
     error,
     onPopulate,
     onSubmit,
@@ -30,7 +33,6 @@ function ClientForm({
     onSubmitSuccess,
     onLoadError
 }: FormProps) {
-    // todo: check we can populate form values
     const [formState, setFormState, patchFormState] = useFormState();
     const formHtmlId = useFormHtmlId(formId);
 
@@ -263,39 +265,41 @@ function ClientForm({
     }, [onPopState]);
 
     return (
-        <div className="contensis-form">
-            <div className="form">
-                {!confirmationRule ? (
-                    <FormLoader
-                        apiUrl={apiUrl}
-                        projectId={projectId}
-                        formId={formId}
-                        language={language}
-                        versionStatus={versionStatus}
-                        loading={loading}
-                        disabled={disabled}
-                        error={error}
-                        formHtmlId={formHtmlId}
-                        isLoading={isLoading}
-                        apiError={apiError}
-                        form={form}
-                        pageIndex={pageIndex}
-                        pageCount={pageCount}
-                        currentPage={currentPage}
-                        formValue={value}
-                        formInputValue={inputValue}
-                        showErrors={showErrors}
-                        formErrors={errors}
-                        inputRefs={inputRefs}
-                        setValue={updateValue}
-                        setInputValue={updateInputValue}
-                        setFocussed={updateFocussed}
-                        previousPage={previousPage}
-                        onFormSubmit={onFormSubmit}
-                    />
-                ) : null}
-                {!!confirmationRule && !!formResponse ? <FormConfirmation rule={confirmationRule} formResponse={formResponse} /> : null}
+        <FormRenderContext.Provider value={mergeRenderProps({ headingLevel, localizations })}>
+            <div className="contensis-form">
+                <div className="form">
+                    {!confirmationRule ? (
+                        <FormLoader
+                            apiUrl={apiUrl}
+                            projectId={projectId}
+                            formId={formId}
+                            language={language}
+                            versionStatus={versionStatus}
+                            loading={loading}
+                            disabled={disabled}
+                            error={error}
+                            formHtmlId={formHtmlId}
+                            isLoading={isLoading}
+                            apiError={apiError}
+                            form={form}
+                            pageIndex={pageIndex}
+                            pageCount={pageCount}
+                            currentPage={currentPage}
+                            formValue={value}
+                            formInputValue={inputValue}
+                            showErrors={showErrors}
+                            formErrors={errors}
+                            inputRefs={inputRefs}
+                            setValue={updateValue}
+                            setInputValue={updateInputValue}
+                            setFocussed={updateFocussed}
+                            previousPage={previousPage}
+                            onFormSubmit={onFormSubmit}
+                        />
+                    ) : null}
+                    {!!confirmationRule && !!formResponse ? <FormConfirmation rule={confirmationRule} formResponse={formResponse} /> : null}
+                </div>
             </div>
-        </div>
+        </FormRenderContext.Provider>
     );
 }
