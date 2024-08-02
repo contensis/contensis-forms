@@ -152,7 +152,7 @@ async function saveFormResponse({
     const response = await fetch(url, {
         headers: {
             ...headers,
-            ...(!!captchaResponse ? { 'Recaptha-Token': captchaResponse } : {})
+            ...(!!captchaResponse ? { 'g-recaptcha-response': captchaResponse } : {})
         },
         method: 'POST',
         body: JSON.stringify(formResponse),
