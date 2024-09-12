@@ -242,6 +242,5 @@ export function FormRenderContextProvider({ headingLevel, localizations, childre
         }),
         [headingLevel, localizations]
     );
-    console.log(value);
     return <FormRenderContext.Provider value={value}>{children}</FormRenderContext.Provider>;
 }
