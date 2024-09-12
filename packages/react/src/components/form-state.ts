@@ -20,6 +20,10 @@ export type FormState = {
     isSubmitted: boolean;
 };
 
+export type SetFormState = React.Dispatch<React.SetStateAction<FormState>>;
+
+export type PatchFormState = React.Dispatch<Partial<FormState>>;
+
 function initialFormState(): FormState {
     return {
         defaultPageTitle: document.title,
@@ -38,7 +42,7 @@ function initialFormState(): FormState {
     };
 }
 
-export function useFormState(): [FormState, React.Dispatch<React.SetStateAction<FormState>>, React.Dispatch<Partial<FormState>>] {
+export function useFormState(): [FormState, SetFormState, PatchFormState] {
     const [formState, setFormState] = useState(initialFormState);
     const patchFormState = function (updates: Partial<FormState>) {
         setFormState((prev) => ({

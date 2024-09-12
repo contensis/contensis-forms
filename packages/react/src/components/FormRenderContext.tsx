@@ -1,21 +1,19 @@
-import React, { createContext, ReactNode, useMemo } from 'react';
+import React, { createContext, PropsWithChildren, useMemo } from 'react';
 import { DeepPartial, FormContentType, FormLocalizations, Nullable } from '../models';
 
-type FormRenderProps = {
+type FormRenderContextProviderProps = {
+    headingLevel: Nullable<number>;
+    localizations: Nullable<FormLocalizations>;
+};
+
+type FormRenderContextProps = {
     headingLevel: number;
     localizations: FormLocalizations;
 };
 
-type FormRenderContextProviderProps = {
-    headingLevel?: number;
-    localizations?: DeepPartial<FormLocalizations>;
-    form?: Nullable<FormContentType>;
-    children?: ReactNode;
-};
+const DEFAULT_HEADING_LEVEL = 3;
 
-const DEFAULT_RENDER_PROPS: FormRenderProps = {
-    headingLevel: 3,    
-    localizations: {
+export const DEFAULT_LOCALIZATIONS: FormLocalizations = {
         buttons: {
             next: 'Next', // next
             previous: 'Previous', // previous
@@ -118,10 +116,9 @@ const DEFAULT_RENDER_PROPS: FormRenderProps = {
                 other: 'You have {0} characters too many' // characterCountExceededOther
             }
         }
-    }
 };
 
-export const FormRenderContext = createContext(DEFAULT_RENDER_PROPS);
+export const FormRenderContext = createContext<FormRenderContextProps>({ headingLevel: DEFAULT_HEADING_LEVEL, localizations: DEFAULT_LOCALIZATIONS });
 
 function deepMergeLocalisations<T>(source: T, partial: DeepPartial<T>) {
     Object.keys(partial || {}).forEach((key) => {
@@ -138,13 +135,10 @@ function deepMergeLocalisations<T>(source: T, partial: DeepPartial<T>) {
     return source;
 }
 
-function mergeProps(props: FormRenderContextProviderProps): FormRenderProps {
-    let { headingLevel, localizations } = DEFAULT_RENDER_PROPS;
-    if (props?.headingLevel) {
-        headingLevel = props.headingLevel;
-    }
-    if (props?.form?.properties?.localizations) {
-        const l = props.form.properties.localizations;
+export function mergeLocalizations(localizationsOverrides: Nullable<DeepPartial<FormLocalizations>>, form: Nullable<FormContentType>) {
+    let localizations = JSON.parse(JSON.stringify(DEFAULT_LOCALIZATIONS));
+    if (form?.properties?.localizations) {
+        const l = form.properties.localizations;
         localizations = deepMergeLocalisations(localizations, {
             buttons: {
                 next: l.next,
@@ -177,7 +171,7 @@ function mergeProps(props: FormRenderContextProviderProps): FormRenderProps {
                     decimal: l.validationDataTypeDecimal,
                     integer: l.validationDataTypeInteger,
                     string: l.validationDataTypeString,
-                    stringArray: l.validationDataTypeStringArray,
+                    stringArray: l.validationDataTypeStringArray
                 },
                 dataFormat: {
                     email: l.validationDataFormatEmail,
@@ -191,15 +185,15 @@ function mergeProps(props: FormRenderContextProviderProps): FormRenderProps {
                     two: l.validationMinCountTwo,
                     few: l.validationMinCountFew,
                     many: l.validationMinCountMany,
-                    other: l.validationMinCountOther,
+                    other: l.validationMinCountOther
                 },
                 maxCount: {
                     zero: l.validationMaxCountZero,
                     one: l.validationMaxCountOne,
                     two: l.validationMaxCountTwo,
                     few: l.validationMaxCountFew,
-                    many: l. validationMaxCountMany,
-                    other: l.validationMaxCountOther,
+                    many: l.validationMaxCountMany,
+                    other: l.validationMaxCountOther
                 },
                 required: l.validationRequired,
                 allowedValue: l.validationAllowedValue,
@@ -232,20 +226,22 @@ function mergeProps(props: FormRenderContextProviderProps): FormRenderProps {
                     other: l.characterCountExceededOther
                 }
             }
-        })
+        });
     }
-
-    if (props.localizations) {
-        localizations = deepMergeLocalisations(localizations, props.localizations);
+    if (localizationsOverrides) {
+        localizations = deepMergeLocalisations(localizations, localizationsOverrides);
     }
-    return { headingLevel, localizations };
+    return localizations;
 }
 
-export function mergeLocalizations(localizations: Nullable<DeepPartial<FormLocalizations>>) {
-    return !!localizations ? deepMergeLocalisations(DEFAULT_RENDER_PROPS.localizations, localizations) : DEFAULT_RENDER_PROPS.localizations;
-}
-
-export function FormRenderContextProvider({ headingLevel, localizations, form, children }: FormRenderContextProviderProps) {
-    const value = useMemo(() => mergeProps({ headingLevel, localizations, form }), [headingLevel, localizations, form]);
+export function FormRenderContextProvider({ headingLevel, localizations, children }: PropsWithChildren<FormRenderContextProviderProps>) {
+    const value = useMemo(
+        () => ({
+            headingLevel: headingLevel || DEFAULT_HEADING_LEVEL,
+            localizations: localizations || DEFAULT_LOCALIZATIONS
+        }),
+        [headingLevel, localizations]
+    );
+    console.log(value);
     return <FormRenderContext.Provider value={value}>{children}</FormRenderContext.Provider>;
 }
