@@ -4,7 +4,7 @@ import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
 import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
-import { DEFAULT_LOCALIZATIONS, FormRenderContextProvider, mergeLocalizations } from './FormRenderContext';
+import { DEFAULT_LANGUAGE, DEFAULT_LOCALIZATIONS, FormRenderContextProvider, mergeLocalizations } from './FormRenderContext';
 import {
     FormHistory,
     FormState,
@@ -28,20 +28,20 @@ export function ContensisForm(props: FormProps) {
 
 function ClientFormContainer(props: FormProps) {
     const {
-    apiUrl,
+        apiUrl,
         disabled,
         error,
-    formId,
+        formId,
         headingLevel,
-    language,
+        language,
         loading,
         localizations: localizationOverrides,
         projectId,
-    versionStatus,
+        versionStatus,
         onLoadError,
-    onPopulate,
-    onSubmit,
-    onSubmitError,
+        onPopulate,
+        onSubmit,
+        onSubmitError,
         onSubmitSuccess
     } = props;
 
@@ -163,7 +163,7 @@ function ClientFormContainer(props: FormProps) {
         const field = form?.fields.find((f) => f.id === id);
         if (field) {
             setFormState((prev) => {
-                const fieldErrors = Fields.validate(field, value, localizations);
+                const fieldErrors = Fields.validate(field, value, form?.language || DEFAULT_LANGUAGE, localizations);
                 const newValue = { ...prev.value, [id]: value };
                 const newErrors = { ...prev.errors, [id]: fieldErrors };
                 const newShowErrors = prev.showErrors && Form.pageHasErrors(currentPage, newErrors);
@@ -207,7 +207,7 @@ function ClientFormContainer(props: FormProps) {
     };
 
     return (
-        <FormRenderContextProvider headingLevel={headingLevel} localizations={localizations}>
+        <FormRenderContextProvider language={form?.language || language} headingLevel={headingLevel} localizations={localizations}>
             <ClientForm
                 apiUrl={apiUrl}
                 currentPage={currentPage}
@@ -364,39 +364,39 @@ function ClientForm({
     }, [onPopState]);
 
     return (
-            <div className="contensis-form">
-                <div className="form">
-                    {!confirmationRule ? (
-                        <FormLoader
-                            apiUrl={apiUrl}
-                            projectId={projectId}
-                            formId={formId}
-                            language={language}
-                            versionStatus={versionStatus}
-                            loading={loading}
-                            disabled={disabled}
-                            error={error}
-                            formHtmlId={formHtmlId}
-                            isLoading={isLoading}
-                            apiError={apiError}
-                            form={form}
-                            pageIndex={pageIndex}
-                            pageCount={pageCount}
-                            currentPage={currentPage}
-                            formValue={value}
-                            formInputValue={inputValue}
-                            showErrors={showErrors}
-                            formErrors={errors}
-                            inputRefs={inputRefs}
+        <div className="contensis-form">
+            <div className="form">
+                {!confirmationRule ? (
+                    <FormLoader
+                        apiUrl={apiUrl}
+                        projectId={projectId}
+                        formId={formId}
+                        language={language}
+                        versionStatus={versionStatus}
+                        loading={loading}
+                        disabled={disabled}
+                        error={error}
+                        formHtmlId={formHtmlId}
+                        isLoading={isLoading}
+                        apiError={apiError}
+                        form={form}
+                        pageIndex={pageIndex}
+                        pageCount={pageCount}
+                        currentPage={currentPage}
+                        formValue={value}
+                        formInputValue={inputValue}
+                        showErrors={showErrors}
+                        formErrors={errors}
+                        inputRefs={inputRefs}
                         setValue={setValue}
                         setInputValue={setInputValue}
                         setFocussed={setFocussed}
-                            previousPage={previousPage}
-                            onFormSubmit={onFormSubmit}
-                        />
-                    ) : null}
-                    {!!confirmationRule && !!formResponse ? <FormConfirmation rule={confirmationRule} formResponse={formResponse} /> : null}
-                </div>
+                        previousPage={previousPage}
+                        onFormSubmit={onFormSubmit}
+                    />
+                ) : null}
+                {!!confirmationRule && !!formResponse ? <FormConfirmation rule={confirmationRule} formResponse={formResponse} /> : null}
             </div>
+        </div>
     );
 }

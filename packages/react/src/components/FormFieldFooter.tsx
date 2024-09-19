@@ -6,13 +6,13 @@ import { FormInputProps } from './models';
 import { attr, charCountId } from './utils';
 
 export function FormFieldFooter({ value, maxLength, ...attrs }: FormInputProps) {
-    const { localizations } = useContext(FormRenderContext);
+    const { language, localizations } = useContext(FormRenderContext);
     let message = '';
     let remaining = 0;
     if (maxLength) {
         const v = !!value ? `${value}` : '';
         remaining = maxLength - v.length;
-        message = getCharCountMessage(remaining, localizations);
+        message = getCharCountMessage(language,  remaining, localizations);
     }
 
     return message ? (
@@ -22,10 +22,10 @@ export function FormFieldFooter({ value, maxLength, ...attrs }: FormInputProps) 
     ) : null;
 }
 
-function getCharCountMessage(remaining: number, localizations: FormLocalizations) {
+function getCharCountMessage(language: string, remaining: number, localizations: FormLocalizations) {
     const exceeded = -1 * remaining;
     return remaining < 0
-        ? plural(exceeded, {
+        ? plural(language, exceeded, {
               zero: () => format(localizations.characterCount.exceeded.zero, exceeded),
               one: () => format(localizations.characterCount.exceeded.one, exceeded),
               two: () => format(localizations.characterCount.exceeded.two, exceeded),
@@ -33,7 +33,7 @@ function getCharCountMessage(remaining: number, localizations: FormLocalizations
               many: () => format(localizations.characterCount.exceeded.many, exceeded),
               other: () => format(localizations.characterCount.exceeded.other, exceeded)
           })
-        : plural(remaining, {
+        : plural(language, remaining, {
               zero: () => format(localizations.characterCount.remaining.zero, remaining),
               one: () => format(localizations.characterCount.remaining.one, remaining),
               two: () => format(localizations.characterCount.remaining.two, remaining),

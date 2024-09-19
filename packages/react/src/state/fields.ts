@@ -140,18 +140,18 @@ function reduceFields<T>(form: Nullable<FormContentType>, fn: (field: Field, ind
     return form?.fields ? form.fields.reduce((prev, field, index) => ({ ...prev, [field.id]: fn(field, index) }), {} as Dictionary<T>) : {};
 }
 
-function validate(field: Field, value: unknown, localizations: FormLocalizations) {
-    return Validation.validate(value, field, localizations);
+function validate(field: Field, value: unknown, language: string, localizations: FormLocalizations) {
+    return Validation.validate(value, language, field, localizations);
 }
 
 function isNullish(o: unknown) {
     return o === null || typeof o === 'undefined';
 }
 
-function getInitialValue(field: Field, query: Nullable<string[]>, progressValue: unknown, localizations: FormLocalizations) {
+function getInitialValue(field: Field, language: string, query: Nullable<string[]>, progressValue: unknown, localizations: FormLocalizations) {
     let value = null;
     if (typeof progressValue !== 'undefined') {
-        const errors = validate(field, progressValue, localizations);
+        const errors = validate(field, progressValue, language, localizations);
         if (!errors?.dataType && !errors?.allowedValues) {
             value = progressValue;
         }
@@ -207,7 +207,7 @@ function getInitialValue(field: Field, query: Nullable<string[]>, progressValue:
             }
         }
         if (queryValue !== null) {
-            const errors = validate(field, queryValue, localizations);
+            const errors = validate(field, queryValue, language, localizations);
             if (!errors?.dataType && !errors?.allowedValues) {
                 value = queryValue;
             }

@@ -23,9 +23,8 @@ type PluralMap<T> = {
     other: T;
 };
 
-const pluralRules = new Intl.PluralRules();
-
-export function plural<T>(value: number, fns: PluralMap<() => T>) {
+export function plural<T>(locale: string, value: number, fns: PluralMap<() => T>) {
+    const pluralRules = new Intl.PluralRules(locale);
     const rule = pluralRules.select(value);
     const fn = fns[rule];
     return fn();

@@ -8,7 +8,7 @@ function getInputValue(form: FormContentType, value: Dictionary<unknown>) {
 }
 
 function validate(form: FormContentType, value: Dictionary<unknown>, localizations: FormLocalizations) {
-    return Fields.reduceFields(form, (field) => Validation.validate(value?.[field.id], field, localizations));
+    return Fields.reduceFields(form, (field) => Validation.validate(value?.[field.id], form.language, field, localizations));
 }
 
 function getPages(form: Nullable<FormContentType>): FormPage[] {
@@ -53,7 +53,7 @@ function getPages(form: Nullable<FormContentType>): FormPage[] {
 function getInitialValue(form: FormContentType, localizations: FormLocalizations) {
     const query = Progress.loadQuery();
     const progress = Progress.load(form);
-    return Fields.reduceFields(form, (field) => Fields.getInitialValue(field, query?.[field.id], progress?.value?.[field.id], localizations));
+    return Fields.reduceFields(form, (field) => Fields.getInitialValue(field, form.language, query?.[field.id], progress?.value?.[field.id], localizations));
 }
 
 function pageHasErrors(page: FormPage, errors: Dictionary<Nullable<Dictionary<ValidationError>>>) {

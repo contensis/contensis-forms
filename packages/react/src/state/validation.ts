@@ -16,7 +16,7 @@ import { memo } from './store';
 
 type Validator<TError extends Dictionary<any>> = (value: unknown) => null | TError;
 
-const createFieldValidator = memo((field: Field, localizations: FormLocalizations) => {
+const createFieldValidator = memo((field: Field, language: string, localizations: FormLocalizations) => {
     const dataTypeMessage: Record<FieldDataType, string> = localizations.validation.dataType;
 
     const dateFormatMessages: Record<FieldDataFormat, string> = {
@@ -65,8 +65,8 @@ const createFieldValidator = memo((field: Field, localizations: FormLocalization
             getRangeErrorMessage(
                 field.validations?.minCount,
                 field.validations?.maxCount,
-                countMessage(field.validations?.minCount?.value, field, localizations.validation.minCount),
-                countMessage(field.validations?.maxCount?.value, field, localizations.validation.maxCount),
+                countMessage(language, field.validations?.minCount?.value, field, localizations.validation.minCount),
+                countMessage(language, field.validations?.maxCount?.value, field, localizations.validation.maxCount),
                 format(localizations.validation.minMaxCount, field.name, field.validations?.minCount?.value, field.validations?.maxCount?.value)
             )
         ],
@@ -347,17 +347,17 @@ function createPastDateTimeValidator(dataType: FieldDataType, pastDateTime: Null
         : noopValidator;
 }
 
-function validate(value: unknown, field: Field, localizations: FormLocalizations) {
+function validate(value: unknown, language: string, field: Field, localizations: FormLocalizations) {
     if (field?.editor?.properties?.hidden) {
         return null;
     }
-    const validator = createFieldValidator(field, localizations);
+    const validator = createFieldValidator(field, language, localizations);
     return validator(value);
 }
 
-function countMessage(value: Nullable<number>, field: Field, localizations: PluralLocalizations) {
+function countMessage(language: string, value: Nullable<number>, field: Field, localizations: PluralLocalizations) {
     value = value || 0;
-    return plural(value, {
+    return plural(language, value, {
         zero: () => format(localizations.zero, field.name, value),
         one: () => format(localizations.one, field.name, value),
         two: () => format(localizations.two, field.name, value),

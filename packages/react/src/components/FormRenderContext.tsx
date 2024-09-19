@@ -2,14 +2,18 @@ import React, { createContext, PropsWithChildren, useMemo } from 'react';
 import { DeepPartial, FormContentType, FormLocalizations, Nullable } from '../models';
 
 type FormRenderContextProviderProps = {
+    language: Nullable<string>;
     headingLevel: Nullable<number>;
     localizations: Nullable<FormLocalizations>;
 };
 
 type FormRenderContextProps = {
+    language: string;
     headingLevel: number;
     localizations: FormLocalizations;
 };
+
+export const DEFAULT_LANGUAGE = 'en-GB';
 
 const DEFAULT_HEADING_LEVEL = 3;
 
@@ -118,7 +122,7 @@ export const DEFAULT_LOCALIZATIONS: FormLocalizations = {
         }
 };
 
-export const FormRenderContext = createContext<FormRenderContextProps>({ headingLevel: DEFAULT_HEADING_LEVEL, localizations: DEFAULT_LOCALIZATIONS });
+export const FormRenderContext = createContext<FormRenderContextProps>({ language: DEFAULT_LANGUAGE, headingLevel: DEFAULT_HEADING_LEVEL, localizations: DEFAULT_LOCALIZATIONS });
 
 function deepMergeLocalisations<T>(source: T, partial: DeepPartial<T>) {
     Object.keys(partial || {}).forEach((key) => {
@@ -234,13 +238,14 @@ export function mergeLocalizations(localizationsOverrides: Nullable<DeepPartial<
     return localizations;
 }
 
-export function FormRenderContextProvider({ headingLevel, localizations, children }: PropsWithChildren<FormRenderContextProviderProps>) {
+export function FormRenderContextProvider({ language, headingLevel, localizations, children }: PropsWithChildren<FormRenderContextProviderProps>) {
     const value = useMemo(
         () => ({
+            language: language || DEFAULT_LANGUAGE,
             headingLevel: headingLevel || DEFAULT_HEADING_LEVEL,
             localizations: localizations || DEFAULT_LOCALIZATIONS
         }),
-        [headingLevel, localizations]
+        [language, headingLevel, localizations]
     );
     return <FormRenderContext.Provider value={value}>{children}</FormRenderContext.Provider>;
 }
