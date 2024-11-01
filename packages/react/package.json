@@ -1,6 +1,6 @@
 {
   "name": "@contensis/forms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Render Contensis Forms with React",
   "keywords": [
     "contensis",
