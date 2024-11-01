@@ -317,10 +317,18 @@ function ClientForm({
         }
     }, [form, value, isDirty, isSubmitted]);
 
+    /** Push an entry to the history stack so we can recall the previous state when navigating back and forward */
     useEffect(() => {
         const newState = toHistoryState(currentPage?.id, pageIndex);
         if (isValidHistoryState(newState) && !isCurrentHistoryState(newState)) {
-            window.history.pushState(newState, '');
+            if (!isValidHistoryState(window.history.state)) {
+                // Replace current history state with the initial form state when
+                // the form initially renders to prevent a duplicate history entry
+                window.history.replaceState(newState, '');
+            } else {
+                // Push state to history when changing pages so we can navigate back and forward
+                window.history.pushState(newState, '');
+            }
         }
     }, [pageIndex, currentPage]);
 
