@@ -24,6 +24,8 @@ type FormLoaderProps = FormProps & {
     formInputValue: Dictionary<unknown>;
     formErrors: Dictionary<Nullable<Dictionary<ValidationError>>>;
     showErrors: boolean;
+    showTitle: boolean;
+    showDescription: boolean;
     inputRefs: Dictionary<MutableRefObject<any>>;
     setValue: SetValue;
     setInputValue: SetValue;
@@ -50,6 +52,8 @@ export function FormLoader({
     inputRefs,
     setValue,
     setInputValue,
+    showTitle,
+    showDescription,
     setFocussed
 }: FormLoaderProps) {
     if (isLoading) {
@@ -66,7 +70,7 @@ export function FormLoader({
 
     return (
         <form noValidate={true} onSubmit={onFormSubmit}>
-            <FormTitle form={form} />
+            <FormTitle form={form} showTitle={showTitle} showDescription={showDescription} />
             <FormProgress formHtmlId={formHtmlId} pageCount={pageCount} currentPage={currentPage} />
             <FormCurrentPage
                 currentPage={currentPage}
@@ -79,6 +83,7 @@ export function FormLoader({
                 setFocussed={setFocussed}
                 setInputValue={setInputValue}
                 setValue={setValue}
+                showTitle={pageCount > 1}
             />
             <FormButtons pageIndex={pageIndex} pageCount={pageCount} currentPage={currentPage} previousPage={previousPage} />
         </form>

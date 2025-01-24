@@ -33,15 +33,18 @@ elements.forEach((element) => {
     const formId = element.getAttribute('data-contensis-form-id') || ''; // required
     const language = element.getAttribute('data-contensis-form-language'); // optional
     const version = element.getAttribute('data-contensis-form-version'); // optional
+    const showTitle = element.getAttribute('data-contensis-form-show-title') === 'true' || false; // optional
     const onPopulate = window.CONTENSIS_FORMS.onPopulate;
     const onSubmit = window.CONTENSIS_FORMS.onSubmit;
     const onSubmitSuccess = window.CONTENSIS_FORMS.onSubmitSuccess;
     const onSubmitError = window.CONTENSIS_FORMS.onSubmitError;
+
     window.CONTENSIS_FORMS.render!(element, {
         apiUrl,
         projectId,
         formId,
         language,
+        showTitle,
         versionStatus: version === 'latest' ? 'latest' : undefined,
         onPopulate,
         onSubmit,
