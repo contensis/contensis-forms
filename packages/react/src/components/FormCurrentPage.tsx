@@ -16,6 +16,7 @@ type FormCurrentPageProps = {
     setValue: SetValue;
     setInputValue: SetValue;
     setFocussed: SetFocussed;
+    showTitle: boolean;
 };
 
 export function FormCurrentPage({
@@ -28,14 +29,17 @@ export function FormCurrentPage({
     setFocussed,
     setInputValue,
     setValue,
+    showTitle,
     inputRefs
 }: FormCurrentPageProps) {
     return (
         <div className="form-current-page">
             <div className="form-current-page-header">
-                <Heading level="2" className="form-current-page-title">
-                    {currentPage?.title}
-                </Heading>
+                {showTitle && (
+                    <Heading level="2" className="form-current-page-title">
+                        {currentPage?.title}
+                    </Heading>
+                )}
                 <Description className="form-current-page-description" description={currentPage.description} />
             </div>
             <FormValidationSummary currentPage={currentPage} showErrors={showErrors} formErrors={formErrors} inputRefs={inputRefs} />

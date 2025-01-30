@@ -80,6 +80,7 @@ export type FormProps = {
     disabled?: ReactNode;
     headingLevel?: number;
     localizations?: DeepPartial<FormLocalizations>;
+    showTitle?: boolean;
     error?: (error: unknown) => ReactNode;
     onPopulate?: (defaultValue: FormResponse, form: FormContentType) => FormResponse | Promise<FormResponse>;
     onSubmit?: (response: FormResponse, form: FormContentType) => false | FormResponse | Promise<false | FormResponse>;

@@ -36,6 +36,7 @@ function ClientFormContainer(props: FormProps) {
         language,
         loading,
         localizations: localizationOverrides,
+        showTitle,
         projectId,
         versionStatus,
         onLoadError,
@@ -218,6 +219,7 @@ function ClientFormContainer(props: FormProps) {
                 language={language}
                 loading={loading}
                 localizations={localizations}
+                showTitle={showTitle || false}
                 pageCount={pageCount}
                 pages={pages}
                 projectId={projectId}
@@ -245,6 +247,7 @@ type ClientFormProps = {
     language: Nullable<string>;
     loading: ReactNode;
     localizations: FormLocalizations;
+    showTitle: boolean;
     pageCount: number;
     pages: FormPage[];
     projectId: string;
@@ -270,6 +273,7 @@ function ClientForm({
     language,
     loading,
     localizations,
+    showTitle,
     pageCount,
     pages,
     projectId,
@@ -394,6 +398,8 @@ function ClientForm({
                         formValue={value}
                         formInputValue={inputValue}
                         showErrors={showErrors}
+                        showTitle={showTitle}
+                        showDescription={showTitle}
                         formErrors={errors}
                         inputRefs={inputRefs}
                         setValue={setValue}
