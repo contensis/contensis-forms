@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/contensis/contensis-forms/compare/@contensis/forms-v1.0.1...@contensis/forms-v1.0.2) (2025-01-30)
+
+
+### Bug Fixes
+
+* Show/hide description and title when rendering in page. Hide describedBy if no instructions. ([e09f1cb](https://github.com/contensis/contensis-forms/commit/e09f1cb884a100bb7040f2ebb50a36753c5daaec))
+
 ## [1.0.1](https://github.com/contensis/contensis-forms/compare/@contensis/forms-v1.0.0...@contensis/forms-v1.0.1) (2024-11-01)
 
 
