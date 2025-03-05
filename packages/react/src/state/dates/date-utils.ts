@@ -187,7 +187,7 @@ export function validateTimeParts(parts: TimeParts): TimeValidation {
 }
 
 function daysInMonth(year: number, month: number): number {
-    const date = new Date(year, month - 1, 1);
+    const date = new Date(year, month, 1);
     date.setDate(0);
     return date.getDate();
 }
