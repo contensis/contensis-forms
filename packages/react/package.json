@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/contensis/contensis-forms.git"
+    "url": "git+https://github.com/contensis/contensis-forms.git"
   },
   "license": "ISC",
   "main": "dist/contensis-forms.js",
