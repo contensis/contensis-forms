@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.3](https://github.com/contensis/contensis-forms/compare/@contensis/forms-v1.0.2...@contensis/forms-v1.0.3) (2026-01-06)
+
+
+### Bug Fixes
+
+* fixes a validation issue where the number of days in a month was being miscalculated ([82fb47c](https://github.com/contensis/contensis-forms/commit/82fb47c9441359457ad507619400aad9003ef22d))
+* validation issue where the number of days in a month was miscalculated ([2048c5c](https://github.com/contensis/contensis-forms/commit/2048c5c592eb5243a3e4ef2eeea61649ccf96756))
+
+
+### Build
+
+* update CI workflows due to revoked NPM tokens and instead use NPM trusted publishing, fix package.json npm warnings ([a07f3e9](https://github.com/contensis/contensis-forms/commit/a07f3e9b1258473efc982ba3a2bb22c69d1ecc0b))
+
 ## [1.0.3](https://github.com/contensis/contensis-forms/compare/@contensis/forms-v1.0.2...@contensis/forms-v1.0.3) (2025-03-07)
 
 
