@@ -18,12 +18,10 @@ import {
 } from './form-state';
 import { FormProps, SetFocussed, SetValue } from './models';
 
-function isServer() {
-    return typeof window === `undefined`;
-}
-
 export function ContensisForm(props: FormProps) {
-    return isServer() ? null : <ClientFormContainer {...props} />;
+    const [isClient, setIsClient] = useState(false);
+    useEffect(() => setIsClient(true), []);
+    return isClient ? <ClientFormContainer {...props} /> : null;
 }
 
 function ClientFormContainer(props: FormProps) {
