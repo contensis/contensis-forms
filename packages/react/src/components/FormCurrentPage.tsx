@@ -13,6 +13,7 @@ type FormCurrentPageProps = {
     formErrors: Dictionary<Nullable<Dictionary<ValidationError>>>;
     showErrors: boolean;
     inputRefs: Dictionary<MutableRefObject<any>>;
+    hasFocus: boolean;
     setValue: SetValue;
     setInputValue: SetValue;
     setFocussed: SetFocussed;
@@ -30,7 +31,8 @@ export function FormCurrentPage({
     setInputValue,
     setValue,
     showTitle,
-    inputRefs
+    inputRefs,
+    hasFocus
 }: FormCurrentPageProps) {
     return (
         <div className="form-current-page">
@@ -45,7 +47,7 @@ export function FormCurrentPage({
             <FormValidationSummary currentPage={currentPage} showErrors={showErrors} formErrors={formErrors} inputRefs={inputRefs} />
             <div className="form-fields-container">
                 {currentPage?.fields
-                    ? currentPage.fields.map((field) => (
+                    ? currentPage.fields.map((field, index) => (
                           <FormFieldContainer
                               key={field.id}
                               field={field}
@@ -55,6 +57,7 @@ export function FormCurrentPage({
                               formErrors={formErrors}
                               showErrors={showErrors}
                               inputRefs={inputRefs}
+                              hasFocus={hasFocus && (index === 0)}
                               setFocussed={setFocussed}
                               setInputValue={setInputValue}
                               setValue={setValue}

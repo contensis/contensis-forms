@@ -7,6 +7,7 @@ export type FormState = {
     apiError: unknown;
     form: Nullable<FormContentType>;
     pageIndex: number;
+    isInitialPageLoad: boolean;
 
     value: Dictionary<unknown>;
     inputValue: Dictionary<unknown>;
@@ -31,6 +32,7 @@ function initialFormState(): FormState {
         apiError: null,
         form: null,
         pageIndex: 0,
+        isInitialPageLoad: true,
         value: {},
         inputValue: {},
         confirmationRule: null,

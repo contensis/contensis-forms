@@ -74,6 +74,7 @@ function ClientFormContainer(props: FormProps) {
                     isLoading: false,
                     apiError: null,
                     pageIndex: 0,
+                    isInitialPageLoad: true,
                     value: initialValue,
                     inputValue: Form.getInputValue(form, initialValue),
                     showErrors: false,
@@ -116,7 +117,8 @@ function ClientFormContainer(props: FormProps) {
             setFormState((prev) => ({
                 ...prev,
                 showErrors: false,
-                pageIndex: prev.pageIndex + 1
+                pageIndex: prev.pageIndex + 1,
+                isInitialPageLoad: false
             }));
             return;
         }
@@ -203,7 +205,8 @@ function ClientFormContainer(props: FormProps) {
     const previousPage = () => {
         setFormState((prev) => ({
             ...prev,
-            pageIndex: Math.max(prev.pageIndex - 1, 0)
+            pageIndex: Math.max(prev.pageIndex - 1, 0),
+            isInitialPageLoad: false
         }));
     };
 
@@ -297,6 +300,7 @@ function ClientForm({
         apiError,
         form,
         pageIndex,
+        isInitialPageLoad,
         value,
         inputValue,
         confirmationRule,
@@ -346,7 +350,8 @@ function ClientForm({
                         // back
                         patchFormState({
                             showErrors: false,
-                            pageIndex: newState.pageIndex
+                            pageIndex: newState.pageIndex,
+                            isInitialPageLoad: false
                         });
                     } else if (newState.pageIndex > pageIndex) {
                         // forward
@@ -357,7 +362,8 @@ function ClientForm({
                             setFormState((prev) => ({
                                 ...prev,
                                 showErrors: false,
-                                pageIndex: prev.pageIndex + 1
+                                pageIndex: prev.pageIndex + 1,
+                                isInitialPageLoad: false
                             }));
                         }
                     }
@@ -402,6 +408,7 @@ function ClientForm({
                         showDescription={showTitle}
                         formErrors={errors}
                         inputRefs={inputRefs}
+                        hasFocus={!isInitialPageLoad}
                         setValue={setValue}
                         setInputValue={setInputValue}
                         setFocussed={setFocussed}

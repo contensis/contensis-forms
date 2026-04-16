@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { FieldEditorType, FormFieldContainer as FormFieldContainerType } from '../models';
 import { Errors, Fields } from '../state';
 import { FormCheckbox } from './FormCheckbox';
@@ -43,6 +43,7 @@ export function FormFieldContainer({
     formErrors,
     showErrors,
     inputRefs,
+    hasFocus,
     setValue,
     setInputValue,
     setFocussed
@@ -90,6 +91,12 @@ export function FormFieldContainer({
             setFocussed(field.id, false);
         }
     };
+
+    useEffect(() => {
+        if (hasFocus) {
+            inputProps?.inputRef?.current?.focus();
+        }
+    }, [hasFocus]);
 
     const Field = DEFAULT_CONTAINERS[formFieldContainer];
     const Input = DEFAULT_INPUTS[inputProps.editor];

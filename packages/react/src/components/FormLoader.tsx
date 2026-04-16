@@ -27,6 +27,7 @@ type FormLoaderProps = FormProps & {
     showTitle: boolean;
     showDescription: boolean;
     inputRefs: Dictionary<MutableRefObject<any>>;
+    hasFocus: boolean;
     setValue: SetValue;
     setInputValue: SetValue;
     setFocussed: SetFocussed;
@@ -50,6 +51,7 @@ export function FormLoader({
     formErrors,
     showErrors,
     inputRefs,
+    hasFocus,
     setValue,
     setInputValue,
     showTitle,
@@ -84,6 +86,7 @@ export function FormLoader({
                 setInputValue={setInputValue}
                 setValue={setValue}
                 showTitle={pageCount > 1}
+                hasFocus={hasFocus}
             />
             <FormButtons pageIndex={pageIndex} pageCount={pageCount} currentPage={currentPage} previousPage={previousPage} />
         </form>
