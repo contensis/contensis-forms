@@ -64,6 +64,7 @@ export type FormFieldContainerProps = {
     formErrors: Dictionary<Nullable<Dictionary<ValidationError>>>;
     showErrors: boolean;
     inputRefs: Dictionary<MutableRefObject<any>>;
+    hasFocus: boolean;
 
     setValue: SetValue;
     setInputValue: SetValue;
