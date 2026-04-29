@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.5](https://github.com/contensis/contensis-forms/compare/@contensis/forms-v1.0.4...@contensis/forms-v1.0.5) (2026-04-29)
+
+
+### Bug Fixes
+
+* Hydration error when used with SSR in React v18+ ([#10](https://github.com/contensis/contensis-forms/issues/10)) ([fbf702d](https://github.com/contensis/contensis-forms/commit/fbf702de3e13c855e8f420cbe5173183b97f8996))
+* move focus to first field when paging through a form ([#12](https://github.com/contensis/contensis-forms/issues/12)) ([e522948](https://github.com/contensis/contensis-forms/commit/e5229483b13a396c549eed4574996e6dc1a8aed8)), closes [#11](https://github.com/contensis/contensis-forms/issues/11)
+
 ## [1.0.4](https://github.com/contensis/contensis-forms/compare/@contensis/forms-v1.0.3...@contensis/forms-v1.0.4) (2026-01-06)
 
 
