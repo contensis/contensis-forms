@@ -1,5 +1,5 @@
 import React, { FormEvent, FormEventHandler, MutableRefObject, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { FormLocalizations, FormPage, Nullable, VersionStatus } from '../models';
+import { FormLocalizations, FormPage, FormResponse, Nullable, VersionStatus } from '../models';
 import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
 import { FormConfirmation } from './FormConfirmation';
@@ -17,6 +17,24 @@ import {
     useFormState
 } from './form-state';
 import { FormProps, SetFocussed, SetValue } from './models';
+
+function isPhoneField(id: string, name: string, dataFormat: Nullable<string>) {
+    const fieldText = `${id} ${name}`.toLowerCase();
+    return dataFormat === 'phone' || fieldText.includes('phone') || fieldText.includes('tel');
+}
+
+function normalizePhoneFields(response: FormResponse, form: NonNullable<FormState['form']>) {
+    return form.fields.reduce(
+        (normalized, field) => {
+            const value = normalized[field.id];
+            if (isPhoneField(field.id, field.name, field.dataFormat) && value !== null && typeof value !== 'undefined') {
+                normalized[field.id] = String(value);
+            }
+            return normalized;
+        },
+        { ...response }
+    );
+}
 
 export function ContensisForm(props: FormProps) {
     const [isClient, setIsClient] = useState(false);
@@ -122,10 +140,11 @@ function ClientFormContainer(props: FormProps) {
         }
 
         patchFormState({ showErrors: false });
-        const formResponse = await (onSubmit ? onSubmit(value, form) : value);
-        if (!formResponse) {
+        const submittedResponse = await (onSubmit ? onSubmit(value, form) : value);
+        if (!submittedResponse) {
             return;
         }
+        const formResponse = normalizePhoneFields(submittedResponse, form);
 
         try {
             const result = await Api.saveFormResponse({
