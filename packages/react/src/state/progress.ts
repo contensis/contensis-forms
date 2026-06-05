@@ -6,17 +6,36 @@ const STORAGE_KEY_PREFIX = 'contensis-form';
 
 type StorageKey = 'session' | 'started' | 'resumed' | 'expiry' | 'value';
 
+interface IFormLocalStorage {
+    session: Nullable<string>;
+    started: Nullable<string>;
+    resumed: Nullable<string>;
+    expiry: Nullable<string>;
+    value: Nullable<Dictionary<unknown>>;
+}
+
 function storage(form: FormContentType) {
     const l = localStorage;
-
+    const state = () => JSON.parse(l.getItem(`${STORAGE_KEY_PREFIX}-${form.id}`) || '{}') as IFormLocalStorage;
+    const save = (draft: IFormLocalStorage) => l.setItem(`${STORAGE_KEY_PREFIX}-${form.id}`, JSON.stringify(draft));
     return {
-        get: (key: StorageKey) => l.getItem(`${STORAGE_KEY_PREFIX}-${form.id}-${key}`),
-        set: function (key: StorageKey, value: string) {
-            l.setItem(`${STORAGE_KEY_PREFIX}-${form.id}-${key}`, value);
+        ...state(),
+        set: function (key: StorageKey, value: unknown) {
+            this.patch({ [key]: value });
             return this;
         },
         remove: function (key: StorageKey) {
-            l.removeItem(`${STORAGE_KEY_PREFIX}-${form.id}-${key}`);
+            const current = state();
+            delete current[key];
+            save(current);
+            return this;
+        },
+        patch: function (patch: Partial<IFormLocalStorage>) {
+            save({ ...state(), ...patch });
+            return this;
+        },
+        clear: function () {
+            l.removeItem(`${STORAGE_KEY_PREFIX}-${form.id}`);
             return this;
         }
     };
@@ -29,40 +48,38 @@ function getProgressExpiry() {
 }
 
 function autoSave(form: FormContentType, value: Dictionary<unknown>, originallyStartedAt: Nullable<string>) {
-    const store = storage(form);
+    const state = storage(form);
     if (form?.id) {
-        if (!store.get('started')) {
-            store.set('started', DateTime.getNowDateTime());
+        if (!state.started) {
+            state.set('started', DateTime.getNowDateTime());
         }
-        if (originallyStartedAt && !store.get('session')) {
+        if (originallyStartedAt && !state.session) {
             const now = DateTime.getNowDateTime();
             // Needs to track "session" so we can safely delete it when the form reloads,
             // A new "session" allows us to reliably track when the form progress has "resumed"
-            store.set('session', now).set('resumed', now);
+            state.set('session', now).set('resumed', now);
         }
-        store.set('value', !!value ? JSON.stringify(value) : '').set('expiry', getProgressExpiry());
+        state.set('value', value).set('expiry', getProgressExpiry());
     }
 }
 
 function reset(form: FormContentType) {
     if (form?.id) {
-        storage(form).remove('started').remove('session').remove('resumed').remove('expiry').remove('value');
+        storage(form).clear();
     }
 }
 
 function load(form: FormContentType) {
     if (!!form) {
-        const store = storage(form).remove('session'); // Clear any previous "session" timestamp, so we can set again on next autoSave
-        const originallyStartedAt = store.get('started'); // Return any previous "started" timestamp so we track this form progress as "resumed"
+        const state = storage(form).remove('session'); // Clear any previous "session" timestamp, so we can set again on next autoSave
+        const originallyStartedAt = state.started; // Return any previous "started" timestamp so we track this form progress as "resumed"
 
-        const expiry = store.get('expiry');
-        const jsonValue = store.get('value');
+        const expiry = state.expiry;
         const d = DateTime.getNowDateTime();
-        if (expiry && jsonValue && d < expiry) {
+        if (expiry && state.value && d < expiry) {
             try {
-                const value = JSON.parse(jsonValue) as Dictionary<unknown>;
                 return {
-                    value,
+                    value: state.value,
                     originallyStartedAt
                 };
             } catch {}
@@ -86,10 +103,10 @@ function loadQuery(): Record<string, string[]> {
 }
 
 function getContext(form: FormContentType) {
-    const store = storage(form);
+    const state = storage(form);
     return {
-        formStartedAt: store.get('started'),
-        formResumed: store.get('resumed')
+        formStartedAt: state.started,
+        formResumed: state.resumed
     };
 }
 
