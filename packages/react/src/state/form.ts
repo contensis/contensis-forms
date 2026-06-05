@@ -52,8 +52,11 @@ function getPages(form: Nullable<FormContentType>): FormPage[] {
 
 function getInitialValue(form: FormContentType, localizations: FormLocalizations) {
     const query = Progress.loadQuery();
-    const progress = Progress.load(form);
-    return Fields.reduceFields(form, (field) => Fields.getInitialValue(field, form.language, query?.[field.id], progress?.value?.[field.id], localizations));
+    const { originallyStartedAt = null, value } = Progress.load(form) || {};
+    return {
+        initialValue: Fields.reduceFields(form, (field) => Fields.getInitialValue(field, form.language, query?.[field.id], value?.[field.id], localizations)),
+        originallyStartedAt
+    };
 }
 
 function pageHasErrors(page: FormPage, errors: Dictionary<Nullable<Dictionary<ValidationError>>>) {

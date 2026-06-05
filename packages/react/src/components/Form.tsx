@@ -2,6 +2,7 @@ import React, { FormEvent, FormEventHandler, MutableRefObject, ReactNode, useCal
 import { FormLocalizations, FormPage, Nullable, VersionStatus } from '../models';
 import { Api, Errors, Fields, Form, Progress, Rules } from '../state';
 import { getPageTitle } from '../state/localisations';
+import { getFormSubmitContext } from '../state/submit-context';
 import { FormConfirmation } from './FormConfirmation';
 import { FormLoader } from './FormLoader';
 import { DEFAULT_LANGUAGE, DEFAULT_LOCALIZATIONS, FormRenderContextProvider, mergeLocalizations } from './FormRenderContext';
@@ -63,7 +64,8 @@ function ClientFormContainer(props: FormProps) {
                 const localizations = mergeLocalizations(localizationOverrides, form);
                 setLocalizations(localizations);
 
-                let initialValue = Form.getInitialValue(form, localizations);
+                let { initialValue, originallyStartedAt } = Form.getInitialValue(form, localizations);
+
                 initialValue = await (onPopulate ? onPopulate(initialValue, form) : initialValue);
                 const initialErrors = Form.validate(form, initialValue, localizations);
 
@@ -76,7 +78,8 @@ function ClientFormContainer(props: FormProps) {
                     value: initialValue,
                     inputValue: Form.getInputValue(form, initialValue),
                     showErrors: false,
-                    errors: initialErrors
+                    errors: initialErrors,
+                    originallyStartedAt
                 });
             } catch (apiError) {
                 if (!signal.aborted) {
@@ -126,6 +129,7 @@ function ClientFormContainer(props: FormProps) {
         if (!formResponse) {
             return;
         }
+        formResponse.sys = { context: getFormSubmitContext(form) };
 
         try {
             const result = await Api.saveFormResponse({
@@ -306,7 +310,8 @@ function ClientForm({
         showErrors,
         errors,
         isDirty,
-        isSubmitted
+        isSubmitted,
+        originallyStartedAt
     } = formState;
 
     const inputRefs = useMemo(() => Fields.reduceFields(form, (): MutableRefObject<any> => ({ current: undefined })), [form]);
@@ -319,9 +324,9 @@ function ClientForm({
 
     useEffect(() => {
         if (form && isDirty && !isSubmitted) {
-            Progress.autoSave(form, value);
+            Progress.autoSave(form, value, originallyStartedAt);
         }
-    }, [form, value, isDirty, isSubmitted]);
+    }, [form, value, isDirty, isSubmitted, originallyStartedAt]);
 
     /** Push an entry to the history stack so we can recall the previous state when navigating back and forward */
     useEffect(() => {
