@@ -48,11 +48,16 @@ function getProgressExpiry() {
 }
 
 function autoSave(form: FormContentType, value: Dictionary<unknown>, originallyStartedAt: Nullable<string>) {
+    if (!form?.id) return;
+
     const state = storage(form);
-    if (form?.id) {
-        if (!state.started) {
-            state.set('started', DateTime.getNowDateTime());
-        }
+
+    if (!state.started) {
+        // Set "started" timestamp on first autoSave
+        state.set('started', DateTime.getNowDateTime());
+    }
+
+    if (form?.properties?.autoSaveProgress) {
         if (originallyStartedAt && !state.session) {
             const now = DateTime.getNowDateTime();
             // Needs to track "session" so we can safely delete it when the form reloads,
@@ -71,9 +76,19 @@ function reset(form: FormContentType) {
 
 function load(form: FormContentType) {
     if (!!form) {
-        const state = storage(form).remove('session'); // Clear any previous "session" timestamp, so we can set again on next autoSave
-        const originallyStartedAt = state.started; // Return any previous "started" timestamp so we track this form progress as "resumed"
+        let originallyStartedAt: Nullable<string> = null;
+        const state = storage(form);
 
+        if (form?.properties?.autoSaveProgress) {
+            // Clear any previous "session" timestamp, so we can set again on next autoSave
+            state.remove('session');
+            // Return any previous "started" timestamp so we track this form progress as "resumed"
+            originallyStartedAt = state.started;
+        } else {
+            // Clear any previous context if autoSaveProgress is not enabled
+            state.clear();
+            //state.remove('started');
+        }
         const expiry = state.expiry;
         const d = DateTime.getNowDateTime();
         if (expiry && state.value && d < expiry) {
@@ -84,6 +99,7 @@ function load(form: FormContentType) {
                 };
             } catch {}
         }
+        return { originallyStartedAt };
     }
     return null;
 }
