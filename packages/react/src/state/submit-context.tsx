@@ -1,8 +1,23 @@
 import { FormContentType } from '../models';
-import { Progress } from '.';
+import { Progress } from './progress';
+
+interface ISessionAttribution {
+    utm_campaign?: string;
+    utm_source?: string;
+    utm_medium?: string;
+    utm_content?: string;
+    utm_term?: string;
+    gclid?: string;
+    dclid?: string;
+    msclkid?: string;
+    fbclid?: string;
+    ttclid?: string;
+    li_fat_id?: string;
+    twclid?: string;
+}
 
 /**
- * Gather context for the form submission.
+ * Gather context for the `sys.context` field in the form submission.
  *
  * **Server-derived**
  *
@@ -29,25 +44,42 @@ import { Progress } from '.';
  * - `msclkid` (Microsoft Ads)
  * - `fbclid` (Meta/Facebook)
  * - `ttclid` (TikTok)
- * - `li_fat_id` (LinkedIn)
+ * - `liFatId` (LinkedIn) ← `li_fat_id`
  * - `twclid` (X/Twitter)
  *
  * - `audiences` (string[]): determined by Experience package
  */
 export const getFormSubmitContext = (form: FormContentType) => {
-    const w = window;
-    const audiences = [];
-    try {
-        const personalizationStore = JSON.parse(w.localStorage?.getItem('cp') || '{}');
-        const storedAudiences = personalizationStore.audiences?.active || [];
-        if (Array.isArray(storedAudiences)) {
-            audiences.push(...storedAudiences);
-        }
-    } catch (e) {
-        console.warn('[submit] Could not retrieve experience data from localStorage:', e);
-    }
-
     const { formStartedAt, formResumed } = Progress.getContext(form);
+
+    const w = window;
+    const attribution: ISessionAttribution = {};
+    const audiences = [];
+    if ((w as any).CONTENSIS_PERSONALIZATION) {
+        try {
+            const personalizationSession = JSON.parse(w.sessionStorage?.getItem('cp') || '{}');
+            if (personalizationSession.attribution && typeof personalizationSession.attribution === 'object') {
+                for (const [attr, val] of Object.entries(personalizationSession.attribution as { [key: string]: string })) {
+                    if (val) {
+                        // Convert any snake_case key to camelCase (e.g. utm_campaign → utmCampaign, li_fat_id → liFatId)
+                        const normalizedKey = attr.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
+                        attribution[normalizedKey as keyof ISessionAttribution] = val;
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('[submit] Could not retrieve experience data from sessionStorage:', e);
+        }
+        try {
+            const personalizationStore = JSON.parse(w.localStorage?.getItem('cp') || '{}');
+            const storedAudiences = personalizationStore.audiences?.active || [];
+            if (Array.isArray(storedAudiences)) {
+                audiences.push(...storedAudiences);
+            }
+        } catch (e) {
+            console.warn('[submit] Could not retrieve experience data from localStorage:', e);
+        }
+    }
 
     const submitContext = {
         geoCountry: null,
@@ -58,22 +90,10 @@ export const getFormSubmitContext = (form: FormContentType) => {
         /** Read `<formId>-started` and add `originallyStartedAt` to `FormState` when we load `initialState`.
          * Pass `originallyStartedAt` to first `autoSave` of form progress - then sets `<formId>-resumed` to current timestamp */
         formResumed,
-        // Are these best sourced from "sessionStorage"?
-        // We only store matched/active signals and audiences in localStorage with Experience package
-        // TODO: add a "campaign" store to the Experience package that matches these query parameters and records
-        // any matched campaign parameters in sessionStorage, so we can capture any campaigns that led to form submission
-        utmCampaign: null,
-        utmSource: null,
-        utmMedium: null,
-        utmContent: null,
-        utmTerm: null,
-        gclid: null,
-        dclid: null,
-        msclkid: null,
-        fbclid: null,
-        ttclid: null,
-        li_fat_id: null,
-        twclid: null,
+        /** Session attributions fetched from experience package store
+         * utm_campaign, utm_source, utm_medium, utm_content, utm_term, gclid, dclid, msclkid, fbclid, ttclid, li_fat_id, twclid */
+        ...attribution,
+        /** Active audiences fetched from experience package store */
         audiences
     };
 
