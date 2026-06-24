@@ -1,20 +1,7 @@
 import { FormContentType } from '../models';
 import { Progress } from './progress';
 
-interface ISessionAttribution {
-    utm_campaign?: string;
-    utm_source?: string;
-    utm_medium?: string;
-    utm_content?: string;
-    utm_term?: string;
-    gclid?: string;
-    dclid?: string;
-    msclkid?: string;
-    fbclid?: string;
-    ttclid?: string;
-    li_fat_id?: string;
-    twclid?: string;
-}
+import type { PersonalizationContext, ISessionAttribution } from '@contensis/personalization';
 
 /**
  * Gather context for the `sys.context` field in the form submission.
@@ -57,33 +44,26 @@ export const getFormSubmitContext = (form: FormContentType) => {
     const audiences = [];
     if ((w as any).CONTENSIS_PERSONALIZATION) {
         try {
-            const personalizationSession = JSON.parse(w.sessionStorage?.getItem('cp') || '{}');
-            if (personalizationSession.attribution && typeof personalizationSession.attribution === 'object') {
-                for (const [attr, val] of Object.entries(personalizationSession.attribution as { [key: string]: string })) {
-                    if (val) {
-                        // Convert any snake_case key to camelCase (e.g. utm_campaign → utmCampaign, li_fat_id → liFatId)
-                        const normalizedKey = attr.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
-                        attribution[normalizedKey as keyof ISessionAttribution] = val;
-                    }
+            // The window object holds the personalization context once it has been initialized by the Experience package
+            const xpContext = ((w as any).CONTENSIS_PERSONALIZATION || (w as any).CONTENSIS_XP || (w as any).CONTENSIS_EXPERIENCE) as PersonalizationContext;
+
+            // Check session store for marketing attribution / campaign tags
+            const sessionAttribution = xpContext.session.state.attribution || {};
+            for (const [attr, val] of Object.entries(sessionAttribution)) {
+                if (val) {
+                    // Convert any snake_case key to camelCase (e.g. utm_campaign → utmCampaign, li_fat_id → liFatId)
+                    const normalizedKey = attr.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
+                    attribution[normalizedKey as keyof ISessionAttribution] = val;
                 }
             }
+            const storedAudiences = xpContext.state.audiences.active || [];
+            if (Array.isArray(storedAudiences)) audiences.push(...storedAudiences);
         } catch (e) {
-            console.warn('[submit] Could not retrieve experience data from sessionStorage:', e);
-        }
-        try {
-            const personalizationStore = JSON.parse(w.localStorage?.getItem('cp') || '{}');
-            const storedAudiences = personalizationStore.audiences?.active || [];
-            if (Array.isArray(storedAudiences)) {
-                audiences.push(...storedAudiences);
-            }
-        } catch (e) {
-            console.warn('[submit] Could not retrieve experience data from localStorage:', e);
+            console.warn('[submit] Could not retrieve experience data from browser storage:', e);
         }
     }
 
     const submitContext = {
-        geoCountry: null,
-        referrer: null,
         pageUrl: w.location.href,
         /** First `autoSave` of form progress - sets `<formId>-started` to current timestamp */
         formStartedAt,

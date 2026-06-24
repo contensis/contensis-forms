@@ -44,6 +44,7 @@
     "markdown-it": "^14.0.0"
   },
   "devDependencies": {
+    "@contensis/personalization": "^1.0.0-beta.1",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.2.1",
