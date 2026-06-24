@@ -42,10 +42,11 @@ export const getFormSubmitContext = (form: FormContentType) => {
     const w = window;
     const attribution: ISessionAttribution = {};
     const audiences = [];
-    if ((w as any).CONTENSIS_PERSONALIZATION) {
+    const xpGlobal = (w as any).CONTENSIS_PERSONALIZATION || (w as any).CONTENSIS_XP || (w as any).CONTENSIS_EXPERIENCE;
+    if (xpGlobal) {
         try {
             // The window object holds the personalization context once it has been initialized by the Experience package
-            const xpContext = ((w as any).CONTENSIS_PERSONALIZATION || (w as any).CONTENSIS_XP || (w as any).CONTENSIS_EXPERIENCE) as PersonalizationContext;
+            const xpContext = xpGlobal.context as PersonalizationContext;
 
             // Check session store for marketing attribution / campaign tags
             const sessionAttribution = xpContext.session.state.attribution || {};
