@@ -129,7 +129,10 @@ function ClientFormContainer(props: FormProps) {
         if (!formResponse) {
             return;
         }
-        formResponse.sys = { context: getFormSubmitContext(form) };
+
+        if (form.properties?.context?.enabled) {
+            formResponse.sys = { context: getFormSubmitContext(form) };
+        }
 
         try {
             const result = await Api.saveFormResponse({
