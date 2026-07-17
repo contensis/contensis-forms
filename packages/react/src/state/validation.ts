@@ -260,14 +260,13 @@ function createCountValidator(
     return !!minCount || !!maxCount
         ? fromValid(
               (value: unknown) => {
+                  const length = hasLength(value) ? value.length : 0;
                   let valid = true;
-                  if (hasLength(value)) {
-                      if (minCount) {
-                          valid = value.length >= minCount.value;
-                      }
-                      if (valid && maxCount) {
-                          valid = value.length <= maxCount.value;
-                      }
+                  if (minCount) {
+                      valid = length >= minCount.value;
+                  }
+                  if (valid && maxCount) {
+                      valid = length <= maxCount.value;
                   }
                   return valid;
               },
