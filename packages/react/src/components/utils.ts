@@ -4,7 +4,18 @@ type AttrArg = undefined | null | string | string[] | Record<string, boolean>;
 
 type FieldInputProps = Pick<
     FormInputProps,
-    'htmlId' | 'showErrors' | 'errors' | 'inputRef' | 'autoFill' | 'placeholder' | 'rows' | 'instructions' | 'maxLength' | 'cssClass' | 'labelPosition'
+    | 'htmlId'
+    | 'showErrors'
+    | 'errors'
+    | 'inputRef'
+    | 'autoFill'
+    | 'placeholder'
+    | 'rows'
+    | 'instructions'
+    | 'maxLength'
+    | 'cssClass'
+    | 'labelPosition'
+    | 'required'
 >;
 
 export function attr(...args: AttrArg[]) {
@@ -68,6 +79,7 @@ export function inputAttrs(inputs: FieldInputProps, fieldType: string, settings:
         rows: inputs.rows || undefined,
         placeholder: (settings.placeholder && inputs.placeholder) || undefined,
         inputMode: settings?.inputMode || undefined,
+        required: inputs.required || undefined,
         'aria-invalid': invalid,
         'aria-describedby': attr({
             [instructionsId(inputs)]: !!inputs.instructions,
@@ -94,6 +106,7 @@ export function childInputAttrs(inputs: FieldInputProps, fieldType: string, sett
         autoComplete: settings?.autoComplete || undefined,
         placeholder: settings?.placeholder || undefined,
         inputMode: settings?.inputMode || undefined,
+        required: inputs.required || undefined,
         'aria-invalid': invalid,
         'aria-describedby': attr({
             [instructionsId(inputs)]: !!inputs.instructions,
