@@ -261,13 +261,12 @@ function createCountValidator(
         ? fromValid(
               (value: unknown) => {
                   let valid = true;
-                  if (hasLength(value)) {
-                      if (minCount) {
-                          valid = value.length >= minCount.value;
-                      }
-                      if (valid && maxCount) {
-                          valid = value.length <= maxCount.value;
-                      }
+                  const count = hasLength(value) ? value.length : 0;
+                  if (minCount) {
+                      valid = count >= minCount.value;
+                  }
+                  if (valid && maxCount) {
+                      valid = count <= maxCount.value;
                   }
                   return valid;
               },
