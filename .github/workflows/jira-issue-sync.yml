@@ -1,0 +1,138 @@
+# Fires whenever a new GitHub issue is opened on this repo and creates a
+# matching task in Jira, then comments back on the GitHub issue with a
+# link to it.
+#
+# Per-repo config lives in two places:
+#   - Repo variables (Settings > Secrets and variables > Actions > Variables):
+#       JIRA_PROJECT_KEY   e.g. SUP
+#       JIRA_ISSUE_TYPE    e.g. Task   (optional — defaults to Task below)
+#   - Secrets (can be org-level and shared, or set per-repo):
+#       JIRA_BASE_URL      e.g. https://yourcompany.atlassian.net
+#       JIRA_EMAIL         email tied to the Jira API token
+#       JIRA_API_TOKEN     from https://id.atlassian.com/manage-profile/security/api-tokens
+
+name: Sync new GitHub issues to Jira
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create-jira-task:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Build Jira issue payload and create it
+        id: create
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_PROJECT_KEY: ${{ vars.JIRA_PROJECT_KEY }}
+          JIRA_ISSUE_TYPE: ${{ vars.JIRA_ISSUE_TYPE || 'Task' }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          REPO_FULL_NAME: ${{ github.repository }}
+          ISSUE_LABELS: ${{ join(github.event.issue.labels.*.name, ', ') }}
+        run: |
+          set -euo pipefail
+
+          # Jira Cloud's v3 API wants the description in Atlassian Document
+          # Format (ADF), not plain markdown. Build a minimal ADF doc with
+          # jq so title/body content is safely escaped either way.
+          PAYLOAD=$(jq -n \
+            --arg project "$JIRA_PROJECT_KEY" \
+            --arg issuetype "$JIRA_ISSUE_TYPE" \
+            --arg summary "[GitHub #$ISSUE_NUMBER] $ISSUE_TITLE" \
+            --arg repo "$REPO_FULL_NAME" \
+            --arg url "$ISSUE_URL" \
+            --arg author "$ISSUE_AUTHOR" \
+            --arg body "${ISSUE_BODY:-"(no description provided)"}" \
+            --arg labels "$ISSUE_LABELS" \
+            '{
+              fields: {
+                project: { key: $project },
+                issuetype: { name: $issuetype },
+                summary: $summary,
+                description: {
+                  type: "doc",
+                  version: 1,
+                  content: [
+                    {
+                      type: "paragraph",
+                      content: [
+                        { type: "text", text: ("Reported by " + $author + " on " + $repo) }
+                      ]
+                    },
+                    {
+                      type: "paragraph",
+                      content: [
+                        { type: "text", text: ("GitHub issue: " + $url) }
+                      ]
+                    },
+                    {
+                      type: "paragraph",
+                      content: [
+                        { type: "text", text: (if $labels == "" then "Labels: (none)" else ("Labels: " + $labels) end) }
+                      ]
+                    },
+                    {
+                      type: "rule"
+                    },
+                    {
+                      type: "paragraph",
+                      content: [
+                        { type: "text", text: $body }
+                      ]
+                    }
+                  ]
+                },
+                labels: ["github-import"]
+              }
+            }')
+
+          RESPONSE=$(curl -sS -w "\n%{http_code}" \
+            --request POST \
+            --url "$JIRA_BASE_URL/rest/api/3/issue" \
+            --user "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+            --header "Content-Type: application/json" \
+            --data "$PAYLOAD")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          if [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Jira API call failed with status $HTTP_CODE"
+            echo "$BODY"
+            exit 1
+          fi
+
+          JIRA_KEY=$(echo "$BODY" | jq -r '.key')
+          echo "jira_key=$JIRA_KEY" >> "$GITHUB_OUTPUT"
+          echo "jira_url=$JIRA_BASE_URL/browse/$JIRA_KEY" >> "$GITHUB_OUTPUT"
+
+      - name: Comment on the GitHub issue with the Jira link
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `Tracked internally as [${{ steps.create.outputs.jira_key }}](${{ steps.create.outputs.jira_url }}).`
+            });
+
+      - name: Label the GitHub issue so it isn't picked up twice
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['jira-synced']
+            });
