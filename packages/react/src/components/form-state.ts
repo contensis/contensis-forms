@@ -19,6 +19,7 @@ export type FormState = {
     errors: Dictionary<Nullable<Dictionary<ValidationError>>>;
     isDirty: boolean;
     isSubmitted: boolean;
+    originallyStartedAt: Nullable<string>;
 };
 
 export type SetFormState = React.Dispatch<React.SetStateAction<FormState>>;
@@ -40,7 +41,8 @@ function initialFormState(): FormState {
         showErrors: false,
         errors: {},
         isDirty: false,
-        isSubmitted: false
+        isSubmitted: false,
+        originallyStartedAt: null,
     };
 }
 

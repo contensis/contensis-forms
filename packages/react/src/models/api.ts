@@ -61,6 +61,10 @@ export type CaptchaSettings = {
     siteKey?: Nullable<string>;
 };
 
+export type ContextSettings = {
+    enabled: boolean;
+};
+
 type FormLocalizations = {
     closedReasonMessage: Nullable<string>;
     disabledReasonMessage: Nullable<string>;
@@ -129,6 +133,7 @@ type FormLocalizations = {
 
 export type FormProperties = {
     captcha: CaptchaSettings;
+    context: ContextSettings;
     localizations: Nullable<FormLocalizations>;
     confirmationRules: FormRule<ConfirmationRuleReturn>[];
     autoSaveProgress: boolean;
