@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.6](https://github.com/contensis/contensis-forms/compare/@contensis/forms-v1.0.5...@contensis/forms-v1.0.6) (2026-09-02)
+
+
+### Bug Fixes
+
+* count validator considers an incomplete value as 0 ([0d90306](https://github.com/contensis/contensis-forms/commit/0d90306707beb7d644086c49739bebd74c81dcae))
+* issue [#18](https://github.com/contensis/contensis-forms/issues/18) count validator now considers a non-completed value as 0 as repeatable select fields do not have an explicit required setting ([879a4e6](https://github.com/contensis/contensis-forms/commit/879a4e68227a47971583cbe1a0a4c9e504de0878))
+
 ## [1.0.5](https://github.com/contensis/contensis-forms/compare/@contensis/forms-v1.0.4...@contensis/forms-v1.0.5) (2026-04-29)
 
 
