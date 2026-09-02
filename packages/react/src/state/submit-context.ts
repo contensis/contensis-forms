@@ -1,52 +1,56 @@
-import { FormContentType } from '../models';
+import { FormContentType, Nullable } from '../models';
 import { Progress } from './progress';
 
-import type { PersonalizationContext, ISessionAttribution } from '@contensis/personalization';
+import type { ExperienceEngineContext } from '@contensis/experience-engine';
 
 /**
  * Gather context for the `sys.context` field in the form submission.
  *
  * **Server-derived**
- *
- * - `geoCountry` (string): two-letter country code (e.g. `GB`), server-derived from request headers. Client-provided values are ignored/overwritten. See tech spec for normalisation and validation rules.
+ * - `geoCountry` (string): two-letter country code (e.g. `GB`), server-derived from request headers. Client-provided values are ignored/overwritten.
  * - `referrer` (string): the HTTP referrer at the point the visitor arrived, server-derived from the `Referer` header. Client-provided values are ignored/overwritten.
  *
- * **Submission origin (sent by Forms Render)**
+ * **Sent by Forms Render**
  * - `pageUrl` (string): the URL of the page where the form was submitted.
- *
- * **Form completion behaviour (sent by Forms Render)**
  * - `formStartedAt` (string): ISO 8601 timestamp of when the user first interacted with the form.
  * - `formResumed` (boolean): whether the form was restored from local storage (partial completion) before submission.
- *
- * **Sent by Forms Render (captured attribution)**
- * - `utmCampaign` (string) ← `utm_campaign`
- * - `utmSource` (string) ← `utm_source`
- * - `utmMedium` (string) ← `utm_medium`
- * - `utmContent` (string) ← `utm_content`
- * - `utmTerm` (string) ← `utm_term`
- *
- * Optional click IDs (strings, also sent by Forms Render)
- * - `gclid` (Google Ads)
- * - `dclid` (Google Display Network)
- * - `msclkid` (Microsoft Ads)
- * - `fbclid` (Meta/Facebook)
- * - `ttclid` (TikTok)
- * - `liFatId` (LinkedIn) ← `li_fat_id`
- * - `twclid` (X/Twitter)
- *
- * - `audiences` (string[]): determined by Experience package
+ * - `...attribution` (CampaignAttributionContext): marketing tags / click IDs captured by the experience-engine package.
+ * - `audiences` (string[]): active audiences determined by the experience-engine package.
  */
-export const getFormSubmitContext = (form: FormContentType) => {
+
+type CampaignAttributionContext = {
+    utmCampaign?: string; // ← `utm_campaign`
+    utmSource?: string; // ← `utm_source`
+    utmMedium?: string; // ← `utm_medium`
+    utmContent?: string; // ← `utm_content`
+    utmTerm?: string; // ← `utm_term`
+    gclid?: string; // Google Ads
+    dclid?: string; // Google Display Network
+    msclkid?: string; // Microsoft Ads
+    fbclid?: string; // Meta/Facebook
+    ttclid?: string; // TikTok
+    liFatId?: string; // ← `li_fat_id`
+    twclid?: string; // X/Twitter
+};
+
+type SubmitContext = {
+    pageUrl: string;
+    formStartedAt?: Nullable<string>;
+    formResumed?: Nullable<string>;
+    audiences: string[];
+} & CampaignAttributionContext;
+
+export const getFormSubmitContext = (form: FormContentType):SubmitContext => {
     const { formStartedAt, formResumed } = Progress.getContext(form);
 
     const w = window;
-    const attribution: ISessionAttribution = {};
+    const attribution: CampaignAttributionContext = {};
     const audiences = [];
-    const xpGlobal = (w as any).CONTENSIS_PERSONALIZATION || (w as any).CONTENSIS_XP || (w as any).CONTENSIS_EXPERIENCE;
+    const xpGlobal = (w as any).CONTENSIS_XP || (w as any).CONTENSIS_PERSONALIZATION; // CONTENSIS_PERSONALIZATION is legacy prior to experience-engine package rebrand - could remove
     if (xpGlobal) {
         try {
             // The window object holds the personalization context once it has been initialized by the Experience package
-            const xpContext = xpGlobal.context as PersonalizationContext;
+            const xpContext = xpGlobal.context as ExperienceEngineContext;
 
             // Check session store for marketing attribution / campaign tags
             const sessionAttribution = xpContext.session.state.attribution || {};
@@ -54,7 +58,7 @@ export const getFormSubmitContext = (form: FormContentType) => {
                 if (val) {
                     // Convert any snake_case key to camelCase (e.g. utm_campaign → utmCampaign, li_fat_id → liFatId)
                     const normalizedKey = attr.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
-                    attribution[normalizedKey as keyof ISessionAttribution] = val;
+                    attribution[normalizedKey as keyof CampaignAttributionContext] = val;
                 }
             }
             const storedAudiences = xpContext.state.audiences.active || [];
@@ -71,8 +75,7 @@ export const getFormSubmitContext = (form: FormContentType) => {
         /** Read `<formId>-started` and add `originallyStartedAt` to `FormState` when we load `initialState`.
          * Pass `originallyStartedAt` to first `autoSave` of form progress - then sets `<formId>-resumed` to current timestamp */
         formResumed,
-        /** Session attributions fetched from experience package store
-         * utm_campaign, utm_source, utm_medium, utm_content, utm_term, gclid, dclid, msclkid, fbclid, ttclid, li_fat_id, twclid */
+        /** Session attributions fetched from experience package store */
         ...attribution,
         /** Active audiences fetched from experience package store */
         audiences
