@@ -1,6 +1,6 @@
 {
   "name": "@contensis/forms",
-  "version": "1.0.5",
+  "version": "1.0.6-beta.2",
   "description": "Render Contensis Forms with React",
   "keywords": [
     "contensis",
@@ -44,6 +44,7 @@
     "markdown-it": "^14.0.0"
   },
   "devDependencies": {
+    "@contensis/experience-engine": "^1.0.0-beta.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.2.1",
